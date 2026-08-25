@@ -96,11 +96,26 @@ def main() -> None:
         kpi["schutzgebiete_luecke"] = schutzgebiete["luecke"]
     kpi["vogel_index"] = ausgaben["vogel"]["aktuell"]
     kpi["vogel_jahr"] = ausgaben["vogel"]["stand"]
+    # Die Kachel zeigt seit 25.08.2026 den Verlust, nicht den Indexstand:
+    # „56,8" ist ohne die Basiszeile nicht lesbar, „−43 %" ist es.
+    kpi["vogel_verlust"] = ausgaben["vogel"]["verlust"]
+    kpi["vogel_beginn"] = ausgaben["vogel"]["beginn"]
+    kpi["vogel_arten"] = ausgaben["vogel"]["arten_anzahl"]
     kpi["boden_ha_pro_tag"] = ausgaben["boden"]["aktuell_ha_pro_tag"]
     kpi["boden_periode"] = ausgaben["boden"]["aktuell_periode"]
     if rote:
         kpi["rotelisten_aktuell"] = rote["aktuell"]
         kpi["rotelisten_gesamt"] = rote["gruppen_gesamt"]
+        # Wie alt die übrigen sind. Ohne diese Spanne sagt „3 von 27" nicht,
+        # woran „aktuell" gemessen ist — der Rückstand kann ein Jahr oder
+        # drei Jahrzehnte betragen. Gruppen ohne Liste haben kein Alter und
+        # werden getrennt gezählt, nicht als 0 eingerechnet.
+        alter = [e["alter"] for e in rote["eintraege"]
+                 if e["status"] != "aktuell" and e.get("alter") is not None]
+        if alter:
+            kpi["rotelisten_rest_min"] = min(alter)
+            kpi["rotelisten_rest_max"] = max(alter)
+        kpi["rotelisten_ohne"] = rote["ohne_liste"]
     kpi["erhaltung_guenstig"] = ausgaben["erhaltung"]["gruppen"][0]["guenstig"]
     kpi["erhaltung_periode"] = ausgaben["erhaltung"]["periode"]
     kpi["biotoptypen_anteil"] = ausgaben["biotoptypen"]["anteil_gefaehrdet"]

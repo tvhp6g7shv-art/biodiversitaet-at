@@ -42,9 +42,13 @@ function baueVogel(daten) {
 
   const mitEu = !!daten.eu_vorhanden;
 
+  /* 25.08.2026 — „Bestandsindex" und „Offenland" raus. Beides sind
+     Begriffe aus dem Bericht, nicht aus der Alltagssprache; was der Index
+     misst und was er nicht misst, steht ohnehin in der Hinweiszeile
+     darunter. Die Basis bleibt hier, weil die Achse sie zeigt. */
   setzeText("u-vogel",
-    `Bestandsindex von ${daten.arten_anzahl} Vogelarten des Offenlands · ` +
-    `${daten.beginn} bis ${daten.stand} · ${daten.beginn} = 100` +
+    `${daten.arten_anzahl} Vogelarten auf Feldern und Wiesen · ` +
+    `${daten.beginn} bis ${daten.stand}, ${daten.beginn} = 100` +
     (mitEu ? ` · EU-Vergleich bis ${daten.eu_stand}` : ""));
   setzeText("h-vogel", daten.hinweis ?? "");
 

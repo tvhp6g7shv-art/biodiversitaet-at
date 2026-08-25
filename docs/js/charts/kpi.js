@@ -53,11 +53,24 @@ function baueKpis(kpi) {
     ));
   }
 
+  /* 25.08.2026 — Index raus, Verlust rein. „56,8" war ohne die Basiszeile
+     nicht lesbar, und die Basiszeile stand klein darunter. Die Kachel sagt
+     jetzt dasselbe wie die Überschrift der Sektion („gut vier von zehn sind
+     seit 1998 verschwunden") und ist baugleich zur Wald-Kachel: Größe seit
+     einem Jahr, als Veränderung.
+
+     `vogel_verlust` kommt aus build.py. Der Rückfall rechnet ihn aus dem
+     Index, damit eine ältere kpi.json aus dem Cache die Kachel nicht
+     leert — sie zeigt dann dieselbe Zahl. */
   if (kpi.vogel_index !== undefined) {
+    const verlust = kpi.vogel_verlust !== undefined
+      ? kpi.vogel_verlust : 100 - kpi.vogel_index;
+    const beginn = kpi.vogel_beginn ?? 1998;
     teile.push(kachel(
-      pz(kpi.vogel_index), "",
-      "Bestandsindex der Feld- und Wiesenvögel",
-      `${kpi.vogel_jahr} · 1998 = 100`,
+      "−" + pz(verlust, 0), " %",
+      `Vogelbestand auf Feldern und Wiesen seit ${beginn}`,
+      (kpi.vogel_arten ? `${zahl(kpi.vogel_arten)} Arten · ` : "") +
+        `${beginn} bis ${kpi.vogel_jahr}`,
       "vogel"
     ));
   }
@@ -65,17 +78,34 @@ function baueKpis(kpi) {
   if (kpi.boden_ha_pro_tag !== undefined) {
     teile.push(kachel(
       pz(kpi.boden_ha_pro_tag), " ha",
-      "Boden werden pro Tag neu beansprucht",
+      /* 25.08.2026 — „Boden werden pro Tag neu beansprucht" war der
+         Schluss eines Satzes, der mit der Zahl begann. Über der Zahl
+         stehend war es kein Satz mehr, sondern ein Fehler im Numerus.
+         Jetzt derselbe Begriff wie in der Überschrift der Sektion. */
+      "Bodenverbrauch pro Tag",
       `Mittel ${kpi.boden_periode}`,
       "boden"
     ));
   }
 
+  /* 25.08.2026 — Der Titel war das Ende eines Satzes, dessen Anfang die
+     Zahl war („3 von 27 Roten Listen sind auf aktuellem Stand"). CSS 45.5
+     zieht den Titel aber mit `order: -1` ÜBER die Zahl, und damit las sich
+     die Kachel rückwärts. Jetzt eine Nominalphrase, die für sich steht.
+
+     Die Fußnote sagt neu, WORAN „aktuell" gemessen ist. Ohne sie war die
+     Zahl nicht einzuordnen: 3 von 27 klingt nach einem Versäumnis, sagt
+     aber nicht, wie weit die übrigen zurückliegen. */
   if (kpi.rotelisten_aktuell !== undefined) {
+    const spanne = (kpi.rotelisten_rest_min && kpi.rotelisten_rest_max)
+      ? `übrige ${zahl(kpi.rotelisten_rest_min)} bis ` +
+        `${zahl(kpi.rotelisten_rest_max)} Jahre alt` +
+        (kpi.rotelisten_ohne ? `, ${zahl(kpi.rotelisten_ohne)} fehlen ganz` : "") + " · "
+      : "Rote Listen · ";
     teile.push(kachel(
       `${zahl(kpi.rotelisten_aktuell)}<span class="viz-kpi-von"> von ${zahl(kpi.rotelisten_gesamt)}</span>`, "",
-      "Roten Listen sind auf aktuellem Stand",
-      `Tiergruppen · Stand Oktober 2025`,
+      "Tiergruppen mit aktuellem Wissensstand",
+      `${spanne}Oktober 2025`,
       "rotelisten"
     ));
   }
