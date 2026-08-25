@@ -218,26 +218,62 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
 /* --- Einordnung unter der Grafik: am Handy eingeklappt ---------------
    kern.js haengt Notiz und Einordnungsabsatz zur Laufzeit in dieses
    <details> und setzt `open` selbst — unter 768 px zu, darueber offen.
-   Hier steht nur, wie es aussieht: unter 768 px eine anklickbare Zeile
-   „Einordnung", darueber keine Zeile und der Text wie bisher.
-   Grundregel und Media Query tragen bewusst DIESELBE Spezifitaet. */
-.viz-root .viz-mehr { margin: 14px 0 0; }
+   Hier steht nur, wie es aussieht.
+
+   Die Zusammenfassungszeile ist als KNOPF gebaut, nicht als fette
+   Zeile: sie traegt Rahmen, Radius und Groesse des Tabellen-Schalters
+   derselben Karte, damit erkennbar ist, dass man sie druecken kann.
+   Die Tokens mit Rueckfall (`var(--viz-signal-rand, var(--viz-border))`)
+   greifen in beiden Auslieferungen — auf der Website gibt es die
+   Signal-Tokens, auf GitHub Pages nicht.
+
+   Abgesetzt wird oben am BEHAELTER, nicht am Knopf: die Linie soll
+   ueber die ganze Kartenbreite laufen, der Knopf aber nur so breit
+   sein wie sein Text.
+
+   Grundregel und Media Query tragen bewusst DIESELBEN Selektoren. */
+.viz-root .viz-mehr {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--viz-grid);
+}
 .viz-root .viz-mehr > summary {
-  list-style: none; cursor: pointer;
-  display: flex; align-items: center; gap: .4em;
-  padding-top: 12px; border-top: 1px solid var(--viz-grid);
-  font-size: .82rem; color: var(--viz-text-2);
-  font-weight: var(--viz-fw-kraeftig);
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .45em;
+  cursor: pointer;
+  font: inherit;
+  font-size: .78rem;
+  color: var(--viz-muted, var(--viz-text-2));
+  background: transparent;
+  border: 1px solid var(--viz-signal-rand, var(--viz-border));
+  border-radius: var(--viz-radius-s, 6px);
+  padding: 4px 10px;
 }
 .viz-root .viz-mehr > summary::-webkit-details-marker { display: none; }
-.viz-root .viz-mehr > summary::after { content: "\25BE"; font-size: .9em; transition: transform .15s ease; }
+.viz-root .viz-mehr > summary:hover {
+  color: var(--viz-text);
+  background: var(--viz-signal-flaeche, transparent);
+}
+.viz-root .viz-mehr > summary::after {
+  content: "\25BE";
+  font-size: .9em;
+  line-height: 1;
+  transition: transform .15s ease;
+}
 .viz-root .viz-mehr[open] > summary::after { transform: rotate(180deg); }
-/* Im Aufklapper traegt die Zusammenfassungszeile die Trennlinie — die
-   Notiz bringt sonst eine zweite direkt darunter mit. */
-.viz-root .viz-mehr > .viz-notiz { border-top: 0; padding-top: 0; margin-top: 10px; }
+/* Im Aufklapper traegt der Behaelter die Trennlinie — die Notiz bringt
+   sonst eine zweite direkt darunter mit. */
+.viz-root .viz-mehr > .viz-notiz { border-top: 0; padding-top: 0; margin-top: 12px; }
 @media (min-width: 768px) {
+  .viz-root .viz-mehr { margin: 0; padding-top: 0; border-top: 0; }
   .viz-root .viz-mehr > summary { display: none; }
-  .viz-root .viz-mehr > .viz-notiz { border-top: 1px solid var(--viz-grid); padding-top: 12px; margin-top: 0; }
+  .viz-root .viz-mehr > .viz-notiz {
+    border-top: 1px solid var(--viz-grid);
+    padding-top: 12px;
+    margin-top: 14px;
+  }
 }
 /* Herkunftsmarke im Fuss: „laufend" oder „Stand 2025". Ohne sie liest
    sich eine dreijaehrige Zahl wie eine tagesaktuelle. */
