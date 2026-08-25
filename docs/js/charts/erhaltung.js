@@ -21,15 +21,31 @@ const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
    schlecht). Eine Grafik, die das in Graustufen übersetzt, verschweigt die
    Bewertung, die im Datensatz steht.
 
-   „unbekannt" bekommt bewusst KEINEN Ton der Ampel, sondern das blasse
-   Rasterun grau: Es ist keine schlechtere Stufe als „schlecht", sondern
-   gar keine Stufe.
+   „unbekannt" bekommt bewusst KEINEN Ton der Ampel, sondern einen
+   neutralen Grauton: Es ist keine schlechtere Stufe als „schlecht",
+   sondern gar keine Stufe.
+
+   KORREKTUR 25.08.2026 — zwei Toene getauscht:
+
+   „unzureichend" stand auf --viz-series-4 (#e3ead9, fast weiss). Das ist
+   ein Kategorienton ohne Wertung, und zwischen dem Gruen und dem Rot las
+   er sich wie eine EIGENE Bedeutung statt wie die mittlere Stufe einer
+   Ampel. Jetzt --viz-seq-rot-3: der zurueckhaltendste der benutzten
+   Rottoene. Damit liegen „unzureichend" und „schlecht" erkennbar in
+   derselben Familie, mit „schlecht" als dem auffaelligeren.
+
+   „unbekannt" stand auf --viz-grid — Limette bei 10 % Deckung, praktisch
+   unsichtbar. Derselbe Fehler wie bei „ohne Angabe" in biotoptypen.js.
+   Jetzt --viz-muted (#97a888): neutral, gehoert keiner der beiden
+   Bedeutungsfarben an, und man sieht es. Eine Luecke soll unauffaellig
+   sein, nicht unsichtbar.
 
    KEINE BESCHRIFTUNG IN DEN SEGMENTEN. Das kleinste ist 3 % breit — dort
    passt keine Zahl hinein, und eine Zahl, die nur manchmal erscheint,
    liest sich als Fehler. Die Werte stehen im Tooltip und in der Tabelle. */
 
-const FARBEN = ["--viz-gut", "--viz-series-4", "--viz-kritisch", "--viz-grid"];
+/* Reihenfolge: guenstig · unzureichend · schlecht · unbekannt */
+const FARBEN = ["--viz-gut", "--viz-seq-rot-3", "--viz-kritisch", "--viz-muted"];
 
 function baueErhaltung(daten) {
   const S = schrift();
