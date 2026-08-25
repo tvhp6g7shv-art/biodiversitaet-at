@@ -112,7 +112,13 @@ function baueKpis(kpi) {
       : "Rote Listen · ";
     teile.push(kachel(
       `${zahl(kpi.rotelisten_aktuell)}<span class="viz-kpi-von"> von ${zahl(kpi.rotelisten_gesamt)}</span>`, "",
-      "Tiergruppen mit aktuellem Wissensstand",
+      /* Titel 25.08.2026: „Tiergruppen mit aktuellem Wissensstand" war
+         nicht verständlich. „Wissensstand" ist kein Wort, das jemand
+         außerhalb des Fachs benutzt, und es sagt nicht, WORAN der Stand
+         hängt. Gemessen wird, ob die Rote Liste einer Tiergruppe noch
+         innerhalb ihres vorgesehenen Neuauflage-Zeitraums liegt — also
+         ob es eine aktuelle Rote Liste gibt. Genau das steht jetzt da. */
+      "Tiergruppen mit aktueller Roter Liste",
       `${spanne}Oktober 2025`,
       "rotelisten"
     ));
