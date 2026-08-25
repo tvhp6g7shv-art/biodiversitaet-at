@@ -105,7 +105,12 @@ function basis() {
       borderWidth: 1,
       padding: [9, 12],
       textStyle: { color: stil("--viz-text"), fontSize: s.tooltip },
-      extraCssText: "box-shadow:0 4px 16px rgba(0,0,0,.10);border-radius:8px;",
+      /* Der Schatten war auf 10 % Schwarz gerechnet — auf dunklem Grund
+         ist das nichts. Er trägt jetzt so viel, dass der Tooltip sich
+         auch über der eigenen Grafik abhebt. --viz-surface bleibt
+         deshalb deckend, siehe CSS-Abschnitt 45.1. */
+      extraCssText: "box-shadow:0 8px 28px rgba(0,0,0,.45);border-radius:"
+        + (stil("--viz-radius-s") || "8px") + ";",
     },
   };
 }
@@ -190,7 +195,48 @@ function dunkler(farbe, anteil = HOVER_ANTEIL) {
     .map((v) => Math.round(Math.max(0, v * (1 - anteil))).toString(16).padStart(2, "0"))
     .join("");
 }
-const hoverDunkler = (farbe) => ({ itemStyle: { color: dunkler(farbe) } });
+/* Gegenstück zu dunkler(): dieselbe Formel, nur zum Weiß hin. */
+function heller(farbe, anteil = HOVER_ANTEIL) {
+  const h = String(farbe).trim();
+  const kurz = /^#([0-9a-f])([0-9a-f])([0-9a-f])$/i.exec(h);
+  const lang = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(h);
+  const auf = (v) => Math.round(v + (255 - v) * anteil);
+  let rgb;
+  if (lang)      rgb = [1, 2, 3].map((i) => parseInt(lang[i], 16));
+  else if (kurz) rgb = [1, 2, 3].map((i) => parseInt(kurz[i] + kurz[i], 16));
+  else {
+    const m = /^rgba?\(([^)]+)\)/i.exec(h);
+    if (!m) return farbe;
+    const t = m[1].split(",").map((s) => parseFloat(s));
+    rgb = t.slice(0, 3).map((v) => (isFinite(v) ? v : 0));
+    const a = t[3];
+    const d = rgb.map(auf);
+    return a === undefined ? `rgb(${d.join(",")})` : `rgba(${d.join(",")},${a})`;
+  }
+  return "#" + rgb.map((v) => auf(v).toString(16).padStart(2, "0")).join("");
+}
+
+/* --- Hover: IMMER vom Grund weg, nie zum Grund hin ---------------------
+   Der ursprüngliche hoverDunkler() ging fest nach Dunkel. Das war
+   richtig, solange die Karte weiß war. Seit die Seite dunkel ist, wandert
+   ein angefasster Balken damit auf den Grund zu und verschwindet — genau
+   der Fehler, den die Funktion verhindern sollte, nur spiegelverkehrt.
+
+   Ob der Grund dunkel ist, wird nicht geraten, sondern an der Textfarbe
+   abgelesen: helle Schrift heißt dunkler Grund. Das gilt auch dann, wenn
+   die Farbe über eine Systemeinstellung oder einen späteren CSS-Abschnitt
+   kippt — es wird bei jedem Aufruf neu gelesen, nicht einmal beim Laden. */
+function grundIstDunkel() {
+  const m = /(\d+(?:\.\d+)?)[,\s]+(\d+(?:\.\d+)?)[,\s]+(\d+(?:\.\d+)?)/
+    .exec(getComputedStyle(wurzel).color || "");
+  if (!m) return false;
+  const [r, g, b] = [1, 2, 3].map((i) => parseFloat(m[i]) / 255);
+  const k = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * k(r) + 0.7152 * k(g) + 0.0722 * k(b) > 0.5;
+}
+const hervor = (farbe) => (grundIstDunkel() ? heller(farbe) : dunkler(farbe));
+/* Name bleibt, damit keines der neun Diagrammmodule angefasst werden muss. */
+const hoverDunkler = (farbe) => ({ itemStyle: { color: hervor(farbe) } });
 
 /* Kategorienamen links hart begrenzen. `anzahl` ist die Zahl der
    Kategorien: Passen zwei Textzeilen nicht in die Hoehe einer

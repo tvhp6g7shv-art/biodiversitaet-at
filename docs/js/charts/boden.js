@@ -34,7 +34,15 @@ function baueBoden(daten) {
   if (!diagramme.includes(d)) diagramme.push(d);
 
   const werte = daten.tageswerte;
-  const farbe = stil("--viz-series-1");
+  /* Rot, nicht neutral (25.08.2026). Neu beanspruchter Boden ist eine
+     schlechte Größe, und Schlechtes steht in diesem Projekt im Rotraum.
+     Dass die Balken FALLEN, sagt schon ihre Höhe — die Farbe bewertet
+     die Größe, nicht ihren Verlauf.
+
+     `--viz-seq-rot-4` und nicht `--viz-kritisch`: die Alarmfarbe ist
+     für Status reserviert. Stufe 4 liegt in beiden Modi über 5 : 1
+     gegen die Kartenfläche (Abschnitt 52 der idl.css). */
+  const farbe = stil("--viz-seq-rot-4");
 
   setzeText("u-boden",
     `Neu beanspruchte Fläche je Tag, Mittel der Periode · ` +

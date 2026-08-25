@@ -23,14 +23,29 @@ const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
    Die Skala ist geordnet, und eine Sortierung nach Häufigkeit würde
    „stark gefährdet" und „gefährdet" (beide 123) willkürlich trennen.
 
-   ZUR FARBE: Eine sequenzielle Rampe von dunkel nach hell, nicht die
-   Ampel. Die Stufen sind Grade derselben Sache, keine Zustandsurteile mit
-   Handlungsbezug — und fünf Ampelfarben wären ohnehin Konfetti.
+   ZUR FARBE (geändert 25.08.2026): Eine sequenzielle Rampe im ROTRAUM,
+   nicht die Ampel. Die vier Gefährdungsstufen sind Grade derselben
+   Sache; fünf Ampelfarben wären Konfetti. Aber es sind Grade von etwas
+   Schlechtem, und Schlechtes steht in diesem Projekt im Rotraum — die
+   grüne Rampe von vorher las sich wie ein Gütesiegel.
+
+   `--viz-seq-rot-*` steht in Abschnitt 52 der idl.css. Die Rampe ist
+   so gerechnet, dass die vier BENUTZTEN Stufen (3 bis 6) in beiden
+   Modi über 3 : 1 gegen die Kartenfläche liegen; 1 und 2 sind zu blass
+   und bleiben hier ungenutzt.
+
+   Die Rampe kehrt sich mit dem Modus um: dunkel ist Stufe 6 die
+   HELLSTE, hell die DUNKELSTE. In beiden Fällen ist sie die auffälligste
+   — und die auffälligste gehört auf „völlig vernichtet".
+
+   `LC` bleibt NEUTRAL, nicht blassrot: „nicht gefährdet" ist keine
+   schwache Gefährdung, sondern deren Abwesenheit. Ein blassroter Balken
+   dort würde 93 Biotoptypen ohne Grund in den Rotraum ziehen.
    „Ohne Angabe" bekommt den Rasterton: keine Stufe, sondern eine Lücke. */
 
 const FARBEN = {
-  RE: "--viz-seq-6", CR: "--viz-seq-5", EN: "--viz-seq-4",
-  VU: "--viz-seq-3", LC: "--viz-seq-2", "—": "--viz-grid",
+  RE: "--viz-seq-rot-6", CR: "--viz-seq-rot-5", EN: "--viz-seq-rot-4",
+  VU: "--viz-seq-rot-3", LC: "--viz-series-3", "—": "--viz-grid",
 };
 
 function baueBiotoptypen(daten) {
