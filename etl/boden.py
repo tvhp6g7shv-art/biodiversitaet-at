@@ -113,6 +113,9 @@ def baue_boden() -> dict:
         art="gepflegt",
     )
 
+    _bestand_de = f"{BESTAND[2025]:,.0f}".replace(",", ".")
+    _versiegelt_de = str(VERSIEGELUNG_ANTEIL_INANSPRUCHNAHME).replace(".", ",")
+
     return {
         "tageswerte": TAGESWERTE,
         "aktuell_ha_pro_tag": letzt["ha_pro_tag"],
@@ -141,11 +144,16 @@ def baue_boden() -> dict:
             "bericht_jahr": BERICHT_JAHR,
             "abgerufen": "2026-08-24",
         },
+        # Zahlen einzeln nach deutscher Schreibweise drehen, NICHT ueber
+        # den fertigen Satz. Ein .replace(",", ".") am Satzende traf auch
+        # das Satzkomma ("Periodenmittel. keine Jahreswerte") und machte
+        # aus 52,8 % ein 52.8 % — benachbarte Literale werden vor dem
+        # Methodenaufruf zusammengefuegt.
         "hinweis": (
             "Die Tageswerte sind Periodenmittel, keine Jahreswerte. "
-            f"Beanspruchte Fläche ist nicht dasselbe wie versiegelte: von "
-            f"{BESTAND[2025]:,.0f} km² Inanspruchnahme waren "
-            f"{VERSIEGELUNG_STAND} rund {VERSIEGELUNG_ANTEIL_INANSPRUCHNAHME} % "
-            f"tatsächlich versiegelt."
-        ).replace(",", "."),
+            "Beanspruchte Fläche ist nicht dasselbe wie versiegelte: von "
+            f"{_bestand_de} km² Inanspruchnahme waren "
+            f"{VERSIEGELUNG_STAND} rund {_versiegelt_de} % tatsächlich "
+            "versiegelt."
+        ),
     }
