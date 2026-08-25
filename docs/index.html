@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biodiversität Österreich — Dashboard</title>
+<meta name="description" content="Schutzgebiete, Feld- und Wiesenvögel, Bodenverbrauch und der Stand der Roten Listen — der Zustand der biologischen Vielfalt in Österreich aus offenen Daten.">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js" defer></script>
+<link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* ===================================================================
+   SCHRIFT — Figtree, variabel (SIL Open Font License 1.1)
+   -------------------------------------------------------------------
+   EINE Familie, Gewichtsachse 300–900. Die Lizenzdatei liegt daneben
+   unter fonts/LICENSE-Figtree.txt und muss dort bleiben (OFL-Auflage).
+
+   Warum selbst gehostet und nicht der System-Stack: ECharts legt
+   Achsenbeschriftungen, Abschneidungen und Überlappungen anhand der
+   GEMESSENEN Textbreite fest. Mit system-ui misst jedes Betriebssystem
+   anders — dieselbe Grafik bekäme unter Windows ein anderes Layout als
+   unter macOS. Eine mitgelieferte Schrift macht die Ausgabe berechenbar.
+
+   ▲ ▼ und → sind in Figtree nicht enthalten und fallen glyphweise auf
+   die Systemschrift zurück. Das ist gewollt und war mit der vorherigen
+   Schrift genauso.
+   =================================================================== */
+@font-face {
+  font-family: "Figtree"; font-style: normal; font-weight: 300 900; font-display: swap;
+  src: url("fonts/figtree-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: "Figtree"; font-style: normal; font-weight: 300 900; font-display: swap;
+  src: url("fonts/figtree-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+/* ===================================================================
+   FARBEN UND MASSE
+   In Oxygen 6 überschreibst du diese Variablen einfach im globalen
+   Stylesheet — die Charts ziehen automatisch nach. Die Werte hier sind
+   validierte Voreinstellungen (kontrast- und farbfehlsichtigkeitsgeprüft).
+   =================================================================== */
+.viz-root {
+  color-scheme: light;
+
+  --viz-surface:        #ffffff;
+  --viz-plane:          #fafafa;
+  --viz-text:           #0a0a0a;
+  --viz-text-2:         #0a0a0a;
+  --viz-muted:          #767676;
+  --viz-grid:           #ececec;
+  --viz-axis:           #d9d9d9;
+  --viz-border:         #e5e5e5;
+
+  /* Kategoriale Serien — Reihenfolge ist bewusst gewählt, nicht cyceln.
+     Seit 19.08.2026 monochrom wie die Live-Seite (LifeOS-Restyling v31):
+     1 ist der dunkelste Ton, dann 4, 6, 2, 3, 5. Wer hier bunte Farben
+     einsetzt, bricht die Übereinstimmung mit arbeitsmarkt-monitor.at. */
+  --viz-series-1:       #0a0a0a;
+  --viz-series-2:       #9a9a9a;
+  --viz-series-3:       #c9c9c9;
+  --viz-series-4:       #4d4d4d;
+  --viz-series-5:       #e0e0e0;
+  --viz-series-6:       #737373;
+
+  /* Kategorialer Akzent — KEINE Statusfarbe.
+     Eingeführt 20.08.2026 für „Zwei Österreichs": zwei Graustufen trennten
+     die beiden Ländergruppen im Dunkelmodus nur 2,77 : 1. --viz-gut und
+     --viz-kritisch schieden aus, weil sie „gut" und „schlecht" bedeuten und
+     der Zwischensaisontyp weder das eine noch das andere ist.
+     5,38 : 1 zur Kartenfläche, 3,68 : 1 zu --viz-series-1 — die Gruppen-
+     überschrift trägt denselben Ton und ist Text, deshalb über 4,5. */
+  --viz-akzent:         #1e738f;
+
+  /* Sequenzielle Skala (ein Ton, hell → dunkel) für die Karte.
+     Im Dunkelmodus kehrt sie ihre Leserichtung um (dunkel = wenig),
+     sonst verschwindet die unterste Stufe im Kartengrund. */
+  --viz-seq-1:          #f2f2f2;
+  --viz-seq-2:          #d9d9d9;
+  --viz-seq-3:          #b3b3b3;
+  --viz-seq-4:          #8c8c8c;
+  --viz-seq-5:          #595959;
+  --viz-seq-6:          #262626;
+
+  /* Status — nur für Veränderungen, immer mit Pfeil und Text */
+  --viz-gut:            #04b404;
+  --viz-kritisch:       #f84444;
+
+  /* Divergierende Skala für Veränderungen: Grün = Rückgang, Rot = Anstieg.
+     Neutral in der Mitte ist Grau, nie ein dritter Farbton.
+     Pole seit 19.08.2026 aus den Wertungsfarben der Live-Seite abgeleitet
+     (#3cbb36 / #fa5b56, User-Entscheid 18.08.). Benachbarte Stufen liegen
+     in beiden Farbschemata über ΔE 9,4 (CIE76) auseinander — Rechenweg in
+     dunkelmodus-kontrast.py im Ordner Dashboards. Das Grün ist bewusst
+     heller als das Rot, so trägt die Helligkeit die Unterscheidung mit
+     und nicht der Farbton allein. */
+  --viz-div-neutral:    #f0efec;
+  --viz-div-gut-1:      #d4e7ce;
+  --viz-div-gut-2:      #a5d89e;
+  --viz-div-gut-3:      #77ca6f;
+  --viz-div-gut-4:      #3cbb36;
+  --viz-div-schlecht-1: #f7d7d1;
+  --viz-div-schlecht-2: #fcafa6;
+  --viz-div-schlecht-3: #fd887e;
+  --viz-div-schlecht-4: #fa5b56;
+
+  /* --- Typografie -------------------------------------------------
+     Größen in px, weil ECharts nur Zahlen kennt; kern.js liest sie mit
+     parseFloat aus. Wer in Oxygen umstellt, ändert nur diese Zeilen —
+     die 14 Diagramm-Module holen ihre Größen von hier.
+     ----------------------------------------------------------------- */
+  --viz-font: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --viz-font-display: var(--viz-font);
+
+  --viz-fs-achse:   11px;    /* Achsenbeschriftung, visualMap */
+  --viz-fs-label:   11.5px;  /* Werte am Balken- oder Punktende */
+  --viz-fs-serie:   12px;    /* Kategorienamen, Legende */
+  --viz-fs-tooltip: 12.5px;
+  --viz-fs-eng:     10.5px;  /* Sonderfall: 27 Ländernamen auf einer Achse */
+
+  --viz-fw-normal:   400;
+  --viz-fw-kraeftig: 600;
+  --viz-fw-kpi:      650;    /* echte Zwischenstufe, Figtree ist variabel */
+
+  --viz-radius: 10px;
+  --viz-gap: 20px;
+}
+/* Dunkelmodus — Palette B „weiches Anthrazit", 19.08.2026.
+   Identisch mit Abschnitt 34 in idl.css auf arbeitsmarkt-monitor.at.
+   Alle Werte gerechnet: 0 Verletzungen der Sollkontraste, divergierende
+   Rampe über CIE76-ΔE ≥ 9,4. Wer hier etwas ändert, muss Abschnitt 34
+   mitziehen — sonst laufen die zwei Auslieferungen wieder auseinander. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .viz-root {
+    color-scheme: dark;
+    --viz-surface: #1c1f21; --viz-plane: #161819;
+    --viz-text: #e9eaea;    --viz-text-2: #e9eaea;
+    --viz-muted: #9aa0a3;   --viz-grid: #2b2f31; --viz-axis: #42484c;
+    --viz-border: #373d41;
+    --viz-series-1: #e9eaea; --viz-series-2: #9ca4a8;
+    --viz-series-3: #757d81; --viz-series-4: #c6ccd0;
+    --viz-series-5: #626a6e; --viz-series-6: #868e92;
+    /* Kategorialer Akzent, dunkel: 4,92 : 1 zur Kartenfläche. */
+    --viz-akzent: #4396b1;
+    --viz-seq-1: #292f32; --viz-seq-2: #3c4347; --viz-seq-3: #555d62;
+    --viz-seq-4: #7b8489; --viz-seq-5: #a6aeb2; --viz-seq-6: #dde2e4;
+    --viz-gut: #3fd069;   --viz-kritisch: #f77070;
+    --viz-div-neutral: #2e3336;
+    --viz-div-gut-1: #1a3327; --viz-div-gut-2: #204d38;
+    --viz-div-gut-3: #276b4b; --viz-div-gut-4: #309362;
+    --viz-div-schlecht-1: #3a2224; --viz-div-schlecht-2: #582c2f;
+    --viz-div-schlecht-3: #80393c; --viz-div-schlecht-4: #b84a4d;
+  }
+}
+:root[data-theme="dark"] .viz-root {
+  color-scheme: dark;
+  --viz-surface: #1c1f21; --viz-plane: #161819;
+  --viz-text: #e9eaea;    --viz-text-2: #e9eaea;
+  --viz-muted: #9aa0a3;   --viz-grid: #2b2f31; --viz-axis: #42484c;
+  --viz-border: #373d41;
+  --viz-series-1: #e9eaea; --viz-series-2: #9ca4a8;
+  --viz-series-3: #757d81; --viz-series-4: #c6ccd0;
+  --viz-series-5: #626a6e; --viz-series-6: #868e92;
+  /* Kategorialer Akzent, dunkel: 4,92 : 1 zur Kartenfläche. */
+  --viz-akzent: #4396b1;
+  --viz-seq-1: #292f32; --viz-seq-2: #3c4347; --viz-seq-3: #555d62;
+  --viz-seq-4: #7b8489; --viz-seq-5: #a6aeb2; --viz-seq-6: #dde2e4;
+  --viz-gut: #3fd069;   --viz-kritisch: #f77070;
+  --viz-div-neutral: #2e3336;
+  --viz-div-gut-1: #1a3327; --viz-div-gut-2: #204d38;
+  --viz-div-gut-3: #276b4b; --viz-div-gut-4: #309362;
+  --viz-div-schlecht-1: #3a2224; --viz-div-schlecht-2: #582c2f;
+  --viz-div-schlecht-3: #80393c; --viz-div-schlecht-4: #b84a4d;
+}
+
+/* --- Grundgerüst (in Oxygen ersetzt du das durch deine eigenen Sektionen) ---
+   Die Seitenfläche gehört nicht zum Dashboard, sondern zur Seite. In Oxygen
+   liefert dein Theme sie; hier setzen wir sie nur für die Vorschau. */
+* { box-sizing: border-box; }
+/* --viz-font ist auf .viz-root definiert und gilt hier noch nicht — die
+   Seitenfläche gehört zur Seite, nicht zum Dashboard. Darum ausgeschrieben. */
+body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif; }
+@media (prefers-color-scheme: dark) {
+  body:where(:not([data-theme="light"] body)) { background: #131516; }
+}
+:root[data-theme="dark"] body { background: #131516; }
+.viz-root { max-width: 1180px; margin: 0 auto; padding: 32px 20px 64px; color: var(--viz-text); font-family: var(--viz-font); }
+.viz-root h1 { font-family: var(--viz-font-display); font-size: 1.75rem; font-weight: var(--viz-fw-kpi); margin: 0 0 6px; letter-spacing: -0.01em; }
+.viz-root h2 { font-family: var(--viz-font-display); font-size: 1.0rem; margin: 0 0 2px; font-weight: var(--viz-fw-kraeftig); }
+.viz-lead { color: var(--viz-text-2); margin: 0 0 28px; font-size: .9rem; }
+
+.viz-karte {
+  background: var(--viz-surface);
+  border: 1px solid var(--viz-border);
+  border-radius: var(--viz-radius);
+  padding: 20px;
+  margin-bottom: var(--viz-gap);
+}
+.viz-karte > header { margin-bottom: 14px; }
+.viz-unterzeile { color: var(--viz-muted); font-size: .8rem; margin: 0; }
+
+/* --- KPI-Zeile: Kennzahlkacheln, kein Balkendiagramm --- */
+.viz-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: var(--viz-gap); margin-bottom: var(--viz-gap); }
+.viz-kpi { background: var(--viz-surface); border: 1px solid var(--viz-border); border-radius: var(--viz-radius); padding: 18px 20px; }
+.viz-kpi-titel { font-size: .78rem; color: var(--viz-text-2); margin: 0 0 8px; font-weight: 500; }
+.viz-kpi-wert { font-family: var(--viz-font-display); font-size: 2.1rem; line-height: 1.05; font-weight: var(--viz-fw-kpi); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.viz-kpi-delta { font-size: .82rem; margin-top: 7px; display: flex; align-items: center; gap: 5px; font-variant-numeric: tabular-nums; }
+/* Einheit und Bezugsjahr an der Kennzahl. Anders als beim Schwesterprojekt
+   traegt hier JEDE Kachel ihr eigenes Jahr: die vier Zahlen stammen aus
+   2023, 2023, 2025 und 2025 — eine gemeinsame Datumszeile waere falsch. */
+.viz-kpi-einheit { font-size: 1.1rem; font-weight: var(--viz-fw-normal); margin-left: 3px; letter-spacing: 0; }
+.viz-kpi-von { font-size: 1.1rem; font-weight: var(--viz-fw-normal); color: var(--viz-muted); letter-spacing: 0; }
+.viz-kpi-fuss { font-size: .75rem; color: var(--viz-muted); margin-top: 7px; line-height: 1.45; }
+/* Zusatzsatz unter einer Grafik — dort, wo eine Zahl NICHT im Diagramm
+   steht und der Grund dafuer erklaert werden muss. */
+.viz-notiz { font-size: .82rem; color: var(--viz-text-2); line-height: 1.55; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--viz-grid); }
+/* Herkunftsmarke im Fuss: „laufend" oder „Stand 2025". Ohne sie liest
+   sich eine dreijaehrige Zahl wie eine tagesaktuelle. */
+.viz-quelle-art { display: inline-block; font-size: .72rem; padding: 1px 6px; border: 1px solid var(--viz-border); border-radius: 4px; color: var(--viz-muted); white-space: nowrap; }
+.viz-delta-hoch { color: var(--viz-kritisch); }
+.viz-delta-runter { color: var(--viz-gut); }
+
+/* --- Diagrammflächen: Höhe schließt die Achsenbeschriftung ein --- */
+.viz-chart { width: 100%; height: 340px; }
+.viz-chart-hoch { height: 420px; }
+/* Die Rote-Listen-Grafik hat 23 liegende Balken. Bei 340 px Standardhoehe
+   blieben je Zeile 12,9 px — die Gruppennamen (12 px Schrift, 16 px
+   Zeilenhoehe) laegen ineinander. 23 x 26 px plus 44 px Gitterrand plus
+   46 px Legende ergeben die 690. Wer Gruppen ergaenzt, muss hier mit:
+   die Zahl steht NICHT im Modul, weil ECharts die Feldhoehe nicht setzt,
+   sondern von ihr abhaengt. */
+#c-rotelisten { height: 690px; }
+@media (max-width: 560px) { #c-rotelisten { height: 740px; } }
+/* Zwei Balken plus Legende — mehr Höhe als der Standard braucht es nicht,
+   weniger würde die Balken zu Bändern quetschen. */
+#c-erhaltung { height: 260px; }
+/* Sechs Gefährdungsstufen, je 26 px plus Gitterrand. */
+#c-biotoptypen { height: 300px; }
+/* Neun Länder. */
+#c-wald { height: 340px; }
+/* Rund 30 Meldeländer: 30 x 22 px plus Rand. Wer die Länderliste erweitert,
+   muss hier mit — ECharts setzt die Feldhöhe nicht, es hängt von ihr ab. */
+#c-biolandbau { height: 760px; }
+@media (max-width: 560px) { #c-biolandbau { height: 800px; } }
+
+/* --- Filterzeile: EINE Zeile über allem, was sie steuert --- */
+.viz-filter { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--viz-gap); }
+.viz-filter label { font-size: .82rem; color: var(--viz-text-2); }
+.viz-filter select {
+  font: inherit; font-size: .85rem; padding: 7px 11px; border-radius: 7px;
+  border: 1px solid var(--viz-border); background: var(--viz-surface); color: var(--viz-text);
+}
+
+/* --- Tabellenansicht: jedes Diagramm hat eine --- */
+.viz-tabelle-schalter {
+  font: inherit; font-size: .78rem; color: var(--viz-text-2); cursor: pointer;
+  background: none; border: 1px solid var(--viz-border); border-radius: 6px; padding: 4px 10px;
+}
+.viz-tabelle-schalter:hover { color: var(--viz-text); }
+.viz-modus { display: inline-flex; border: 1px solid var(--viz-border); border-radius: 6px; overflow: hidden; }
+.viz-modus button {
+  font: inherit; font-size: .78rem; padding: 4px 10px; cursor: pointer;
+  background: none; border: 0; color: var(--viz-text-2);
+}
+.viz-modus button[aria-pressed="true"] { background: var(--viz-grid); color: var(--viz-text); font-weight: var(--viz-fw-kraeftig); }
+table.viz-tabelle { width: 100%; border-collapse: collapse; font-size: .84rem; font-variant-numeric: tabular-nums; }
+table.viz-tabelle th { text-align: left; font-weight: var(--viz-fw-kraeftig); color: var(--viz-text-2); padding: 9px 10px; border-bottom: 1px solid var(--viz-axis); font-size: .78rem; }
+table.viz-tabelle td { padding: 9px 10px; border-bottom: 1px solid var(--viz-grid); color: var(--viz-text); }
+table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
+.viz-spark-zelle { width: 130px; }
+.viz-verborgen { display: none; }
+.viz-kopfzeile { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+
+.viz-fuss { color: var(--viz-muted); font-size: .78rem; line-height: 1.6; margin-top: 28px; }
+.viz-fuss a { color: inherit; }
+
+/* Signaturzeile: Herkunft, Urheber, Ausgabestand. Von kern.js gefüllt
+   (signaturHtml), damit die Versionsnummer nur an einer Stelle steht.
+
+   flex + wrap statt eines Fließtexts mit „|": auf schmalen Fenstern
+   bricht die Zeile dann zwischen den Teilen um und nicht mitten im
+   Namen. Die Teiler sind eigene Elemente, weil sie beim Umbruch am
+   Zeilenende stehen bleiben sollen und für Screenreader nichts
+   bedeuten (aria-hidden im Markup). */
+.viz-signatur {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px;
+  margin-top: 14px; padding-top: 12px;
+  border-top: 1px solid var(--viz-grid);
+}
+.viz-signatur a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.viz-signatur a:hover { color: var(--viz-text-2); }
+.viz-signatur-teiler { opacity: .5; }
+.viz-hinweis { background: var(--viz-surface); border: 1px solid var(--viz-border); border-left: 3px solid var(--viz-series-2); border-radius: 7px; padding: 13px 16px; font-size: .83rem; color: var(--viz-text-2); margin-bottom: var(--viz-gap); }
+
+/* --- Knopfreihe im Kartenkopf --- */
+.viz-knopfreihe { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="viz-root" id="dashboard">
+
+  <h1>Biodiversität Österreich</h1>
+  <p class="viz-lead" id="lead">Daten werden geladen …</p>
+
+  <div class="viz-hinweis">
+    <strong>Acht Messgrößen, nicht verrechenbar.</strong> Fläche unter Schutz,
+    Vogelbestände, neu beanspruchter Boden, das Alter des Fachwissens, der
+    Erhaltungszustand von Lebensräumen, die Gefährdung von Biotoptypen,
+    Waldfläche und Bio-Anteil messen Verschiedenes. Es gibt keinen belastbaren
+    Index, der sie zu einer Note zusammenfasst — deshalb steht hier keiner.
+    <br><br>
+    <strong>Österreich ist keine Insel.</strong> Drei Abschnitte stellen die
+    nationalen Zahlen in den europäischen Zusammenhang, und der
+    Erhaltungszustand ist ohnehin nach den grenzüberschreitenden
+    biogeografischen Regionen <em>alpin</em> und <em>kontinental</em> gegliedert.
+  </div>
+
+  <!-- 1 — KENNZAHLEN -->
+  <div class="viz-kpis" id="kpis"></div>
+
+  <!-- 2 — SCHUTZGEBIETE -->
+  <section class="viz-karte" id="s-schutzgebiete" data-chart="schutzgebiete" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Fläche unter Schutz — die Kurve steht seit 2021 still</h2>
+        <p class="viz-unterzeile" id="u-schutzgebiete"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-schutzgebiete">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-schutzgebiete"></div>
+    <div class="viz-verborgen" id="t-schutzgebiete"></div>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-schutzgebiete"></p>
+  </section>
+
+  <!-- 3 — FELD- UND WIESENVÖGEL -->
+  <section class="viz-karte" id="s-vogel" data-chart="vogel" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Feld- und Wiesenvögel — gut vier von zehn sind seit 1998 verschwunden</h2>
+        <p class="viz-unterzeile" id="u-vogel"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-vogel">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart viz-chart-hoch" id="c-vogel"></div>
+    <div class="viz-verborgen" id="t-vogel"></div>
+    <p class="viz-notiz" id="n-vogel"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-vogel"></p>
+  </section>
+
+  <!-- 4 — BODENVERBRAUCH -->
+  <section class="viz-karte" id="s-boden" data-chart="boden" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Bodenverbrauch — 6,5 Hektar am Tag, halb so viel wie vor zehn Jahren</h2>
+        <p class="viz-unterzeile" id="u-boden"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-boden">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-boden"></div>
+    <div class="viz-verborgen" id="t-boden"></div>
+    <div id="t-boden-kategorien" style="margin-top:16px"></div>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-boden"></p>
+  </section>
+
+  <!-- 5 — ROTE LISTEN -->
+  <section class="viz-karte" id="s-rotelisten" data-chart="rotelisten" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Wie alt das Wissen über gefährdete Arten ist</h2>
+        <p class="viz-unterzeile" id="u-rotelisten"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-rotelisten">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-rotelisten"></div>
+    <div class="viz-verborgen" id="t-rotelisten"></div>
+    <p class="viz-notiz" id="n-rotelisten"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-rotelisten"></p>
+  </section>
+
+  <!-- 6 — ERHALTUNGSZUSTAND -->
+  <section class="viz-karte" id="s-erhaltung" data-chart="erhaltung" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Nur 18 von 100 Lebensräumen geht es gut</h2>
+        <p class="viz-unterzeile" id="u-erhaltung"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-erhaltung">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-erhaltung"></div>
+    <div class="viz-verborgen" id="t-erhaltung"></div>
+    <p class="viz-notiz" id="n-erhaltung"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-erhaltung"></p>
+  </section>
+
+  <!-- 7 — BIOTOPTYPEN -->
+  <section class="viz-karte" id="s-biotoptypen" data-chart="biotoptypen" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Drei von vier Lebensraumtypen stehen auf der Roten Liste</h2>
+        <p class="viz-unterzeile" id="u-biotoptypen"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-biotoptypen">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-biotoptypen"></div>
+    <div class="viz-verborgen" id="t-biotoptypen"></div>
+    <p class="viz-notiz" id="n-biotoptypen"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-biotoptypen"></p>
+  </section>
+
+  <!-- 8 — WALDFLÄCHE IM NACHBARSCHAFTSVERGLEICH -->
+  <section class="viz-karte" id="s-wald" data-chart="wald" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Der Wald wächst — in Österreich und bei fast allen Nachbarn</h2>
+        <p class="viz-unterzeile" id="u-wald"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-wald">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-wald"></div>
+    <div class="viz-verborgen" id="t-wald"></div>
+    <p class="viz-notiz" id="n-wald"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-wald"></p>
+  </section>
+
+  <!-- 9 — BIOLOGISCHE LANDWIRTSCHAFT -->
+  <section class="viz-karte" id="s-biolandbau" data-chart="biolandbau" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Beim Biolandbau liegt Österreich an der europäischen Spitze</h2>
+        <p class="viz-unterzeile" id="u-biolandbau"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-biolandbau">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-biolandbau"></div>
+    <div class="viz-verborgen" id="t-biolandbau"></div>
+    <p class="viz-notiz" id="n-biolandbau"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-biolandbau"></p>
+  </section>
+
+  <p class="viz-fuss" id="fuss"></p>
+
+</div>
+
+<!-- Ladereihenfolge: kern.js zuerst, dann die Diagrammbausteine.
+     `defer` haelt sie ein und laesst alle erst nach dem Parsen laufen.
+     Die Cacheziffer `?v=NN` hochzaehlen, wenn eine Datei geaendert wurde —
+     sie fuehrt eine EIGENE Zaehlung, unabhaengig von der Ausgabenummer
+     in kern.js (VERSION.nummer). -->
+<script defer src="js/kern.js?v=01"></script>
+<script defer src="js/charts/kpi.js?v=01"></script>
+<script defer src="js/charts/schutzgebiete.js?v=01"></script>
+<script defer src="js/charts/vogel.js?v=01"></script>
+<script defer src="js/charts/boden.js?v=01"></script>
+<script defer src="js/charts/rotelisten.js?v=01"></script>
+<script defer src="js/charts/erhaltung.js?v=01"></script>
+<script defer src="js/charts/biotoptypen.js?v=01"></script>
+<script defer src="js/charts/wald.js?v=01"></script>
+<script defer src="js/charts/biolandbau.js?v=01"></script>
+<script defer>
+  document.addEventListener("DOMContentLoaded", () => {
+    BIO.setzeWurzel(document.getElementById("dashboard"));
+    BIO.start();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+._*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Hinweis: docs/data/ NICHT ignorieren — die JSON-Dateien werden vom
+# GitHub-Actions-Workflow committet und von der Oxygen-Seite geladen.
+
+# Renderproben des Bluesky-Bots — Ausgabe, keine Quelle
+social/bilder/
+
+# Prüfumgebung von docs/pruefung.mjs. Die Abhängigkeiten (jsdom, echarts)
+# gehören nicht ins Repo — sie werden bei Bedarf installiert.
+# OHNE Schrägstrich am Ende: `node_modules/` fasst nur echte Verzeichnisse,
+# im Ordner liegt aber ein SYMLINK auf die Prüfumgebung. Der wäre sonst
+# nicht ausgeschlossen und als kaputter Link im Repo gelandet.
+node_modules
+package-lock.json
+
+# Konfliktkopien des Synchronisationsdienstes. Am 24.08.2026 hat eine
+# solche Kopie mitten in einem Schreibvorgang die index.html gekappt;
+# seither sind sie hier ausgeschlossen, damit sie wenigstens nicht auch
+# noch im Repo landen.
+*conflicted*
+*[Cc]onflict*
