@@ -135,8 +135,15 @@ Object.defineProperty(window.HTMLElement.prototype, "clientWidth", {
   get() { return this.classList?.contains("viz-chart") ? breite - 42 : breite; },
   configurable: true,
 });
+/* Eine per JavaScript gesetzte Hoehe MUSS gewinnen: `balkenHoehe()` in
+   kern.js setzt `style.height` eng aus der Zahl der Kategorien, und
+   ECharts liest danach `clientHeight`. Gibt die Pruefung stur den
+   CSS-Wert zurueck, misst sie ein Layout, das es nicht gibt. */
 Object.defineProperty(window.HTMLElement.prototype, "clientHeight", {
-  get() { return HOEHEN[this.id] ?? 340; },
+  get() {
+    const gesetzt = parseFloat(this.style?.height);
+    return Number.isFinite(gesetzt) ? gesetzt : (HOEHEN[this.id] ?? 340);
+  },
   configurable: true,
 });
 Object.defineProperty(window.document.documentElement, "clientWidth", {
@@ -366,20 +373,32 @@ for (const feldId of BALKENFELDER) {
   if (breite < 768) {
     pruefe(linkeste >= 0,
       `[${name}] ${feldId}: Kategoriename beginnt bei x=${linkeste} — steht noch links vom Gitter statt über dem Balken`);
-    /* Steht der Name wirklich ÜBER dem Balken? Der Versatz im
-       y-Attribut ist der Abstand von der Mitte der Kategoriezeile nach
-       oben. Der Balken belegt die halbe Zeile, reicht also die halbe
-       halbe Zeile über die Mitte hinaus. Dazwischen muss die
-       Textunterkante liegen. */
-    const hoehe = HOEHEN[feldId];
-    const zeile = (hoehe - 44) / kategorien.length;
-    const halberBalken = zeile * 0.25;          /* BALKEN_ANTEIL 0,5 */
-    const luft = treffer.map((tf) => -tf.versatz - 6 - halberBalken);
-    const engste = Math.min(...luft);
-    pruefe(engste > 0,
-      `[${name}] ${feldId}: Name und Balken überschneiden sich um ${(-engste).toFixed(1)} px (Zeile ${zeile.toFixed(1)} px)`);
-    if (engste > 14) {
-      hinweise.push(`[${name}] ${feldId}: ${engste.toFixed(1)} px Luft zwischen Name und Balken — reichlich`);
+    /* Zwei Abstände, und der ZWEITE ist der, an dem der erste Anlauf am
+       25.08. gescheitert ist: der Name kollidiert nicht mit seinem
+       eigenen Balken, sondern mit dem der Zeile DARÜBER. Eine Prüfung,
+       die nur den eigenen misst, meldet „in Ordnung", während die Seite
+       unlesbar ist. Beide werden hier gemessen.
+
+       Gerechnet wird aus den tatsächlichen y-Werten der Namen: ihr
+       Abstand IST die Zeilenhöhe, die muss nicht geschätzt werden.
+       Die Textmitte liegt bei y, die Ober-/Unterkante ±6 (Schriftgröße
+       12). Der Balken ist BAR_ENG = 14 hoch und sitzt mittig auf der
+       Zeile, reicht also 7 px über deren Mitte. */
+    const HALBER_BALKEN = 7;      /* BAR_ENG / 2 in kern.js */
+    const HALBER_TEXT = 6;
+    const sortiert = [...treffer].sort((a, b) => a.y - b.y);
+    const mitte = (tf) => tf.y - tf.versatz;   /* Mitte der Kategoriezeile */
+
+    const eigene = sortiert.map((tf) => (mitte(tf) - HALBER_BALKEN) - (tf.y + HALBER_TEXT));
+    pruefe(Math.min(...eigene) > 0,
+      `[${name}] ${feldId}: Name sitzt IM eigenen Balken (${Math.min(...eigene).toFixed(1)} px)`);
+
+    const darueber = sortiert.slice(1).map((tf, i) =>
+      (tf.y - HALBER_TEXT) - (mitte(sortiert[i]) + HALBER_BALKEN));
+    if (darueber.length) {
+      const engste = Math.min(...darueber);
+      pruefe(engste > 0,
+        `[${name}] ${feldId}: Name überschneidet den Balken der Zeile DARÜBER um ${(-engste).toFixed(1)} px — Zeile ${(mitte(sortiert[1]) - mitte(sortiert[0])).toFixed(1)} px`);
     }
   } else {
     /* Weit hängen die Namen mit ihrem RECHTEN Rand am Gitter

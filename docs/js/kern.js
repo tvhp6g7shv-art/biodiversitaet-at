@@ -162,14 +162,55 @@ const istEng = (el) => feldBreite(el) < ENG;
 const ZEILE = 16;
 const RAND_RECHTS = 60;
 
-/* Anteil der Kategoriezeile, den der Balken eng noch belegt. Der Rest
-   ist Luft, und in dieser Luft steht der Kategoriename. Die Module
-   fragen den Wert ueber `balkenBreite()` ab, `kategorieLabel()` rechnet
-   damit die Texthoehe aus — die beiden duerfen nicht auseinanderlaufen,
-   sonst sitzt der Name im Balken. */
-const BALKEN_ANTEIL = 0.5;
-const balkenBreite = (el, desktop) =>
-  istEng(el) ? `${Math.round(BALKEN_ANTEIL * 100)}%` : desktop;
+/* Eng gerechnet in PIXELN, nicht in Prozent der Kategoriezeile.
+
+   Der erste Anlauf (Balken = halbe Zeile, Name in der anderen Haelfte)
+   war falsch, und zwar auf eine Art, die eine Pruefung leicht uebersieht:
+   der Name kollidiert nicht mit SEINEM Balken, sondern mit dem der Zeile
+   DARUEBER. Bei 23 Tiergruppen auf 690 px sind das 30 px je Zeile —
+   16 px Text plus 15 px Balken passen da nicht hinein, egal wie man den
+   Text darin verschiebt.
+
+   Deshalb steht die Zeilenhoehe eng FEST, und die Kartenhoehe richtet
+   sich danach (siehe `balkenHoehe`), statt umgekehrt:
+     40 px Zeile = 16 Text + 4 Luft + 14 Balken + 6 Luft nach unten.
+   Wer ROW_ENG senkt, muss BAR_ENG mitsenken — sonst kleben die Namen
+   wieder an den Balken der Zeile darueber. */
+const ROW_ENG = 40;
+const BAR_ENG = 14;
+
+const balkenBreite = (el, desktop) => istEng(el) ? BAR_ENG : desktop;
+
+/* Kartenhoehe eng aus der Zahl der Kategorien setzen.
+
+   Warum ueberhaupt: die Hoehe der Zeichenflaeche steht im CSS und ist
+   fuer das Desktop-Layout gerechnet, in dem der Name NEBEN dem Balken
+   steht und keine eigene Zeile braucht. Ueber dem Balken braucht er
+   eine — die Karte muss also eng hoeher werden, sonst schiebt ECharts
+   die Zeilen einfach enger zusammen.
+
+   `obenExtra` ist der Platz, den das Modul ueber dem Gitter zusaetzlich
+   belegt (Legende): grid.top minus die 10 px des Standardgitters.
+
+   Wird die Schwelle nach oben ueberschritten, wird die gesetzte Hoehe
+   wieder ENTFERNT statt auf einen Desktopwert gesetzt — die richtige
+   Zahl steht im CSS, nicht hier. */
+function balkenHoehe(d, el, anzahl, obenExtra = 0) {
+  if (!el) return;
+  if (!istEng(el)) {
+    if (el.dataset.hoeheGesetzt) {
+      el.style.height = "";
+      delete el.dataset.hoeheGesetzt;
+      d?.resize?.();
+    }
+    return;
+  }
+  const soll = Math.round(anzahl * ROW_ENG + 44 + obenExtra);
+  if (parseFloat(el.style.height) === soll) return;
+  el.style.height = `${soll}px`;
+  el.dataset.hoeheGesetzt = "1";
+  d?.resize?.();   /* ECharts misst nur beim Aufbau und bei resize() */
+}
 
 /* Anteil der Breite, den die Kategorienamen hoechstens belegen duerfen.
    Darueber bleibt zu wenig Zeichenflaeche fuer die Balken. */
@@ -281,18 +322,16 @@ function kategorieLabel(el, desktopLinks = 120, anzahl = 0) {
      Polsterung unten hebt ihn von dort um die halbe Balkenhoehe plus
      4 px an, also knapp ueber den Balken.
 
-     Die halbe Balkenhoehe ist gerechnet, nicht geschaetzt: der Balken
-     belegt BALKEN_ANTEIL der Zeilenhoehe, und die Zeilenhoehe ist die
-     Gitterhoehe durch die Zahl der Kategorien. Aendert sich
-     BALKEN_ANTEIL, stimmt der Abstand weiterhin. */
+     Die halbe Balkenhoehe ist keine Schaetzung, sondern BAR_ENG / 2 —
+     dieselbe Zahl, die `balkenBreite()` als `barWidth` an die Module
+     gibt. Beide Seiten haengen an einer Konstante; wer nur eine aendert,
+     schiebt den Namen in den Balken. */
   if (istEng(el)) {
-    const zeilen = ((el?.clientHeight || 300) - 44) / Math.max(anzahl, 1);
-    const halberBalken = (zeilen * BALKEN_ANTEIL) / 2;
     return {
       align: "left",
       verticalAlign: "bottom",
       margin: 0,
-      padding: [0, 0, Math.round(halberBalken) + 4, 0],
+      padding: [0, 0, BAR_ENG / 2 + 4, 0],
       width: Math.max(120, feldBreite(el) - 14 - RAND_RECHTS),
       overflow: "truncate",
       lineHeight: ZEILE,
@@ -619,7 +658,7 @@ const BIO = {
   schrift, px, neuVermessen,
   VERSION, signaturHtml,
   /* Breitenabhaengiges Layout — siehe „Schmale Fenster" oben */
-  istSchmal, istEng, balkenGitter, kategorieLabel, balkenBreite,
+  istSchmal, istEng, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe,
   legende, endLabelZeigen,
   /* Hover an Balken: dunkler statt heller */
   dunkler, hoverDunkler,

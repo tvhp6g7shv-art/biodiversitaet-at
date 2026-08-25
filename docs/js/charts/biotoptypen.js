@@ -74,6 +74,13 @@ function baueBiotoptypen(daten) {
     `Teilbände ${daten.erster_band} bis ${daten.stand}`);
   setzeText("h-biotoptypen", daten.hinweis ?? "");
 
+  /* Eng braucht jede Kategorie eine eigene Zeile fuer ihren Namen.
+     Die Kartenhoehe kommt deshalb aus der Zahl der Kategorien und
+     nicht aus dem CSS — sonst schiebt ECharts die Zeilen enger
+     zusammen, als der Name hoch ist, und die Namen kleben am
+     Balken der Zeile darueber. Muss VOR setOption stehen. */
+  BIO.balkenHoehe(d, feld, stufen.length, 2);
+
   d.setOption({
     ...basis(),
     grid: { ...BIO.balkenGitter(feld, { left: 168, right: 72 }), top: 12 },

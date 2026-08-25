@@ -6,7 +6,7 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
-        diagramme, schrift, balkenGitter, kategorieLabel, balkenBreite, hoverDunkler } = BIO;
+        diagramme, schrift, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe, hoverDunkler } = BIO;
 
 /* --- 07 — Waldfläche: Österreich und seine Nachbarn ------------------
    Liegende Balken, Veränderung der Waldfläche seit 1990 in Prozent.
@@ -48,6 +48,13 @@ function baueWald(daten) {
     `Veränderung der Waldfläche ${daten.von} bis ${daten.bis} · ` +
     `Österreich und seine acht Nachbarn`);
   setzeText("h-wald", daten.hinweis ?? "");
+
+  /* Eng braucht jede Kategorie eine eigene Zeile fuer ihren Namen.
+     Die Kartenhoehe kommt deshalb aus der Zahl der Kategorien und
+     nicht aus dem CSS — sonst schiebt ECharts die Zeilen enger
+     zusammen, als der Name hoch ist, und die Namen kleben am
+     Balken der Zeile darueber. Muss VOR setOption stehen. */
+  balkenHoehe(d, feld, eintraege.length, 2);
 
   d.setOption({
     ...basis(),

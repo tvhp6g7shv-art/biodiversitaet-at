@@ -6,7 +6,7 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, basis, achse, tabelle, setzeText, setzeHtml,
-        diagramme, schrift, istSchmal, balkenGitter, kategorieLabel, balkenBreite,
+        diagramme, schrift, istSchmal, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe,
         legende, hoverDunkler } = BIO;
 
 /* --- 04 — Wie alt das Wissen über gefährdete Arten ist ----------------
@@ -74,6 +74,13 @@ function baueRoteListen(daten) {
 
   /* Kopfraum rechts für die Gesamtbeschriftung am längsten Balken. */
   const maxAlter = Math.max(...zeilen.map((z) => z.alter));
+
+  /* Eng braucht jede Kategorie eine eigene Zeile fuer ihren Namen.
+     Die Kartenhoehe kommt deshalb aus der Zahl der Kategorien und
+     nicht aus dem CSS — sonst schiebt ECharts die Zeilen enger
+     zusammen, als der Name hoch ist, und die Namen kleben am
+     Balken der Zeile darueber. Muss VOR setOption stehen. */
+  balkenHoehe(d, feld, zeilen.length, 36);
 
   d.setOption({
     ...basis(),
