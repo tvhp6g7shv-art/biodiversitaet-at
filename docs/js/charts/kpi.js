@@ -30,6 +30,14 @@ const { pz, zahl, setzeHtml } = BIO;
    `if (kpi.X !== undefined)`. Fehlt ein Wert, ruecken alle folgenden
    Kacheln eine Stelle vor — und die Farben saessen still auf den
    falschen Zahlen. Ein Name kann das nicht. */
+/* ALLE ACHT TITEL SIND NOMINALPHRASEN, KEINE SATZENDEN (25.08.2026)
+
+   `idl.css` 45.5 zieht `.viz-kpi-titel` mit `order: -1` ÜBER den Wert,
+   obwohl diese Funktion Wert → Titel → Fussnote baut. Ein Titel, der als
+   Fortsetzung der Zahl geschrieben ist („3 von 27 Roten Listen sind auf
+   aktuellem Stand"), steht damit VOR seinem Subjekt und liest sich
+   rueckwaerts. Wer hier einen Titel aendert: er muss allein stehen
+   koennen, ohne die Zahl davor. */
 function kachel(wert, einheit, titel, fussnote, kennung) {
   return (
     `<div class="viz-kpi" data-kpi="${kennung}">` +
@@ -47,7 +55,7 @@ function baueKpis(kpi) {
   if (kpi.schutzgebiete_prozent !== undefined) {
     teile.push(kachel(
       pz(kpi.schutzgebiete_prozent), " %",
-      "der Landesfläche steht unter Schutz",
+      "Anteil der Landesfläche unter Schutz",
       `${kpi.schutzgebiete_jahr} · ${pz(kpi.schutzgebiete_luecke)} Punkte fehlen auf das Ziel von 30 %`,
       "schutzgebiete"
     ));
@@ -113,7 +121,7 @@ function baueKpis(kpi) {
   if (kpi.erhaltung_guenstig !== undefined) {
     teile.push(kachel(
       pz(kpi.erhaltung_guenstig, 0), " %",
-      "der Lebensraumtypen sind in gutem Zustand",
+      "Lebensraumtypen in gutem Zustand",
       `Artikel 17 FFH · Periode ${kpi.erhaltung_periode}`,
       "erhaltung"
     ));
@@ -122,7 +130,7 @@ function baueKpis(kpi) {
   if (kpi.biotoptypen_anteil !== undefined) {
     teile.push(kachel(
       pz(kpi.biotoptypen_anteil), " %",
-      "der Biotoptypen sind gefährdet",
+      "Gefährdete Biotoptypen",
       `${zahl(kpi.biotoptypen_bewertet)} bewertete Typen · Rote Liste`,
       "biotoptypen"
     ));
@@ -140,7 +148,7 @@ function baueKpis(kpi) {
   if (kpi.bio_anteil !== undefined) {
     teile.push(kachel(
       pz(kpi.bio_anteil), " %",
-      "der Agrarfläche werden biologisch bewirtschaftet",
+      "Agrarfläche in Bio-Bewirtschaftung",
       `${kpi.bio_jahr} · Platz ${kpi.bio_rang} von ${kpi.bio_anzahl} in Europa`,
       "biolandbau"
     ));
