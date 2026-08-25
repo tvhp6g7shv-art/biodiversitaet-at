@@ -39,10 +39,16 @@ function baueBoden(daten) {
      Dass die Balken FALLEN, sagt schon ihre Höhe — die Farbe bewertet
      die Größe, nicht ihren Verlauf.
 
-     `--viz-seq-rot-4` und nicht `--viz-kritisch`: die Alarmfarbe ist
-     für Status reserviert. Stufe 4 liegt in beiden Modi über 5 : 1
-     gegen die Kartenfläche (Abschnitt 52 der idl.css). */
-  const farbe = stil("--viz-seq-rot-4");
+     `--viz-kritisch` und nicht `--viz-seq-rot-4` (Entscheid 25.08.2026):
+     Der Abschnitt zeigt EINE Größe ohne Abstufung — es gibt hier keine
+     Rampe, auf der Stufe 4 eine Position hätte. Stufe 4 (#d47f73) war
+     der einzige Ton auf der Seite, der sonst nirgends vorkam; das las
+     sich wie eine eigene Bedeutung, wo keine ist. Die Hauptfarbe
+     verbindet die Kachel „Bodenverbrauch pro Tag" mit ihrem Abschnitt.
+
+     Die Reservierung der Alarmfarbe für Status gilt weiter dort, wo
+     eine Rampe im Spiel ist — siehe biotoptypen.js. */
+  const farbe = stil("--viz-kritisch");
 
   setzeText("u-boden",
     `Neu beanspruchte Fläche je Tag, Mittel der Periode · ` +

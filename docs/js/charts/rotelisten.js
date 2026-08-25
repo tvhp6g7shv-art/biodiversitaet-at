@@ -63,7 +63,13 @@ function baueRoteListen(daten) {
     `Stand der Übersicht Oktober 2025`);
   setzeText("h-rotelisten", daten.hinweis ?? "");
 
-  const farbeInnen = stil("--viz-seq-3");
+  /* Zwei Hauptfarben statt Rampenton plus Alarmfarbe (25.08.2026).
+     Der Balken kennt genau zwei Zustände — innerhalb des Soll-Zeitraums
+     und darüber hinaus. Das ist ein Gegensatzpaar, keine Abstufung, und
+     gehört deshalb auf das Hauptpaar --viz-gut / --viz-kritisch.
+     Vorher stand innen --viz-seq-3, ein Ton aus einer Rampe, die hier
+     gar nicht benutzt wird. */
+  const farbeInnen = stil("--viz-gut");
   const farbeUeber = stil("--viz-kritisch");
 
   /* Kopfraum rechts für die Gesamtbeschriftung am längsten Balken. */

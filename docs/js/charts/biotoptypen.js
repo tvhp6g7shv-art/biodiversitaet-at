@@ -38,14 +38,22 @@ const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
    HELLSTE, hell die DUNKELSTE. In beiden Fällen ist sie die auffälligste
    — und die auffälligste gehört auf „völlig vernichtet".
 
-   `LC` bleibt NEUTRAL, nicht blassrot: „nicht gefährdet" ist keine
-   schwache Gefährdung, sondern deren Abwesenheit. Ein blassroter Balken
-   dort würde 93 Biotoptypen ohne Grund in den Rotraum ziehen.
-   „Ohne Angabe" bekommt den Rasterton: keine Stufe, sondern eine Lücke. */
+   `LC` steht auf --viz-gut (Entscheid 25.08.2026). Vorher trug es
+   --viz-series-3, einen Kategorienton ohne Aussage. „Nicht gefährdet"
+   ist nicht die Abwesenheit einer Bewertung, sondern die gute Stufe —
+   und die gute Stufe hat in diesem Projekt eine Farbe. Blassrot wäre
+   weiterhin falsch, grün ist es nicht: die Rampe bleibt rot, der eine
+   Gegenpol grün.
+
+   „Ohne Angabe" trug --viz-grid (Limette bei 10 % Deckung) und war
+   damit praktisch unsichtbar — ein Balken für 6 Biotoptypen, den man
+   nur fand, wenn man ihn suchte. Eine Lücke soll unauffällig sein,
+   nicht unsichtbar; --viz-muted (#97a888) ist neutral, gehört keiner
+   der beiden Bedeutungsfarben an und ist klar erkennbar. */
 
 const FARBEN = {
   RE: "--viz-seq-rot-6", CR: "--viz-seq-rot-5", EN: "--viz-seq-rot-4",
-  VU: "--viz-seq-rot-3", LC: "--viz-series-3", "—": "--viz-grid",
+  VU: "--viz-seq-rot-3", LC: "--viz-gut", "—": "--viz-muted",
 };
 
 function baueBiotoptypen(daten) {
