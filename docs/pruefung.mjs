@@ -45,11 +45,17 @@ import { spawnSync } from "node:child_process";
 
 const HIER = dirname(fileURLToPath(import.meta.url));
 
-/* Zwei Breiten: Desktop und knapp unter der 560er-Schwelle. Genau dort
-   schlägt das Layout um, und genau dort sind im Schwesterprojekt vier Mal
+/* Drei Breiten, weil es ZWEI Schwellen gibt:
+   - 768 (ENG): darunter stehen die Kategorienamen über dem Balken statt
+     links daneben, und die Einordnung unter der Grafik ist eingeklappt.
+   - 560 (SCHMAL): darunter zusätzlich Legende scrollbar und keine
+     Endpunktbeschriftung.
+   700 px prüft den Streifen dazwischen — dort gilt das eine, nicht das
+   andere. Genau an solchen Schwellen sind im Schwesterprojekt vier Mal
    Fehler entstanden. */
 const BREITEN = [
   { name: "Desktop", breite: 1100 },
+  { name: "Tablet",  breite: 700 },
   { name: "Schmal",  breite: 420 },
 ];
 
@@ -315,6 +321,99 @@ for (const feldId of Object.keys(HOEHEN)) {
 const zeilenhoehe = (HOEHEN["c-rotelisten"] - 44 - 46) / rlZeilen;
 pruefe(zeilenhoehe >= 16,
   `[${name}] Rote Listen: nur ${zeilenhoehe.toFixed(1)} px je Zeile — Namen kleben`);
+
+/* --- Kategorienamen über dem Balken (< 768 px) ------------------------
+   Gemessen, nicht geglaubt: in den fünf liegenden Balkendiagrammen wird
+   aus dem SVG gelesen, wo der Kategoriename steht. Erwartet wird eng:
+   - der Name beginnt INNERHALB der Zeichenfläche, nicht links davor
+     (x >= 0 — links neben dem Gitter wären es negative Werte),
+   - er steht ÜBER seinem Balken, nicht darin: die Textmitte liegt über
+     der Oberkante des zugehörigen Balkenrechtecks.
+   Weit gilt das Gegenteil: der Name steht links vom Gitter. */
+const BALKENFELDER = ["c-rotelisten", "c-erhaltung", "c-biotoptypen",
+                      "c-wald", "c-biolandbau"];
+for (const feldId of BALKENFELDER) {
+  const instanz = echarts.getInstanceByDom(doc.getElementById(feldId));
+  if (!instanz) continue;
+  const svg = instanz.renderToSVGString();
+  const opt = instanz.getOption();
+  const kategorien = (opt.yAxis?.[0]?.data || []).map(String);
+  if (!kategorien.length) { hinweise.push(`[${name}] ${feldId}: keine Kategorien gelesen`); continue; }
+
+  /* Textknoten einsammeln. ECharts setzt die Lage im SVG NICHT über
+     x/y-Attribute allein, sondern über `transform="translate(x y)"` plus
+     ein y-Attribut als Versatz. Wer nur x/y liest, findet nichts —
+     genau das ist beim ersten Anlauf passiert. */
+  const texte = [...svg.matchAll(/<text([^>]*)>([^<]*)</g)].map((m) => {
+    const attr = m[1];
+    const tr = /transform="translate\((-?[\d.]+)[ ,]+(-?[\d.]+)\)"/.exec(attr);
+    const yAttr = /\sy="(-?[\d.]+)"/.exec(attr);
+    const xAttr = /\sx="(-?[\d.]+)"/.exec(attr);
+    return {
+      x: (tr ? +tr[1] : 0) + (xAttr ? +xAttr[1] : 0),
+      y: (tr ? +tr[2] : 0) + (yAttr ? +yAttr[1] : 0),
+      versatz: yAttr ? +yAttr[1] : 0,
+      anker: (/text-anchor="(\w+)"/.exec(attr) || [, "start"])[1],
+      wort: m[2].trim(),
+    };
+  });
+  const treffer = kategorien
+    .map((k) => texte.find((t) => t.wort === k || (k.length > 8 && t.wort.startsWith(k.slice(0, 8)))))
+    .filter(Boolean);
+  if (treffer.length < 2) { hinweise.push(`[${name}] ${feldId}: nur ${treffer.length} Kategorienamen im SVG gefunden`); continue; }
+
+  const linkeste = Math.min(...treffer.map((t) => t.x));
+  if (breite < 768) {
+    pruefe(linkeste >= 0,
+      `[${name}] ${feldId}: Kategoriename beginnt bei x=${linkeste} — steht noch links vom Gitter statt über dem Balken`);
+    /* Steht der Name wirklich ÜBER dem Balken? Der Versatz im
+       y-Attribut ist der Abstand von der Mitte der Kategoriezeile nach
+       oben. Der Balken belegt die halbe Zeile, reicht also die halbe
+       halbe Zeile über die Mitte hinaus. Dazwischen muss die
+       Textunterkante liegen. */
+    const hoehe = HOEHEN[feldId];
+    const zeile = (hoehe - 44) / kategorien.length;
+    const halberBalken = zeile * 0.25;          /* BALKEN_ANTEIL 0,5 */
+    const luft = treffer.map((tf) => -tf.versatz - 6 - halberBalken);
+    const engste = Math.min(...luft);
+    pruefe(engste > 0,
+      `[${name}] ${feldId}: Name und Balken überschneiden sich um ${(-engste).toFixed(1)} px (Zeile ${zeile.toFixed(1)} px)`);
+    if (engste > 14) {
+      hinweise.push(`[${name}] ${feldId}: ${engste.toFixed(1)} px Luft zwischen Name und Balken — reichlich`);
+    }
+  } else {
+    /* Weit hängen die Namen mit ihrem RECHTEN Rand am Gitter
+       (text-anchor="end") und laufen nach links aus dem Gitter heraus.
+       Der x-Wert ist dann der Ankerpunkt, nicht der Textanfang — er
+       liegt naturgemäß bei 106–156 px. Geprüft wird deshalb die
+       Ausrichtung, nicht die Zahl. */
+    const falsch = treffer.filter((tf) => tf.anker !== "end");
+    pruefe(falsch.length === 0,
+      `[${name}] ${feldId}: ${falsch.length} Kategorienamen linksbündig — weit gehören sie rechtsbündig ans Gitter`);
+    pruefe(treffer.every((tf) => Math.abs(tf.versatz) < 8),
+      `[${name}] ${feldId}: Kategoriename um ${treffer[0].versatz} px nach oben versetzt — weit gehört er auf die Balkenmitte`);
+  }
+}
+
+/* --- Einordnung: eingeklappt oder nicht -------------------------------- */
+const aufklapper = doc.querySelectorAll(".viz-mehr");
+pruefe(aufklapper.length === ABSCHNITTE.length,
+  `[${name}] ${aufklapper.length} Aufklapper statt ${ABSCHNITTE.length} — wurde ein Absatz nicht eingesammelt?`);
+for (const d of aufklapper) {
+  pruefe(d.querySelector("summary")?.textContent === "Einordnung",
+    `[${name}] Aufklapper ohne Zusammenfassungszeile`);
+  pruefe(d.querySelectorAll(":scope > p").length > 0,
+    `[${name}] Aufklapper ohne Inhalt`);
+  /* Ohne matchMedia entscheidet in jsdom die Dokumentbreite. */
+  pruefe(d.open === (breite >= 768),
+    `[${name}] Aufklapper ist ${d.open ? "offen" : "zu"} — bei ${breite} px erwartet: ${breite >= 768 ? "offen" : "zu"}`);
+}
+/* Der Text muss im Dokument bleiben, auch wenn er zu ist — sonst ist die
+   Einordnung für Suchmaschinen weg. */
+for (const kurz of ABSCHNITTE) {
+  pruefe(t(`h-${kurz}`).length > 0,
+    `[${name}] h-${kurz} ist nach dem Einklappen leer`);
+}
 
 /* --- Ergebnis ----------------------------------------------------------- */
 console.log("-".repeat(70));

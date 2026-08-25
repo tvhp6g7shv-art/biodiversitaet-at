@@ -6,7 +6,7 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
-        diagramme, schrift, istSchmal, balkenGitter, kategorieLabel,
+        diagramme, schrift, istSchmal, balkenGitter, kategorieLabel, balkenBreite,
         legende, hoverDunkler } = BIO;
 
 /* --- 05 — Erhaltungszustand nach Artikel 17 ---------------------------
@@ -93,7 +93,7 @@ function baueErhaltung(daten) {
       axisLabel: { color: stil("--viz-text-2"), fontSize: S.serie, margin: 12,
                    ...kategorieLabel(feld, 130, gruppen.length) } },
     series: kategorien.map((name, k) => ({
-      name, type: "bar", stack: "zustand", barWidth: "56%",
+      name, type: "bar", stack: "zustand", barWidth: balkenBreite(feld, "56%"),
       data: gruppen.map((g) => g.anteile[k]),
       itemStyle: {
         color: stil(FARBEN[k]),

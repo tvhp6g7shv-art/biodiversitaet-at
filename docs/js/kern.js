@@ -135,9 +135,23 @@ const achse = () => ({
    Kategorienamen, rechts 72 px fuer die Werte — bei 350 px Fenster
    bleiben 106 px Zeichenflaeche). */
 const SCHMAL = 560;
+
+/* 768 px: die zweite, hoehere Schwelle — ab hier stehen die
+   Kategorienamen der liegenden Balken NICHT mehr links neben dem
+   Gitter, sondern ueber dem jeweiligen Balken. Grund: links kosten sie
+   je nach Diagramm 118–168 px, und ein Name wie „von Vernichtung
+   bedroht" bricht dort auf drei Zeilen um, waehrend dem Balken selbst
+   ein Drittel der Karte bleibt. Ueber dem Balken steht die ganze
+   Kartenbreite zur Verfuegung, und der Balken bekommt sie auch.
+
+   Die Schwelle liegt bewusst ueber SCHMAL: zwischen 560 und 768 px
+   bleiben Legende und Endbeschriftung wie am Desktop, nur die
+   Kategorienamen wandern nach oben. */
+const ENG = 768;
 const feldBreite = (el) =>
   el?.clientWidth || document.documentElement.clientWidth;
 const istSchmal = (el) => feldBreite(el) < SCHMAL;
+const istEng = (el) => feldBreite(el) < ENG;
 
 /* Zeilenhoehe der Kategorienamen und Mindestrand rechts.
 
@@ -147,6 +161,15 @@ const istSchmal = (el) => feldBreite(el) < SCHMAL;
    Achsenzahl, die mittig ueber dem Gitterende sitzt. */
 const ZEILE = 16;
 const RAND_RECHTS = 60;
+
+/* Anteil der Kategoriezeile, den der Balken eng noch belegt. Der Rest
+   ist Luft, und in dieser Luft steht der Kategoriename. Die Module
+   fragen den Wert ueber `balkenBreite()` ab, `kategorieLabel()` rechnet
+   damit die Texthoehe aus — die beiden duerfen nicht auseinanderlaufen,
+   sonst sitzt der Name im Balken. */
+const BALKEN_ANTEIL = 0.5;
+const balkenBreite = (el, desktop) =>
+  istEng(el) ? `${Math.round(BALKEN_ANTEIL * 100)}%` : desktop;
 
 /* Anteil der Breite, den die Kategorienamen hoechstens belegen duerfen.
    Darueber bleibt zu wenig Zeichenflaeche fuer die Balken. */
@@ -160,11 +183,17 @@ const randLinks = (el, desktopLinks = 120) => istSchmal(el)
   ? Math.round(feldBreite(el) * 0.32)
   : Math.min(desktopLinks, Math.round(feldBreite(el) * ANTEIL_LINKS));
 
-/* Gitter fuer liegende Balken. Schmal: containLabel rechnet den linken
-   Platz selbst — aber nicht den `margin` der Etiketten (12 px), sobald
-   dort eine feste `width` steht. Die 20 px links decken das ab. */
-const balkenGitter = (el, desktop) => istSchmal(el)
-  ? { left: 20, right: RAND_RECHTS, top: 10, bottom: 34, containLabel: true }
+/* Gitter fuer liegende Balken.
+
+   Eng (< 768): die Kategorienamen stehen IM Gitter ueber den Balken,
+   also darf links kein Platz mehr fuer sie reserviert werden —
+   `containLabel: false`, sonst rechnet ECharts die nun sehr breiten
+   Etiketten in den linken Rand hinein und schiebt das Gitter aus der
+   Karte. Die 14 px links sind kein Platz fuer Text, sondern die Haelfte
+   der ersten Achsenzahl („0"), die mittig ueber dem Gitteranfang
+   sitzt. */
+const balkenGitter = (el, desktop) => istEng(el)
+  ? { left: 14, right: RAND_RECHTS, top: 10, bottom: 34, containLabel: false }
   : { top: 10, bottom: 34, ...desktop,
       left: randLinks(el, desktop?.left),
       right: Math.max(RAND_RECHTS, desktop?.right ?? RAND_RECHTS) };
@@ -243,6 +272,32 @@ const hoverDunkler = (farbe) => ({ itemStyle: { color: hervor(farbe) } });
    Kategoriezeile, wird gekuerzt statt umgebrochen. Ohne das kleben bei
    27 Tiergruppen die zweizeiligen Namen ineinander. */
 function kategorieLabel(el, desktopLinks = 120, anzahl = 0) {
+  /* Eng: der Name steht ueber seinem Balken statt links daneben.
+
+     Wie das geht: `margin: 0` setzt den Ankerpunkt auf die Achslinie
+     statt links davor, `align: "left"` laesst den Text von dort nach
+     RECHTS ins Gitter laufen. `verticalAlign: "bottom"` legt die
+     Unterkante des Textes auf die Mitte der Kategoriezeile; die
+     Polsterung unten hebt ihn von dort um die halbe Balkenhoehe plus
+     4 px an, also knapp ueber den Balken.
+
+     Die halbe Balkenhoehe ist gerechnet, nicht geschaetzt: der Balken
+     belegt BALKEN_ANTEIL der Zeilenhoehe, und die Zeilenhoehe ist die
+     Gitterhoehe durch die Zahl der Kategorien. Aendert sich
+     BALKEN_ANTEIL, stimmt der Abstand weiterhin. */
+  if (istEng(el)) {
+    const zeilen = ((el?.clientHeight || 300) - 44) / Math.max(anzahl, 1);
+    const halberBalken = (zeilen * BALKEN_ANTEIL) / 2;
+    return {
+      align: "left",
+      verticalAlign: "bottom",
+      margin: 0,
+      padding: [0, 0, Math.round(halberBalken) + 4, 0],
+      width: Math.max(120, feldBreite(el) - 14 - RAND_RECHTS),
+      overflow: "truncate",
+      lineHeight: ZEILE,
+    };
+  }
   const links = randLinks(el, desktopLinks);
   /* 44 px sind oberer (10) + unterer (34) Gitterrand. */
   const platz = anzahl > 0 ? ((el?.clientHeight || 300) - 44) / anzahl : 999;
@@ -270,7 +325,11 @@ const endLabelZeigen = (el) => !istSchmal(el);
    des Layouts aus, aber nicht bei jedem Zug am Fenster. */
 const STUFE = 160;
 const breitenStufe = (el) =>
-  istSchmal(el) ? -1 : Math.floor(feldBreite(el) / STUFE);
+  istSchmal(el) ? -2
+    : istEng(el) ? -1        /* eigene Stufe: 768 faellt sonst mitten in
+                                die 160er-Stufe 640–800 und der Wechsel
+                                der Kategorienamen loeste nie aus */
+    : Math.floor(feldBreite(el) / STUFE);
 
 function beiBreitenwechsel(neuBauen) {
   let warStufe = breitenStufe(document.getElementById("c-schutzgebiete"));
@@ -311,6 +370,66 @@ function setzeText(id, text) {
 function setzeHtml(id, html) {
   const el = document.getElementById(id);
   if (el) el.innerHTML = html ?? "";
+}
+
+/* --- Einordnung unter der Grafik einklappen --------------------------
+   Unter jeder Grafik stehen bis zu zwei Absaetze: die Notiz (`#n-...`,
+   der Befund in Worten) und die Einordnung (`#h-...`, Vorbehalte zur
+   Messgroesse). Zusammen sind das 150–450 Zeichen — am Handy mehr
+   Hoehe als das Diagramm darueber.
+
+   Sie werden deshalb ZUR LAUFZEIT in ein <details> gehaengt, statt im
+   Markup zu stehen. Zwei Gruende:
+   - Es gibt zwei Auslieferungen (GitHub Pages und WordPress/Oxygen).
+     Eine Aenderung hier wirkt in beiden; im Markup waeren es
+     8 Abschnitte × 2 Auslieferungen.
+   - Der Text bleibt Text im Dokument. Die Diagrammmodule fuellen ihn
+     weiterhin ueber `setzeText(id, ...)`; die Kennungen wandern mit.
+
+   Ab 768 px ist das <details> offen und die Zusammenfassungszeile per
+   CSS versteckt — die Karte sieht dort aus wie zuvor. Ohne JavaScript
+   stehen beide Absaetze schlicht offen da. */
+const ENG_MQ = "(max-width: 767.98px)";
+
+function einordnungEinklappen() {
+  const karten = document.querySelectorAll(".viz-karte");
+  karten.forEach((karte) => {
+    if (karte.querySelector(":scope > .viz-mehr")) return;
+    const teile = [...karte.querySelectorAll(
+      ':scope > p[id^="n-"], :scope > p[id^="h-"]')];
+    if (!teile.length) return;
+    const auf = document.createElement("details");
+    auf.className = "viz-mehr";
+    const zeile = document.createElement("summary");
+    zeile.textContent = "Einordnung";
+    auf.appendChild(zeile);
+    teile[0].before(auf);
+    teile.forEach((p) => auf.appendChild(p));
+  });
+
+  /* matchMedia ist die genaue Auskunft; die Breitenabfrage ist der
+     Rueckfall fuer Umgebungen ohne sie (die jsdom-Pruefung ist eine).
+     Ohne den Rueckfall reisst diese Funktion dort ab — und mit ihr der
+     ganze Aufklapper. */
+  const medien = global.matchMedia ? global.matchMedia(ENG_MQ) : null;
+  const engJetzt = () => medien ? medien.matches
+    : document.documentElement.clientWidth < ENG;
+
+  /* Weit: immer offen, die Zeile ist per CSS weg. Eng: zu — es sei
+     denn, jemand hat dieses <details> in dieser Sitzung selbst
+     aufgeklappt. */
+  const stellen = () => document.querySelectorAll(".viz-mehr").forEach((d) => {
+    d.open = !engJetzt() || d.dataset.selbst === "1";
+  });
+  document.addEventListener("toggle", (e) => {
+    const d = e.target;
+    if (d.classList?.contains("viz-mehr") && engJetzt()) {
+      d.dataset.selbst = d.open ? "1" : "0";
+    }
+  }, true);
+  if (medien?.addEventListener) medien.addEventListener("change", stellen);
+  else global.addEventListener("resize", stellen);
+  stellen();
 }
 
 /* --- Tabellenansicht: jedes Diagramm hat eine ------------------------- */
@@ -431,6 +550,7 @@ async function start() {
   }
   baueAlles();
   beiBreitenwechsel(baueAlles);
+  sicher("Einordnung einklappen", einordnungEinklappen);
 
   sicher("Quellenangabe", () => baueFuss(meta));
 
@@ -499,7 +619,8 @@ const BIO = {
   schrift, px, neuVermessen,
   VERSION, signaturHtml,
   /* Breitenabhaengiges Layout — siehe „Schmale Fenster" oben */
-  istSchmal, balkenGitter, kategorieLabel, legende, endLabelZeigen,
+  istSchmal, istEng, balkenGitter, kategorieLabel, balkenBreite,
+  legende, endLabelZeigen,
   /* Hover an Balken: dunkler statt heller */
   dunkler, hoverDunkler,
   setzeBasis: (pfad) => { DATEN_BASIS = pfad; },

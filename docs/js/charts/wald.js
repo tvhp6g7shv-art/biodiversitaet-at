@@ -6,7 +6,7 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
-        diagramme, schrift, balkenGitter, kategorieLabel, hoverDunkler } = BIO;
+        diagramme, schrift, balkenGitter, kategorieLabel, balkenBreite, hoverDunkler } = BIO;
 
 /* --- 07 — Waldfläche: Österreich und seine Nachbarn ------------------
    Liegende Balken, Veränderung der Waldfläche seit 1990 in Prozent.
@@ -81,7 +81,7 @@ function baueWald(daten) {
                    color: stil("--viz-text-2"),
                    ...kategorieLabel(feld, 128, eintraege.length) } },
     series: [{
-      type: "bar", name: "Veränderung", barWidth: "58%",
+      type: "bar", name: "Veränderung", barWidth: balkenBreite(feld, "58%"),
       data: eintraege.map((e) => ({
         value: e.veraenderung,
         itemStyle: {

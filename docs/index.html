@@ -215,6 +215,30 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
 /* Zusatzsatz unter einer Grafik — dort, wo eine Zahl NICHT im Diagramm
    steht und der Grund dafuer erklaert werden muss. */
 .viz-notiz { font-size: .82rem; color: var(--viz-text-2); line-height: 1.55; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--viz-grid); }
+/* --- Einordnung unter der Grafik: am Handy eingeklappt ---------------
+   kern.js haengt Notiz und Einordnungsabsatz zur Laufzeit in dieses
+   <details> und setzt `open` selbst — unter 768 px zu, darueber offen.
+   Hier steht nur, wie es aussieht: unter 768 px eine anklickbare Zeile
+   „Einordnung", darueber keine Zeile und der Text wie bisher.
+   Grundregel und Media Query tragen bewusst DIESELBE Spezifitaet. */
+.viz-root .viz-mehr { margin: 14px 0 0; }
+.viz-root .viz-mehr > summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; gap: .4em;
+  padding-top: 12px; border-top: 1px solid var(--viz-grid);
+  font-size: .82rem; color: var(--viz-text-2);
+  font-weight: var(--viz-fw-kraeftig);
+}
+.viz-root .viz-mehr > summary::-webkit-details-marker { display: none; }
+.viz-root .viz-mehr > summary::after { content: "\25BE"; font-size: .9em; transition: transform .15s ease; }
+.viz-root .viz-mehr[open] > summary::after { transform: rotate(180deg); }
+/* Im Aufklapper traegt die Zusammenfassungszeile die Trennlinie — die
+   Notiz bringt sonst eine zweite direkt darunter mit. */
+.viz-root .viz-mehr > .viz-notiz { border-top: 0; padding-top: 0; margin-top: 10px; }
+@media (min-width: 768px) {
+  .viz-root .viz-mehr > summary { display: none; }
+  .viz-root .viz-mehr > .viz-notiz { border-top: 1px solid var(--viz-grid); padding-top: 12px; margin-top: 0; }
+}
 /* Herkunftsmarke im Fuss: „laufend" oder „Stand 2025". Ohne sie liest
    sich eine dreijaehrige Zahl wie eine tagesaktuelle. */
 .viz-quelle-art { display: inline-block; font-size: .72rem; padding: 1px 6px; border: 1px solid var(--viz-border); border-radius: 4px; color: var(--viz-muted); white-space: nowrap; }
@@ -477,16 +501,16 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Cacheziffer `?v=NN` hochzaehlen, wenn eine Datei geaendert wurde —
      sie fuehrt eine EIGENE Zaehlung, unabhaengig von der Ausgabenummer
      in kern.js (VERSION.nummer). -->
-<script defer src="js/kern.js?v=01"></script>
-<script defer src="js/charts/kpi.js?v=01"></script>
-<script defer src="js/charts/schutzgebiete.js?v=01"></script>
-<script defer src="js/charts/vogel.js?v=01"></script>
-<script defer src="js/charts/boden.js?v=01"></script>
-<script defer src="js/charts/rotelisten.js?v=01"></script>
-<script defer src="js/charts/erhaltung.js?v=01"></script>
-<script defer src="js/charts/biotoptypen.js?v=01"></script>
-<script defer src="js/charts/wald.js?v=01"></script>
-<script defer src="js/charts/biolandbau.js?v=01"></script>
+<script defer src="js/kern.js?v=02"></script>
+<script defer src="js/charts/kpi.js?v=02"></script>
+<script defer src="js/charts/schutzgebiete.js?v=02"></script>
+<script defer src="js/charts/vogel.js?v=02"></script>
+<script defer src="js/charts/boden.js?v=02"></script>
+<script defer src="js/charts/rotelisten.js?v=02"></script>
+<script defer src="js/charts/erhaltung.js?v=02"></script>
+<script defer src="js/charts/biotoptypen.js?v=02"></script>
+<script defer src="js/charts/wald.js?v=02"></script>
+<script defer src="js/charts/biolandbau.js?v=02"></script>
 <script defer>
   document.addEventListener("DOMContentLoaded", () => {
     BIO.setzeWurzel(document.getElementById("dashboard"));

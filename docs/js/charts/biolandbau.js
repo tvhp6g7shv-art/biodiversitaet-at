@@ -6,7 +6,7 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
-        diagramme, schrift, istSchmal, balkenGitter, kategorieLabel,
+        diagramme, schrift, istSchmal, balkenGitter, kategorieLabel, balkenBreite,
         hoverDunkler } = BIO;
 
 /* --- 08 — Biologische Landwirtschaft im europäischen Vergleich -------
@@ -77,7 +77,7 @@ function baueBiolandbau(daten) {
                    color: stil("--viz-text-2"),
                    ...kategorieLabel(feld, 118, liste.length) } },
     series: [{
-      type: "bar", name: "Bio-Anteil", barWidth: "62%",
+      type: "bar", name: "Bio-Anteil", barWidth: balkenBreite(feld, "62%"),
       data: liste.map((e) => ({
         value: e.wert,
         itemStyle: { color: farbe(e), borderRadius: [0, 4, 4, 0] },

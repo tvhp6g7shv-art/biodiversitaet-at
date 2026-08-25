@@ -6,7 +6,7 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, basis, achse, tabelle, setzeText, setzeHtml,
-        diagramme, schrift, istSchmal, balkenGitter, kategorieLabel,
+        diagramme, schrift, istSchmal, balkenGitter, kategorieLabel, balkenBreite,
         legende, hoverDunkler } = BIO;
 
 /* --- 04 — Wie alt das Wissen über gefährdete Arten ist ----------------
@@ -113,14 +113,14 @@ function baueRoteListen(daten) {
                           ...kategorieLabel(feld, 150, zeilen.length) } },
     series: [
       {
-        name: "im Soll-Zeitraum", type: "bar", stack: "alter", barWidth: "64%",
+        name: "im Soll-Zeitraum", type: "bar", stack: "alter", barWidth: balkenBreite(feld, "64%"),
         data: zeilen.map((z) => Math.min(z.alter, z.soll_jahre)),
         itemStyle: { color: farbeInnen, borderRadius: [4, 0, 0, 4] },
         emphasis: hoverDunkler(farbeInnen),
         label: { show: false },
       },
       {
-        name: "darüber hinaus", type: "bar", stack: "alter", barWidth: "64%",
+        name: "darüber hinaus", type: "bar", stack: "alter", barWidth: balkenBreite(feld, "64%"),
         data: zeilen.map((z) => Math.max(0, z.ueberzug)),
         itemStyle: {
           color: farbeUeber, borderRadius: [0, 4, 4, 0],
