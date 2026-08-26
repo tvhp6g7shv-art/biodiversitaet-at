@@ -1,10 +1,24 @@
 {
   "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "01",
+  "aktuell": "02",
   "basis_url": "https://biodiversitaet-monitor.at",
   "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
   "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
   "ausgaben": [
+    {
+      "nummer": "02",
+      "datum": "2026-08-26",
+      "datum_text": "26. August 2026",
+      "titel": "Bewegter Hintergrund — eine von drei Naturaufnahmen je Aufruf",
+      "veroeffentlicht": true,
+      "cacheziffer": 3,
+      "charts": [],
+      "social": null,
+      "abschnitte": [],
+      "seite": [
+        "Der Seitenhintergrund ist jetzt bewegt: Bei jedem Aufruf wird eine von drei Naturaufnahmen gezogen, die dann in einer Schleife läuft. Wer im Betriebssystem weniger Bewegung eingestellt hat oder auf einem schmalen Bildschirm liest, sieht weiterhin ein Standbild — dort wird gar kein Video geladen."
+      ]
+    },
     {
       "nummer": "01",
       "datum": "2026-08-24",
