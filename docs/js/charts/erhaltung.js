@@ -115,10 +115,19 @@ function baueErhaltung(daten) {
     })),
   }, { replaceMerge: ["series", "xAxis", "yAxis", "legend"] });
 
-  /* Der Hinweis auf die fehlende Folgeperiode gehört sichtbar unter die
-     Grafik: Ohne ihn liest sich eine Momentaufnahme wie ein aktueller
-     Stand — die Zahlen sind aus der Periode 2013–2018. */
-  if (daten.naechste_vorhanden === false) {
+  /* Die Notiz kommt seit 26.08.2026 aus den Daten statt aus dem Code.
+     Vorher stand hier fest verdrahtet, die Folgeperiode 2019–2024 sei
+     noch nicht veröffentlicht — sie war es längst, nur an einer anderen
+     Stelle. Ein Satz im JavaScript altert still; ein Satz, den das
+     ETL-Modul aus seinen eigenen Zahlen baut, kann das nicht.
+
+     Inhaltlich trägt sie das, was der Balken NICHT zeigen kann: wie viel
+     der Verschiebung zwischen den Perioden echte Veränderung ist und wie
+     viel nur besseres Wissen. Ohne sie liest sich ein wachsender
+     „günstig"-Anteil als Erfolgsmeldung. */
+  if (daten.notiz) {
+    setzeHtml("n-erhaltung", daten.notiz);
+  } else if (daten.naechste_vorhanden === false) {
     setzeHtml("n-erhaltung",
       `Dies ist die letzte abgeschlossene Berichtsperiode. Die Meldung für ` +
       `<strong>${daten.naechste_periode}</strong> war bis ${daten.naechste_faellig} ` +
