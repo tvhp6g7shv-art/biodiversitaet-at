@@ -27,6 +27,27 @@ const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
    Drei Stufen statt zwei, weil die Frage „wie stehen wir zu den Nachbarn"
    sonst im Feld der 30 Länder untergeht.
 
+   KORREKTUR 26.08.2026 — der Mittelton lag falsch. Die Nachbarn hingen
+   an --viz-series-4. Das stimmt in der Grauabstufung von GitHub Pages
+   (1 dunkelster Ton, dann 4), nicht aber in der Salbei-Palette der
+   Website: dort ist series-4 #e2ead9 HELLER als series-1 #cdd8c2. Die
+   Nachbargruppe stach damit stärker hervor als Österreich, bei nur
+   1,20 : 1 Abstand zwischen beiden — sichtbar war ein Muster, dessen
+   Ordnung sich nicht erschloss.
+
+   Jetzt series-1 / series-2 / series-3. Diese drei fallen in ALLEN vier
+   ausgelieferten Paletten in derselben Richtung; gerechnet (Kontrast
+   zum Grund | Abstand zwischen den Stufen):
+
+     Website dunkel   12,4 | 8,0 | 5,1     1,54 / 1,59
+     Website hell     12,0 | 6,1 | 3,1     1,98 / 1,93   (stillgelegt)
+     Pages hell       19,8 | 2,8 | 1,7     7,04 / 1,70
+     Pages dunkel     13,8 | 6,5 | 4,0     2,10 / 1,66
+
+   Und die Stufen werden BENANNT. Ohne Legende war die Helligkeit nur
+   im Tooltip auflösbar — wer nicht hovert, sieht ein unerklärtes
+   Muster. Der Untertitel sagt es jetzt in einem Halbsatz.
+
    ZUM VERGLEICHSJAHR: Alle Länder im selben Jahr, und zwar dem jüngsten,
    für das Österreich meldet. Ein Ranking auf „das jeweils neueste Jahr je
    Land" stellte Österreichs 2020er-Wert gegen 2024er-Werte anderer. */
@@ -43,14 +64,14 @@ function baueBiolandbau(daten) {
   if (!diagramme.includes(d)) diagramme.push(d);
 
   const liste = daten.rangliste;
-  const dunkel = stil("--viz-series-1");
-  const mittel = stil("--viz-series-4");
+  const stark  = stil("--viz-series-1");
+  const mittel = stil("--viz-series-2");
   const blass  = stil("--viz-series-3");
-  const farbe = (e) => e.hervorgehoben ? dunkel : (e.nachbar ? mittel : blass);
+  const farbe = (e) => e.hervorgehoben ? stark : (e.nachbar ? mittel : blass);
 
   setzeText("u-biolandbau",
     `Anteil an der landwirtschaftlich genutzten Fläche · ${daten.vergleichsjahr} · ` +
-    `${daten.anzahl} Meldeländer`);
+    `${daten.anzahl} Meldeländer · Österreich hell, Nachbarländer mittel`);
   setzeText("h-biolandbau", daten.hinweis ?? "");
 
   /* Eng braucht jede Kategorie eine eigene Zeile fuer ihren Namen.
@@ -75,7 +96,12 @@ function baueBiolandbau(daten) {
           `${daten.anzahl}${e.nachbar && !e.hervorgehoben ? " · Nachbarland" : ""}</span>`;
       },
     },
-    xAxis: { ...achse(), type: "value", min: 0, axisLine: { show: false },
+    /* max: 35 — die Zielmarke liegt über dem größten Wert (25,7 %).
+       ECharts dehnt die Achse für eine markLine nicht, die gestrichelte
+       Linie fiel deshalb bisher aus der Zeichenfläche und war nie zu
+       sehen. Mit interval 5 endet die Skala genau auf dem Ziel. */
+    xAxis: { ...achse(), type: "value", min: 0, max: 35, interval: 5,
+      axisLine: { show: false },
       axisLabel: { hideOverlap: true, color: stil("--viz-muted"),
                    fontSize: S.achse, formatter: (v) => v + " %" } },
     yAxis: { ...achse(), type: "category", inverse: true,
