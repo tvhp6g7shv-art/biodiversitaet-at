@@ -108,6 +108,27 @@ jobs:
       - name: Trockenlauf (Text und Facets)
         run: python social/posten.py --ohne-bild
 
+      # Diagnose, kein Geheimnisverrat: nur Laengen und ob Steuerzeichen
+      # mitgewandert sind. Der Wert selbst wird von GitHub maskiert, die
+      # Laenge nicht — und genau sie entscheidet, ob beim Einfuegen ins
+      # Secret-Feld etwas verlorenging. Erwartet: Handle 32 (DID) oder 25
+      # (Handle), Passwort 19.
+      - name: Zugangsdaten vermessen
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          BSKY_HANDLE: ${{ secrets.BSKY_HANDLE }}
+          BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
+        run: |
+          printf 'Handle:   %s Zeichen\n' "${#BSKY_HANDLE}"
+          printf 'Passwort: %s Zeichen\n' "${#BSKY_APP_PASSWORD}"
+          case "$BSKY_HANDLE" in
+            *[![:print:]]*) echo "ACHTUNG: Handle enthaelt ein Steuerzeichen (Zeilenumbruch?)" ;;
+            "@"*)           echo "ACHTUNG: Handle beginnt mit @ — das ist als identifier ungueltig" ;;
+          esac
+          case "$BSKY_APP_PASSWORD" in
+            *[![:print:]]*) echo "ACHTUNG: Passwort enthaelt ein Steuerzeichen" ;;
+          esac
+
       - name: Posten
         if: github.event_name == 'push' || github.event.inputs.senden == 'ja'
         env:
