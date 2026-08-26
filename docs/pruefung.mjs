@@ -93,7 +93,7 @@ const HOEHEN = {
   "c-biolandbau": 760,
   "c-falter": 340,
   "c-rueckkehrer": 300,
-  "c-vogelarten": 520,
+  "c-vogelarten": 644,
 };
 
 const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",

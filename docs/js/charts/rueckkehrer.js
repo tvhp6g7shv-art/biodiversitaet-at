@@ -5,7 +5,7 @@
    =========================================================================== */
 (function (BIO) {
 "use strict";
-const { stil, zahl, basis, achse, tabelle, setzeText, setzeHtml,
+const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
         diagramme, schrift, istSchmal, balkenGitter, kategorieLabel,
         balkenBreite, balkenHoehe, legende, hoverDunkler } = BIO;
 
@@ -61,19 +61,30 @@ function baueRueckkehrer(daten) {
     `${perioden[0]} bis ${daten.periode}`);
   setzeText("h-rueckkehrer", daten.hinweis ?? "");
 
-  /* Die große Zahl ist hier die NULL, nicht der heutige Bestand — und
-     das ist eine Entscheidung, keine Bequemlichkeit. Der heutige Wert
-     ist eine Spanne (13.833 bis 16.654); eine einzelne große Zahl daraus
-     zu machen behauptete eine Genauigkeit, die die Erhebung nicht
-     hergibt. Die Null von 1869 dagegen ist exakt. Sie trägt außerdem die
-     Aussage des Abschnitts: Rückgang ist kein Naturgesetz. */
+  /* KORREKTUR 26.08.2026, Befund des Users: Hier stand die Null von 1869
+     als große Zahl. Unter der Überschrift „sind zurückgekommen" liest
+     sich eine riesige 0 als Widerspruch — sie ist der Wert von 1869 und
+     nicht der heutige, und der Abschnitt handelt von zwei Arten, nicht
+     von einer. Das Argument dafür war eines über Genauigkeit (die Null
+     ist exakt, der heutige Bestand eine Spanne) und keines darüber, ob
+     man es beim Lesen versteht.
+
+     Jetzt trägt der Faktor die Zahl: Er misst dasselbe wie die Grafik —
+     Wachstum über die Berichtsperioden — und ist auf der UNTERGRENZE
+     gerechnet, also die vorsichtigste Lesart. 1869 bleibt als Pointe im
+     Satz, wo es keinen Wert behauptet, den die Grafik nicht zeigt. */
   const biberPlakat = arten.find((a) => a.name === "Biber") || arten[0];
+  const otter = arten.find((a) => a.name === "Fischotter");
   setzeHtml("k-rueckkehrer",
-    `<span class="viz-plakat-zahl">0</span>` +
-    `<span class="viz-plakat-zusatz">Biber im Jahr ${daten.biber_ausgerottet}</span>` +
-    `<p class="viz-plakat-satz">In Österreich war die Art ausgerottet. ` +
-    `Heute leben hier wieder ${zahl(biberPlakat.letzte_unten)} bis ` +
-    `${zahl(biberPlakat.letzte_oben)} Biber.</p>`);
+    `<span class="viz-plakat-zahl">${pz(biberPlakat.faktor)}` +
+    `<span class="viz-plakat-einheit">×</span></span>` +
+    `<p class="viz-plakat-satz">mehr Biber als in der Berichtsperiode ` +
+    `${biberPlakat.erste_periode}. ${daten.biber_ausgerottet} war die Art ` +
+    `in Österreich ausgerottet; heute leben hier wieder ` +
+    `${zahl(biberPlakat.letzte_unten)} bis ${zahl(biberPlakat.letzte_oben)} ` +
+    `Biber` +
+    (otter ? ` und ${zahl(otter.letzte_unten)} bis ` +
+             `${zahl(otter.letzte_oben)} Fischotter` : "") + `.</p>`);
 
   balkenHoehe(d, feld, perioden.length * arten.length, 30);
 

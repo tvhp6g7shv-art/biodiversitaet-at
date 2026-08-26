@@ -27,7 +27,7 @@ import { fileURLToPath } from "node:url";
 const HIER = dirname(fileURLToPath(import.meta.url));
 const breite = Number(process.argv[2] || 1100);
 
-const HOEHEN = { "c-falter": 340, "c-rueckkehrer": 300, "c-vogelarten": 520 };
+const HOEHEN = { "c-falter": 340, "c-rueckkehrer": 300, "c-vogelarten": 644 };
 
 const fehler = [];
 const notiz = [];
@@ -198,23 +198,97 @@ const inst = (id) => echarts.getInstanceByDom(window.document.getElementById(id)
 
   const gut = token.get("--viz-gut"), kritisch = token.get("--viz-kritisch"),
         muted = token.get("--viz-muted");
-  let farbfehler = 0, seitefehler = 0;
+  let farbfehler = 0;
   liste.forEach((a, i) => {
     const soll = a.einstufung === "stabil" ? muted
       : (a.einstufung === "zunahme" ? gut : kritisch);
     if (reihe.data[i].itemStyle.color !== soll) farbfehler++;
-    const sollSeite = a.wert < 0 ? "left" : "right";
-    if (reihe.data[i].label.position !== sollSeite) seitefehler++;
   });
   pruefe(farbfehler === 0, `vogelarten: Farbe je Einstufung (${farbfehler} Abweichungen)`);
-  pruefe(seitefehler === 0,
-    `vogelarten: Beschriftung außen am Balken (${seitefehler} Abweichungen)`);
+  /* Positive Werte gehoeren nach aussen rechts — dort ist der Rand frei.
+     Negative duerfen innen stehen, wenn links kein Platz mehr ist; wo
+     Platz ist, gehoeren auch sie nach aussen. Geprueft wird die Regel,
+     nicht eine feste Seite. */
+  const positivAussen = liste.filter((a) => a.wert >= 0)
+    .every((a, i) => true);
+  const posFalsch = liste.filter((a, i) => a.wert >= 0 &&
+    reihe.data[i].label.position !== "right");
+  pruefe(posFalsch.length === 0,
+    `vogelarten: Zunahmen aussen rechts (${posFalsch.length} Abweichungen)`);
+  const negInnen = liste.filter((a, i) => a.wert < 0 &&
+    reihe.data[i].label.position === "insideLeft");
+  const negAussen = liste.filter((a, i) => a.wert < 0 &&
+    reihe.data[i].label.position === "left");
+  pruefe(negInnen.length + negAussen.length ===
+         liste.filter((a) => a.wert < 0).length,
+    "vogelarten: jede Abnahme steht entweder innen oder aussen links");
   pruefe(o.xAxis[0].min === -100 && o.xAxis[0].max === 130,
     `vogelarten: Achse −100 bis +130 (ist ${o.xAxis[0].min} bis ${o.xAxis[0].max})`);
 
   const spanne = [liste[0].wert, liste[liste.length - 1].wert];
   pruefe(spanne[0] >= o.xAxis[0].min && spanne[1] <= o.xAxis[0].max,
     `vogelarten: Extremwerte ${spanne[0]} und ${spanne[1]} liegen in der Achse`);
+
+  /* DER FEHLER VOM 26.08.2026: „−97 %" stand quer ueber dem Artnamen.
+     Gemessen wird deshalb am gerenderten SVG, nicht an der Option —
+     eine Beschriftung darf weder in die Namensspalte ragen noch aus der
+     Zeichenflaeche fallen. */
+  /* ECharts setzt die Textlage NICHT ueber x/y allein, sondern ueber
+     `transform="translate(x y)"` plus Versatz. Wer nur x liest, findet
+     nichts — dieselbe Falle wie in pruefung.mjs.
+
+     UND: x allein genuegt auch dann nicht. Ein rechtsbuendiger Text
+     (text-anchor="end") belegt die Strecke LINKS von x. Der erste Anlauf
+     dieser Pruefung verglich nur die x-Werte und liess den Fehler vom
+     26.08. durch — Name und Wert lagen beide bei x = 130 und galten als
+     unauffaellig, obwohl sie uebereinander standen. Gemessen wird
+     deshalb die belegte Strecke, nicht der Ankerpunkt. */
+  const svg = inst("c-vogelarten").renderToSVGString();
+  const texte = [...svg.matchAll(/<text([^>]*)>([^<]*)</g)].map((m) => {
+    const attr = m[1];
+    const tr = /transform="translate\((-?[\d.]+)[ ,]+(-?[\d.]+)\)"/.exec(attr);
+    const xAttr = /\sx="(-?[\d.]+)"/.exec(attr);
+    const yAttr = /\sy="(-?[\d.]+)"/.exec(attr);
+    const gr = /font-size="([\d.]+)"/.exec(attr);
+    const anker = (/text-anchor="(\w+)"/.exec(attr) || [, "start"])[1];
+    const t = m[2].trim();
+    /* Ohne Canvas keine echte Textmessung — 0,58 em je Zeichen ist die
+       uebliche Naeherung fuer eine Grotesk und hier bewusst grosszuegig. */
+    const breite = t.length * (gr ? +gr[1] : 12) * 0.58;
+    const x = (tr ? +tr[1] : 0) + (xAttr ? +xAttr[1] : 0);
+    const y = (tr ? +tr[2] : 0) + (yAttr ? +yAttr[1] : 0);
+    const von = anker === "end" ? x - breite
+      : anker === "middle" ? x - breite / 2 : x;
+    return { t, x, y, anker, von, bis: von + breite };
+  });
+  const werte = texte.filter((e) => /^[+−-]\d+\s*%$/.test(e.t));
+  const namen = texte.filter((e) => liste.some((k) => k.name === e.t));
+  pruefe(werte.length >= liste.length,
+    `vogelarten: ${werte.length} Wertbeschriftungen im SVG (erwartet ${liste.length})`);
+  pruefe(namen.length >= liste.length,
+    `vogelarten: ${namen.length} Artnamen im SVG (erwartet ${liste.length})`);
+  /* WICHTIGER ALS DIE ZAHL: der Platz. Am 26.08.2026 stand die Karte auf
+     520 px, das sind 23,8 px je Zeile — ECharts liess daraufhin jeden
+     zweiten Artnamen weg, ohne zu melden. Die Zeilenhoehe wird deshalb
+     gegen die Schrift gerechnet, nicht gegen das Auge. */
+  const zeilenhoehe = (HOEHEN["c-vogelarten"] - 44) / liste.length;
+  pruefe(zeilenhoehe >= 26,
+    `vogelarten: nur ${zeilenhoehe.toFixed(1)} px je Zeile — ECharts laesst ` +
+    `dann Namen weg (mindestens 26 noetig)`);
+
+  /* Zeilenweise: Name und Wert duerfen sich nicht ueberlappen. */
+  const kollisionen = [];
+  for (const n of namen) {
+    const w = werte.find((e) => Math.abs(e.y - n.y) < 8);
+    if (!w) continue;
+    const ueberlappt = w.von < n.bis - 1 && w.bis > n.von + 1;
+    if (ueberlappt) kollisionen.push(`${n.t}/${w.t}`);
+  }
+  pruefe(kollisionen.length === 0,
+    `vogelarten: ${kollisionen.length} Beschriftung(en) ueberlappen den Artnamen ` +
+    `(${kollisionen.slice(0, 4).join(", ")})`);
+  pruefe(werte.every((e) => e.von > -1),
+    "vogelarten: keine Beschriftung faellt links aus der Zeichenflaeche");
 }
 
 /* --- 4  Plakat: die grosse Zahl gegen die Daten ------------------------
@@ -227,34 +301,53 @@ const inst = (id) => echarts.getInstanceByDom(window.document.getElementById(id)
     const el = doc.getElementById("k-" + id);
     return {
       zahl: el?.querySelector(".viz-plakat-zahl")?.textContent?.trim() ?? "",
-      zusatz: el?.querySelector(".viz-plakat-zusatz")?.textContent?.trim() ?? "",
       satz: el?.querySelector(".viz-plakat-satz")?.textContent?.trim() ?? "",
     };
   };
-  const zahlAus = (t) => Number(t.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", "."));
+  /* Nur die FUEHRENDE Zahl lesen. „14 von 20" enthaelt zwei Zahlen;
+     wer alle Ziffern zusammenklebt, misst 1420. */
+  const zahlAus = (t) => {
+    const m = String(t).replace(/\u00a0/g, " ").match(/-?\d+(?:[.,]\d+)?/);
+    return m ? Number(m[0].replace(/\./g, "").replace(",", ".")) : NaN;
+  };
 
   const f = lies("falter");
   pruefe(Math.abs(zahlAus(f.zahl) - daten.falter.verlust) < 1,
     `Plakat falter: „${f.zahl}" gegen verlust ${daten.falter.verlust}`);
-  pruefe(f.zusatz.includes(String(daten.falter.basis)),
-    `Plakat falter: Zusatz nennt das Basisjahr (${f.zusatz})`);
+  pruefe(f.satz.includes(String(daten.falter.basis)),
+    "Plakat falter: der Satz nennt das Basisjahr");
 
+  /* Die grosse Zahl muss die MESSGROESSE des Abschnitts tragen, nicht
+     einen Extremwert und nicht einen historischen Stand. Am 26.08.2026
+     stand beim Rueckkehrer die Null von 1869 und bei den Vogelarten die
+     −97 % der Grauammer — beides las sich falsch. Diese Pruefung haelt
+     jetzt fest, was dort stehen soll. */
   const r = lies("rueckkehrer");
-  pruefe(r.zahl === "0", `Plakat rueckkehrer: grosse Zahl ist die Null (ist „${r.zahl}")`);
-  pruefe(r.zusatz.includes(String(daten.rueckkehrer.biber_ausgerottet)),
-    `Plakat rueckkehrer: Zusatz nennt ${daten.rueckkehrer.biber_ausgerottet} (${r.zusatz})`);
   const biber = daten.rueckkehrer.arten.find((a) => a.name === "Biber");
-  pruefe(r.satz.includes(String(biber.letzte_unten).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0")) ||
-         r.satz.replace(/\u00a0/g, "").includes(String(biber.letzte_unten)),
+  pruefe(Math.abs(zahlAus(r.zahl) - biber.faktor) < 0.05,
+    `Plakat rueckkehrer: „${r.zahl}" gegen Faktor ${biber.faktor}`);
+  pruefe(r.zahl !== "0", "Plakat rueckkehrer: nicht die Null von 1869");
+  pruefe(r.satz.includes(biber.erste_periode),
+    "Plakat rueckkehrer: der Satz nennt die Ausgangsperiode");
+  pruefe(r.satz.includes(String(daten.rueckkehrer.biber_ausgerottet)),
+    `Plakat rueckkehrer: Satz nennt ${daten.rueckkehrer.biber_ausgerottet}`);
+  const ohneNbsp = (t) => t.replace(/\u00a0/g, "");
+  pruefe(ohneNbsp(r.satz).includes(String(biber.letzte_unten)),
     `Plakat rueckkehrer: Satz nennt die Untergrenze ${biber.letzte_unten}`);
+  const otter = daten.rueckkehrer.arten.find((a) => a.name === "Fischotter");
+  pruefe(!otter || ohneNbsp(r.satz).includes(String(otter.letzte_unten)),
+    "Plakat rueckkehrer: Satz nennt auch den Fischotter");
 
   const v = lies("vogelarten");
   const s = daten.vogelarten.schlechteste, b = daten.vogelarten.beste;
-  pruefe(Math.abs(zahlAus(v.zahl) - Math.abs(s.wert)) < 1,
-    `Plakat vogelarten: „${v.zahl}" gegen schlechteste ${s.wert}`);
-  pruefe(v.zusatz.includes(s.name), `Plakat vogelarten: Zusatz nennt ${s.name}`);
-  pruefe(v.satz.includes(b.name) && v.satz.includes(String(b.wert)),
-    `Plakat vogelarten: Satz nennt ${b.name} mit ${b.wert}`);
+  pruefe(zahlAus(v.zahl) === daten.vogelarten.zaehlung.rueckgang,
+    `Plakat vogelarten: „${v.zahl}" gegen ${daten.vogelarten.zaehlung.rueckgang} ruecklaeufige Arten`);
+  pruefe(v.zahl.includes(String(daten.vogelarten.bewertet)),
+    `Plakat vogelarten: Zahl nennt den Nenner ${daten.vogelarten.bewertet} (ist „${v.zahl}")`);
+  pruefe(Math.abs(zahlAus(v.zahl) - Math.abs(s.wert)) > 1,
+    "Plakat vogelarten: nicht der schlechteste Einzelwert");
+  pruefe(v.satz.includes(s.name) && v.satz.includes(b.name),
+    `Plakat vogelarten: Satz nennt beide Pole (${s.name}, ${b.name})`);
 
   for (const [id, p] of [["falter", f], ["rueckkehrer", r], ["vogelarten", v]]) {
     pruefe(p.zahl.length > 0 && p.satz.length > 0,

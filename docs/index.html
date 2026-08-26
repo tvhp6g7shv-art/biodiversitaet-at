@@ -311,11 +311,15 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
    auf 300 px sind 37 px je Balkenpaar — genug, dass die Spannen nicht zu
    Bändern werden. */
 #c-rueckkehrer { height: 300px; }
-/* 20 Arten, je 22 px plus Gitterrand. Wer Arten ergänzt, muss hier mit —
-   ECharts setzt die Feldhöhe nicht, es hängt von ihr ab. Dieselbe Falle
-   wie bei #c-rotelisten und #c-biolandbau. */
-#c-vogelarten { height: 520px; }
-@media (max-width: 560px) { #c-vogelarten { height: 560px; } }
+/* 20 Arten. Die Höhe stand bis 26.08.2026 auf 520 px — das sind 23,8 px
+   je Zeile, und ECharts hat daraufhin JEDEN ZWEITEN Artnamen weggelassen.
+   Die Grafik behauptete „eine Art je Zeile" und zeigte zehn Namen. Der
+   Ausfall ist stumm: hideOverlap meldet nichts, es fehlt einfach Text.
+   20 × 30 px plus 44 px Gitterrand ergeben die 644. Wer Arten ergänzt,
+   muss hier mit — dieselbe Falle wie bei #c-rotelisten und
+   #c-biolandbau. */
+#c-vogelarten { height: 644px; }
+@media (max-width: 560px) { #c-vogelarten { height: 680px; } }
 
 /* ===================================================================
    BEREICH TIERGRUPPEN — ein Kapitel, nicht drei weitere Kacheln
@@ -389,23 +393,12 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
   letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
   color: var(--viz-text);
 }
-/* Der Zusatz stand zuerst auf --viz-muted. Gerechnet ergibt das auf dem
-   Band 4,35 : 1 im Hellmodus — unter den 4,5, die für Text dieser Größe
-   gelten. Die Abstufung trägt jetzt die Größe, nicht die Farbe. */
-/* Die Einheit ist kein Teil der Zahl. Bei 84 px wurde aus dem
-   Leerzeichen vor dem Prozentzeichen eine Lücke von rund 40 px —
-   gemessen an der Live-Seite, nicht vermutet. */
-.viz-plakat-einheit {
-  font-size: .45em; letter-spacing: 0; margin-left: .1em;
-  font-weight: var(--viz-fw-kraeftig);
-}
-.viz-plakat-zusatz {
-  grid-row: 2; grid-column: 1;
-  font-size: .82rem; color: var(--viz-text-2); margin-top: 10px;
-  letter-spacing: .01em;
-}
+/* Die kleine Unterzeile unter der Zahl ist am 26.08.2026 entfallen —
+   Befund des Users: „Das sieht niemand." Die Angabe steht jetzt im Satz
+   neben der Zahl, der ohnehin gelesen wird. Damit hat das Raster nur
+   noch eine Zeile. */
 .viz-plakat-satz {
-  grid-row: 1 / span 2; grid-column: 2; align-self: center;
+  grid-row: 1; grid-column: 2; align-self: center;
   margin: 0; font-size: 1.02rem; line-height: 1.55;
   color: var(--viz-text-2); max-width: 48ch;
 }
@@ -717,19 +710,19 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Cacheziffer `?v=NN` hochzaehlen, wenn eine Datei geaendert wurde —
      sie fuehrt eine EIGENE Zaehlung, unabhaengig von der Ausgabenummer
      in kern.js (VERSION.nummer). -->
-<script defer src="js/kern.js?v=07"></script>
-<script defer src="js/charts/kpi.js?v=07"></script>
-<script defer src="js/charts/schutzgebiete.js?v=07"></script>
-<script defer src="js/charts/vogel.js?v=07"></script>
-<script defer src="js/charts/boden.js?v=07"></script>
-<script defer src="js/charts/rotelisten.js?v=07"></script>
-<script defer src="js/charts/erhaltung.js?v=07"></script>
-<script defer src="js/charts/biotoptypen.js?v=07"></script>
-<script defer src="js/charts/wald.js?v=07"></script>
-<script defer src="js/charts/biolandbau.js?v=07"></script>
-<script defer src="js/charts/falter.js?v=07"></script>
-<script defer src="js/charts/rueckkehrer.js?v=07"></script>
-<script defer src="js/charts/vogelarten.js?v=07"></script>
+<script defer src="js/kern.js?v=08"></script>
+<script defer src="js/charts/kpi.js?v=08"></script>
+<script defer src="js/charts/schutzgebiete.js?v=08"></script>
+<script defer src="js/charts/vogel.js?v=08"></script>
+<script defer src="js/charts/boden.js?v=08"></script>
+<script defer src="js/charts/rotelisten.js?v=08"></script>
+<script defer src="js/charts/erhaltung.js?v=08"></script>
+<script defer src="js/charts/biotoptypen.js?v=08"></script>
+<script defer src="js/charts/wald.js?v=08"></script>
+<script defer src="js/charts/biolandbau.js?v=08"></script>
+<script defer src="js/charts/falter.js?v=08"></script>
+<script defer src="js/charts/rueckkehrer.js?v=08"></script>
+<script defer src="js/charts/vogelarten.js?v=08"></script>
 <script defer>
   document.addEventListener("DOMContentLoaded", () => {
     BIO.setzeWurzel(document.getElementById("dashboard"));

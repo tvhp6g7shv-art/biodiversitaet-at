@@ -6,7 +6,7 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
-        diagramme, schrift, istSchmal, balkenGitter, kategorieLabel,
+        diagramme, schrift, istSchmal, istEng, balkenGitter, kategorieLabel,
         balkenBreite, balkenHoehe, hoverDunkler } = BIO;
 
 /* --- 11 — Feld- und Wiesenvögel Art für Art ---------------------------
@@ -71,21 +71,79 @@ function baueVogelarten(daten) {
     `${z.rueckgang} weniger, ${z.stabil} gleich, ${z.zunahme} mehr`);
   setzeText("h-vogelarten", daten.hinweis ?? "");
 
-  /* Die große Zahl ist der schlechteste Wert, der Satz daneben der beste.
-     Beide kommen aus `schlechteste`/`beste` und wandern mit dem nächsten
-     Bericht von selbst mit — im Markup stünden sie spätestens im August
-     falsch da. Die Spannweite IST hier die Aussage: ein Mittelwert würde
-     genau sie verdecken, deshalb gibt es diesen Abschnitt. */
+  /* KORREKTUR 26.08.2026, Befund des Users: Hier stand die −97 % der
+     Grauammer als große Zahl. Das ist der schlechteste Einzelwert und
+     nicht die Aussage des Abschnitts — wer schnell liest, hält ihn für
+     den Rückgang der Feld- und Wiesenvögel insgesamt. Der liegt bei
+     −47 % und steht zwei Abschnitte weiter oben: zwei Zahlen, die sich
+     für dieselbe Vogelgruppe widersprechen.
+
+     Jetzt trägt „14 von 20" die Zahl. Sie ist eindeutig, verwechselt
+     sich mit keiner anderen Größe auf der Seite und ist genau das, was
+     die zwanzig Balken zeigen. Die Spannweite — die eigentliche
+     Ungleichheit — steht im Satz daneben. Alle Werte kommen aus den
+     Daten und wandern mit dem nächsten Bericht von selbst mit. */
   const s = daten.schlechteste, b = daten.beste;
   setzeHtml("k-vogelarten",
-    `<span class="viz-plakat-zahl">−${pz(Math.abs(s.wert), 0)}` +
-    `<span class="viz-plakat-einheit">%</span></span>` +
-    `<span class="viz-plakat-zusatz">${s.name}, seit ${daten.beginn}</span>` +
-    `<p class="viz-plakat-satz">Im selben Zeitraum hat der ${b.name} um ` +
-    `${pz(b.wert, 0)} % zugelegt. Von ${daten.bewertet} Arten sind ` +
-    `${z.rueckgang} zurückgegangen.</p>`);
+    `<span class="viz-plakat-zahl">${z.rueckgang}` +
+    `<span class="viz-plakat-einheit">&nbsp;von&nbsp;${daten.bewertet}</span>` +
+    `</span>` +
+    `<p class="viz-plakat-satz">Feld- und Wiesenvogelarten sind seit ` +
+    `${daten.beginn} gesichert zurückgegangen. Die Spannweite reicht von ` +
+    `der ${s.name} mit −${pz(Math.abs(s.wert), 0)} % bis zum ${b.name} ` +
+    `mit +${pz(b.wert, 0)} %.</p>`);
 
   balkenHoehe(d, feld, liste.length, 14);
+
+  /* FEHLER VOM 26.08.2026, vom User an der Live-Seite gesehen: Bei der
+     Grauammer stand „−97 %" quer über dem Artnamen.
+
+     Die Ursache ist keine Kollision zweier Beschriftungen, sondern eine
+     Asymmetrie der Ränder. `position: "left"` setzt die Zahl AUSSERHALB
+     des Balkens nach links. Bei −97 endet der Balken fast an der
+     Achsenuntergrenze (−100), also am linken Rand der Zeichenfläche —
+     und links davon liegt die Spalte mit den Artnamen. Rechts tritt das
+     nicht auf: dort sind 66 px Rand frei, in die „+122 %" bequem passt.
+
+     Die Regel unten rechnet den verbleibenden Platz aus, statt eine
+     Balkenlänge zu raten: Passt die Zahl links vom Balkenende nicht mehr
+     in die Zeichenfläche, wandert sie INS Balkeninnere. Am Handy, wo die
+     Namen über den Balken stehen und links nur 14 px bleiben, greift
+     dieselbe Rechnung von selbst.
+
+     Die Textfarbe im Balken wird nicht gesetzt, sondern gerechnet:
+     Schwarz oder Weiß, je nachdem, was gegen die Füllung mehr Kontrast
+     bringt. Nachgerechnet für alle drei ausgelieferten Paletten liegt
+     der schlechteste Fall bei 4,54 : 1 (Pages hell, „stabil"), alle
+     übrigen zwischen 5,56 und 10,80. */
+  const ACHSE_MIN = -100, ACHSE_MAX = 130;
+  const randLinks = istEng(feld) ? 14 : 130;
+  const plotBreite = Math.max(120, (feld.clientWidth || 900) - randLinks - 66);
+  const proEinheit = plotBreite / (ACHSE_MAX - ACHSE_MIN);
+  const platzLinks = (w) => (w - ACHSE_MIN) * proEinheit;
+  const nachInnen = (w) => w < 0 && platzLinks(w) < 52;
+
+  const helligkeit = (farbe) => {
+    const m = String(farbe).match(/^#?([0-9a-f]{6})$/i)
+      || String(farbe).match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)/i);
+    if (!m) return null;
+    const teile = m[1] && m[1].length === 6
+      ? [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16))
+      : [Number(m[1]), Number(m[2]), Number(m[3])];
+    const lin = teile.map((v) => {
+      const c = v / 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+  };
+  const aufFarbe = (fuellung) => {
+    const l = helligkeit(fuellung);
+    if (l === null) return stil("--viz-text-2");
+    /* Kontrast gegen Schwarz und gegen Weiß, das Bessere gewinnt. */
+    const gegenSchwarz = (l + 0.05) / (0.05 + 0.0);
+    const gegenWeiss = (1.05) / (l + 0.05);
+    return gegenSchwarz >= gegenWeiss ? "#0a0a0a" : "#ffffff";
+  };
 
   d.setOption({
     ...basis(),
@@ -129,11 +187,17 @@ function baueVogelarten(daten) {
           borderRadius: a.wert < 0 ? [4, 0, 0, 4] : [0, 4, 4, 0],
         },
         emphasis: hoverDunkler(farbe(a)),
-        label: {
-          position: a.wert < 0 ? "left" : "right", distance: 8,
-          color: stil("--viz-text-2"), fontSize: S.label,
-          formatter: () => (a.wert > 0 ? "+" : "−") + pz(Math.abs(a.wert), 0) + " %",
-        },
+        label: (() => {
+          const innen = nachInnen(a.wert);
+          return {
+            position: innen ? "insideLeft" : (a.wert < 0 ? "left" : "right"),
+            distance: 8,
+            offset: innen ? [6, 0] : [0, 0],
+            color: innen ? aufFarbe(farbe(a)) : stil("--viz-text-2"),
+            fontSize: S.label,
+            formatter: () => (a.wert > 0 ? "+" : "−") + pz(Math.abs(a.wert), 0) + " %",
+          };
+        })(),
       })),
       label: { show: true },
     }],

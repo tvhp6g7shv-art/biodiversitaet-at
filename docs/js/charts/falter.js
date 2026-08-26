@@ -64,10 +64,9 @@ function baueFalter(daten) {
   setzeHtml("k-falter",
     `<span class="viz-plakat-zahl">−${pz(daten.verlust, 0)}` +
     `<span class="viz-plakat-einheit">%</span></span>` +
-    `<span class="viz-plakat-zusatz">seit ${daten.basis}</span>` +
-    `<p class="viz-plakat-satz">Fast die Hälfte der Wiesenfalter in Europa ` +
-    `ist verschwunden. Der Index steht ${daten.stand} bei ` +
-    `${pz(daten.aktuell)} von 100.</p>`);
+    `<p class="viz-plakat-satz">der Wiesenfalter in Europa sind seit ` +
+    `${daten.basis} verschwunden — fast die Hälfte. Der Index steht ` +
+    `${daten.stand} bei ${pz(daten.aktuell)} von 100.</p>`);
 
   d.setOption({
     ...basis(),
