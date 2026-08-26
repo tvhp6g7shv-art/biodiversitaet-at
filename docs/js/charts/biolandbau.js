@@ -119,10 +119,24 @@ function baueBiolandbau(daten) {
       label: { show: true, position: "right", distance: 8,
                color: stil("--viz-text-2"), fontSize: S.label,
                formatter: (p) => pz(p.value) + " %" },
+      /* animation: false — am Live-Stand gemessen: die Einblendung der
+         markLine kommt hier nie zum Ende, der Pfad bleibt dauerhaft auf
+         d="". Sichtbar war nur die Beschriftung, die Linie selbst nicht;
+         ein resize() half nicht, erst das Abschalten der Animation gab
+         ihr Geometrie (M817.5 24 L817.5 726). Betrifft nur diese eine
+         Linie, die Balken blenden normal ein.
+
+         rotate: 0 — ECharts dreht die Beschriftung sonst in die Richtung
+         der Linie. Bei einer senkrechten Zielmarke stand sie hochkant.
+
+         position bleibt insideEndTop: das ist bei einer senkrechten
+         Linie das UNTERE Ende. insideStartTop wäre oben, dort liegt die
+         Beschriftung aber bei x 822–921 und damit außerhalb der 885 px
+         breiten Zeichenfläche — abgeschnitten. */
       markLine: {
-        silent: true, symbol: "none",
+        silent: true, symbol: "none", animation: false,
         lineStyle: { color: stil("--viz-muted"), width: 1, type: "dashed" },
-        label: { position: "insideEndTop", color: stil("--viz-muted"),
+        label: { position: "insideEndTop", rotate: 0, color: stil("--viz-muted"),
                  fontSize: S.achse,
                  formatter: `Ziel 2030: ${pz(daten.ziel, 0)} %` },
         data: [{ xAxis: daten.ziel }],
