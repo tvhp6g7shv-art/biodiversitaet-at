@@ -61,6 +61,20 @@ function baueRueckkehrer(daten) {
     `${perioden[0]} bis ${daten.periode}`);
   setzeText("h-rueckkehrer", daten.hinweis ?? "");
 
+  /* Die große Zahl ist hier die NULL, nicht der heutige Bestand — und
+     das ist eine Entscheidung, keine Bequemlichkeit. Der heutige Wert
+     ist eine Spanne (13.833 bis 16.654); eine einzelne große Zahl daraus
+     zu machen behauptete eine Genauigkeit, die die Erhebung nicht
+     hergibt. Die Null von 1869 dagegen ist exakt. Sie trägt außerdem die
+     Aussage des Abschnitts: Rückgang ist kein Naturgesetz. */
+  const biberPlakat = arten.find((a) => a.name === "Biber") || arten[0];
+  setzeHtml("k-rueckkehrer",
+    `<span class="viz-plakat-zahl">0</span>` +
+    `<span class="viz-plakat-zusatz">Biber im Jahr ${daten.biber_ausgerottet}</span>` +
+    `<p class="viz-plakat-satz">In Österreich war die Art ausgerottet. ` +
+    `Heute leben hier wieder ${zahl(biberPlakat.letzte_unten)} bis ` +
+    `${zahl(biberPlakat.letzte_oben)} Biber.</p>`);
+
   balkenHoehe(d, feld, perioden.length * arten.length, 30);
 
   /* Je Art ein unsichtbarer Sockel und die sichtbare Spanne, in einem

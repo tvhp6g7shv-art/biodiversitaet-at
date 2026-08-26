@@ -217,6 +217,51 @@ const inst = (id) => echarts.getInstanceByDom(window.document.getElementById(id)
     `vogelarten: Extremwerte ${spanne[0]} und ${spanne[1]} liegen in der Achse`);
 }
 
+/* --- 4  Plakat: die grosse Zahl gegen die Daten ------------------------
+   Die Zahl steht bewusst NICHT im Markup. Diese Pruefung haelt sie
+   trotzdem gegen die JSON-Werte — ein Tippfehler in der Formel faellt
+   sonst erst auf, wenn jemand die Seite liest. */
+{
+  const doc = window.document;
+  const lies = (id) => {
+    const el = doc.getElementById("k-" + id);
+    return {
+      zahl: el?.querySelector(".viz-plakat-zahl")?.textContent?.trim() ?? "",
+      zusatz: el?.querySelector(".viz-plakat-zusatz")?.textContent?.trim() ?? "",
+      satz: el?.querySelector(".viz-plakat-satz")?.textContent?.trim() ?? "",
+    };
+  };
+  const zahlAus = (t) => Number(t.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", "."));
+
+  const f = lies("falter");
+  pruefe(Math.abs(zahlAus(f.zahl) - daten.falter.verlust) < 1,
+    `Plakat falter: „${f.zahl}" gegen verlust ${daten.falter.verlust}`);
+  pruefe(f.zusatz.includes(String(daten.falter.basis)),
+    `Plakat falter: Zusatz nennt das Basisjahr (${f.zusatz})`);
+
+  const r = lies("rueckkehrer");
+  pruefe(r.zahl === "0", `Plakat rueckkehrer: grosse Zahl ist die Null (ist „${r.zahl}")`);
+  pruefe(r.zusatz.includes(String(daten.rueckkehrer.biber_ausgerottet)),
+    `Plakat rueckkehrer: Zusatz nennt ${daten.rueckkehrer.biber_ausgerottet} (${r.zusatz})`);
+  const biber = daten.rueckkehrer.arten.find((a) => a.name === "Biber");
+  pruefe(r.satz.includes(String(biber.letzte_unten).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0")) ||
+         r.satz.replace(/\u00a0/g, "").includes(String(biber.letzte_unten)),
+    `Plakat rueckkehrer: Satz nennt die Untergrenze ${biber.letzte_unten}`);
+
+  const v = lies("vogelarten");
+  const s = daten.vogelarten.schlechteste, b = daten.vogelarten.beste;
+  pruefe(Math.abs(zahlAus(v.zahl) - Math.abs(s.wert)) < 1,
+    `Plakat vogelarten: „${v.zahl}" gegen schlechteste ${s.wert}`);
+  pruefe(v.zusatz.includes(s.name), `Plakat vogelarten: Zusatz nennt ${s.name}`);
+  pruefe(v.satz.includes(b.name) && v.satz.includes(String(b.wert)),
+    `Plakat vogelarten: Satz nennt ${b.name} mit ${b.wert}`);
+
+  for (const [id, p] of [["falter", f], ["rueckkehrer", r], ["vogelarten", v]]) {
+    pruefe(p.zahl.length > 0 && p.satz.length > 0,
+      `Plakat ${id}: Zahl und Satz gefuellt`);
+  }
+}
+
 console.log(`\nBreite ${breite} px`);
 console.log(notiz.map((z) => "  " + z).join("\n"));
 if (fehler.length) {

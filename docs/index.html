@@ -317,6 +317,99 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
 #c-vogelarten { height: 520px; }
 @media (max-width: 560px) { #c-vogelarten { height: 560px; } }
 
+/* ===================================================================
+   BEREICH TIERGRUPPEN — ein Kapitel, nicht drei weitere Kacheln
+   -------------------------------------------------------------------
+   Entscheidung des Users am 26.08.2026: Diese drei Grafiken sollen
+   eigenständig auftreten, plakativ und klar. Sie treten deshalb aus der
+   Kacheloptik heraus — durchgehendes Band statt drei Rahmen, größere
+   Überschriften, je eine sehr große Zahl.
+
+   WARUM DAS BAND NUR DIE CONTAINERBREITE HAT UND NICHT DIE DES FENSTERS:
+   Eine Fläche über die volle Fensterbreite braucht `100vw`, und `100vw`
+   zählt die Scrollleiste mit — das erzeugt waagrechten Überlauf. Der
+   übliche Gegengriff ist `overflow-x: hidden` am Wurzelelement, und der
+   legt die klebende Sprungnavigation lahm (position: sticky wirkt nicht
+   in einem Vorfahren mit overflow). Die Containerbreite trägt die
+   Absetzung auch so: eigener Grund, keine Rahmen, keine Lücken.
+
+   Kein eigener Dunkelmodus-Block: --viz-plane ist in beiden Schemata
+   definiert und trägt die Absetzung von selbst.
+   =================================================================== */
+#s-falter, #s-rueckkehrer, #s-vogelarten {
+  display: block;
+  background: var(--viz-plane);
+  border: 0;
+  border-radius: 0;
+  margin-bottom: 0;
+  padding: 34px 28px;
+}
+/* Gerundet wird das BAND, nicht jede Karte. Die Akzentlinien oben und
+   unten sind das eigentliche Erkennungszeichen des Kapitels:
+   --viz-plane setzt sich vom Seitengrund nur mit 1,04 : 1 ab, das ist ein
+   Hauch und trägt allein nichts. Die Linie liegt bei 5,15 : 1 (hell) und
+   5,29 : 1 (dunkel) und damit deutlich über den 3 : 1, die für
+   nichttextliche Elemente gelten. Gerechnet, nicht geschätzt.
+   --viz-akzent ist hier richtig: er ist die kategoriale Farbe des Hauses
+   und KEINE Statusfarbe — --viz-gut oder --viz-kritisch würden dem
+   Kapitel eine Wertung anheften, die es nicht hat. */
+#s-falter {
+  border-radius: var(--viz-radius) var(--viz-radius) 0 0;
+  border-top: 3px solid var(--viz-akzent); padding-top: 40px;
+}
+#s-vogelarten {
+  border-radius: 0 0 var(--viz-radius) var(--viz-radius);
+  border-bottom: 3px solid var(--viz-akzent);
+  padding-bottom: 40px; margin-bottom: var(--viz-gap);
+}
+/* Eine Haarlinie zwischen den dreien: sie bilden ein Kapitel, bleiben
+   aber drei getrennte Aussagen — Verlust, Erholung, Stillstand. */
+#s-rueckkehrer, #s-vogelarten { border-top: 1px solid var(--viz-border); }
+
+/* Das Kapitel spricht lauter als die Kacheln. */
+#s-falter h2, #s-rueckkehrer h2, #s-vogelarten h2 {
+  font-size: 1.35rem; line-height: 1.25; letter-spacing: -0.01em;
+  max-width: 24ch;
+}
+
+/* --- Das Plakat: eine große Zahl, ein Zusatz, ein Satz --------------
+   Die Werte kommen aus den Diagrammbausteinen, nicht aus dem Markup —
+   im HTML stünden sie beim nächsten Datenlauf still falsch da. */
+.viz-plakat {
+  display: grid; grid-template-columns: auto 1fr;
+  column-gap: 26px; align-items: baseline; margin: 24px 0 6px;
+}
+.viz-plakat-zahl {
+  grid-row: 1; grid-column: 1;
+  font-family: var(--viz-font-display);
+  /* clamp statt fester Größe: bei 420 px bliebe eine 5,5-rem-Zahl nicht
+     neben dem Satz, sie würde ihn aus der Karte drücken. */
+  font-size: clamp(3rem, 8vw, 5.25rem);
+  font-weight: var(--viz-fw-kpi); line-height: .9;
+  letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+  color: var(--viz-text);
+}
+/* Der Zusatz stand zuerst auf --viz-muted. Gerechnet ergibt das auf dem
+   Band 4,35 : 1 im Hellmodus — unter den 4,5, die für Text dieser Größe
+   gelten. Die Abstufung trägt jetzt die Größe, nicht die Farbe. */
+.viz-plakat-zusatz {
+  grid-row: 2; grid-column: 1;
+  font-size: .82rem; color: var(--viz-text-2); margin-top: 10px;
+  letter-spacing: .01em;
+}
+.viz-plakat-satz {
+  grid-row: 1 / span 2; grid-column: 2; align-self: center;
+  margin: 0; font-size: 1.02rem; line-height: 1.55;
+  color: var(--viz-text-2); max-width: 48ch;
+}
+@media (max-width: 640px) {
+  #s-falter, #s-rueckkehrer, #s-vogelarten { padding: 26px 18px; }
+  #s-falter { padding-top: 30px; }
+  #s-vogelarten { padding-bottom: 30px; }
+  .viz-plakat { grid-template-columns: 1fr; }
+  .viz-plakat-satz { grid-row: auto; grid-column: 1; margin-top: 16px; }
+}
+
 /* --- Filterzeile: EINE Zeile über allem, was sie steuert --- */
 .viz-filter { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--viz-gap); }
 .viz-filter label { font-size: .82rem; color: var(--viz-text-2); }
@@ -563,6 +656,7 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
         <button class="viz-tabelle-schalter" data-ziel="t-falter">Tabelle</button>
       </div>
     </header>
+    <div class="viz-plakat" id="k-falter"></div>
     <div class="viz-chart" id="c-falter"></div>
     <div class="viz-verborgen" id="t-falter"></div>
     <p class="viz-notiz" id="n-falter"></p>
@@ -581,6 +675,7 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
         <button class="viz-tabelle-schalter" data-ziel="t-rueckkehrer">Tabelle</button>
       </div>
     </header>
+    <div class="viz-plakat" id="k-rueckkehrer"></div>
     <div class="viz-chart" id="c-rueckkehrer"></div>
     <div class="viz-verborgen" id="t-rueckkehrer"></div>
     <p class="viz-notiz" id="n-rueckkehrer"></p>
@@ -599,6 +694,7 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
         <button class="viz-tabelle-schalter" data-ziel="t-vogelarten">Tabelle</button>
       </div>
     </header>
+    <div class="viz-plakat" id="k-vogelarten"></div>
     <div class="viz-chart" id="c-vogelarten"></div>
     <div class="viz-verborgen" id="t-vogelarten"></div>
     <p class="viz-notiz" id="n-vogelarten"></p>
@@ -614,19 +710,19 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Cacheziffer `?v=NN` hochzaehlen, wenn eine Datei geaendert wurde —
      sie fuehrt eine EIGENE Zaehlung, unabhaengig von der Ausgabenummer
      in kern.js (VERSION.nummer). -->
-<script defer src="js/kern.js?v=06"></script>
-<script defer src="js/charts/kpi.js?v=06"></script>
-<script defer src="js/charts/schutzgebiete.js?v=06"></script>
-<script defer src="js/charts/vogel.js?v=06"></script>
-<script defer src="js/charts/boden.js?v=06"></script>
-<script defer src="js/charts/rotelisten.js?v=06"></script>
-<script defer src="js/charts/erhaltung.js?v=06"></script>
-<script defer src="js/charts/biotoptypen.js?v=06"></script>
-<script defer src="js/charts/wald.js?v=06"></script>
-<script defer src="js/charts/biolandbau.js?v=06"></script>
-<script defer src="js/charts/falter.js?v=06"></script>
-<script defer src="js/charts/rueckkehrer.js?v=06"></script>
-<script defer src="js/charts/vogelarten.js?v=06"></script>
+<script defer src="js/kern.js?v=07"></script>
+<script defer src="js/charts/kpi.js?v=07"></script>
+<script defer src="js/charts/schutzgebiete.js?v=07"></script>
+<script defer src="js/charts/vogel.js?v=07"></script>
+<script defer src="js/charts/boden.js?v=07"></script>
+<script defer src="js/charts/rotelisten.js?v=07"></script>
+<script defer src="js/charts/erhaltung.js?v=07"></script>
+<script defer src="js/charts/biotoptypen.js?v=07"></script>
+<script defer src="js/charts/wald.js?v=07"></script>
+<script defer src="js/charts/biolandbau.js?v=07"></script>
+<script defer src="js/charts/falter.js?v=07"></script>
+<script defer src="js/charts/rueckkehrer.js?v=07"></script>
+<script defer src="js/charts/vogelarten.js?v=07"></script>
 <script defer>
   document.addEventListener("DOMContentLoaded", () => {
     BIO.setzeWurzel(document.getElementById("dashboard"));

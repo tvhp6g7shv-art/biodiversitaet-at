@@ -55,6 +55,19 @@ function baueFalter(daten) {
     `Europa · ${daten.beginn} bis ${daten.stand}, ${daten.basis} = 100 · geglättet`);
   setzeText("h-falter", daten.hinweis ?? "");
 
+  /* Die große Zahl kommt aus den Daten, nicht aus dem Markup. Stünde sie
+     im HTML, wäre sie beim nächsten Eurostat-Lauf still falsch — genau
+     der Fehler, der am 26.08.2026 zwei Abschnittsüberschriften erwischt
+     hat. `verlust` ist der Abstand zur Basis in Indexpunkten; bei Basis
+     100 liest man ihn als Prozent des Ausgangsbestands, so wie es die
+     Kennzahlkacheln des Dashboards ohnehin tun. */
+  setzeHtml("k-falter",
+    `<span class="viz-plakat-zahl">−${pz(daten.verlust, 0)} %</span>` +
+    `<span class="viz-plakat-zusatz">seit ${daten.basis}</span>` +
+    `<p class="viz-plakat-satz">Fast die Hälfte der Wiesenfalter in Europa ` +
+    `ist verschwunden. Der Index steht ${daten.stand} bei ` +
+    `${pz(daten.aktuell)} von 100.</p>`);
+
   d.setOption({
     ...basis(),
     grid: { left: 8, right: istSchmal(feld) ? 16 : 46, top: 26, bottom: 8,

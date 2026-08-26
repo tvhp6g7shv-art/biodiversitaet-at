@@ -71,6 +71,19 @@ function baueVogelarten(daten) {
     `${z.rueckgang} weniger, ${z.stabil} gleich, ${z.zunahme} mehr`);
   setzeText("h-vogelarten", daten.hinweis ?? "");
 
+  /* Die große Zahl ist der schlechteste Wert, der Satz daneben der beste.
+     Beide kommen aus `schlechteste`/`beste` und wandern mit dem nächsten
+     Bericht von selbst mit — im Markup stünden sie spätestens im August
+     falsch da. Die Spannweite IST hier die Aussage: ein Mittelwert würde
+     genau sie verdecken, deshalb gibt es diesen Abschnitt. */
+  const s = daten.schlechteste, b = daten.beste;
+  setzeHtml("k-vogelarten",
+    `<span class="viz-plakat-zahl">−${pz(Math.abs(s.wert), 0)} %</span>` +
+    `<span class="viz-plakat-zusatz">${s.name}, seit ${daten.beginn}</span>` +
+    `<p class="viz-plakat-satz">Im selben Zeitraum hat der ${b.name} um ` +
+    `${pz(b.wert, 0)} % zugelegt. Von ${daten.bewertet} Arten sind ` +
+    `${z.rueckgang} zurückgegangen.</p>`);
+
   balkenHoehe(d, feld, liste.length, 14);
 
   d.setOption({
