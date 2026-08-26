@@ -355,11 +355,11 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
    Kapitel eine Wertung anheften, die es nicht hat. */
 #s-falter {
   border-radius: var(--viz-radius) var(--viz-radius) 0 0;
-  border-top: 3px solid var(--viz-akzent); padding-top: 40px;
+  border-top: 3px solid var(--viz-text-2); padding-top: 40px;
 }
 #s-vogelarten {
   border-radius: 0 0 var(--viz-radius) var(--viz-radius);
-  border-bottom: 3px solid var(--viz-akzent);
+  border-bottom: 3px solid var(--viz-text-2);
   padding-bottom: 40px; margin-bottom: var(--viz-gap);
 }
 /* Eine Haarlinie zwischen den dreien: sie bilden ein Kapitel, bleiben
@@ -392,6 +392,13 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
 /* Der Zusatz stand zuerst auf --viz-muted. Gerechnet ergibt das auf dem
    Band 4,35 : 1 im Hellmodus — unter den 4,5, die für Text dieser Größe
    gelten. Die Abstufung trägt jetzt die Größe, nicht die Farbe. */
+/* Die Einheit ist kein Teil der Zahl. Bei 84 px wurde aus dem
+   Leerzeichen vor dem Prozentzeichen eine Lücke von rund 40 px —
+   gemessen an der Live-Seite, nicht vermutet. */
+.viz-plakat-einheit {
+  font-size: .45em; letter-spacing: 0; margin-left: .1em;
+  font-weight: var(--viz-fw-kraeftig);
+}
 .viz-plakat-zusatz {
   grid-row: 2; grid-column: 1;
   font-size: .82rem; color: var(--viz-text-2); margin-top: 10px;

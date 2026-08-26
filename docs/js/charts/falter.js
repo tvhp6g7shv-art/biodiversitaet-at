@@ -62,7 +62,8 @@ function baueFalter(daten) {
      100 liest man ihn als Prozent des Ausgangsbestands, so wie es die
      Kennzahlkacheln des Dashboards ohnehin tun. */
   setzeHtml("k-falter",
-    `<span class="viz-plakat-zahl">−${pz(daten.verlust, 0)} %</span>` +
+    `<span class="viz-plakat-zahl">−${pz(daten.verlust, 0)}` +
+    `<span class="viz-plakat-einheit">%</span></span>` +
     `<span class="viz-plakat-zusatz">seit ${daten.basis}</span>` +
     `<p class="viz-plakat-satz">Fast die Hälfte der Wiesenfalter in Europa ` +
     `ist verschwunden. Der Index steht ${daten.stand} bei ` +

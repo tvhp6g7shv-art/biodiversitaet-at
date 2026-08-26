@@ -78,7 +78,8 @@ function baueVogelarten(daten) {
      genau sie verdecken, deshalb gibt es diesen Abschnitt. */
   const s = daten.schlechteste, b = daten.beste;
   setzeHtml("k-vogelarten",
-    `<span class="viz-plakat-zahl">−${pz(Math.abs(s.wert), 0)} %</span>` +
+    `<span class="viz-plakat-zahl">−${pz(Math.abs(s.wert), 0)}` +
+    `<span class="viz-plakat-einheit">%</span></span>` +
     `<span class="viz-plakat-zusatz">${s.name}, seit ${daten.beginn}</span>` +
     `<p class="viz-plakat-satz">Im selben Zeitraum hat der ${b.name} um ` +
     `${pz(b.wert, 0)} % zugelegt. Von ${daten.bewertet} Arten sind ` +
