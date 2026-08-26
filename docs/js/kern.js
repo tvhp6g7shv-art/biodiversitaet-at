@@ -105,12 +105,19 @@ function basis() {
       borderWidth: 1,
       padding: [9, 12],
       textStyle: { color: stil("--viz-text"), fontSize: s.tooltip },
+      /* Ohne `confine` positioniert ECharts den Tooltip frei am Zeiger und
+         laesst ihn ueber die Zeichenflaeche hinauslaufen — auf dem Handy
+         landete er links ausserhalb des Bildes. `confine` haelt ihn im
+         Container; die Breitengrenze verhindert, dass eine lange Zeile
+         den Container selbst sprengt. */
+      confine: true,
       /* Der Schatten war auf 10 % Schwarz gerechnet — auf dunklem Grund
          ist das nichts. Er trägt jetzt so viel, dass der Tooltip sich
          auch über der eigenen Grafik abhebt. --viz-surface bleibt
          deshalb deckend, siehe CSS-Abschnitt 45.1. */
       extraCssText: "box-shadow:0 8px 28px rgba(0,0,0,.45);border-radius:"
-        + (stil("--viz-radius-s") || "8px") + ";",
+        + (stil("--viz-radius-s") || "8px") + ";"
+        + "max-width:min(300px,80vw);white-space:normal;",
     },
   };
 }
