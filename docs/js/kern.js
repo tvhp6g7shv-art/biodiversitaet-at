@@ -348,7 +348,16 @@ function kategorieLabel(el, desktopLinks = 120, anzahl = 0) {
   /* 44 px sind oberer (10) + unterer (34) Gitterrand. */
   const platz = anzahl > 0 ? ((el?.clientHeight || 300) - 44) / anzahl : 999;
   const zweiZeilen = platz >= 2 * ZEILE;
-  if (!istSchmal(el) && links >= desktopLinks && zweiZeilen) return {};
+  /* Hier stand bis 26.08.2026 ein `return {}` fuer den Fall, dass der
+     volle Desktop-Rand da ist und zwei Zeilen hineinpassen. Das war die
+     Ursache eines still abgeschnittenen Namens: OHNE `width` bricht
+     ECharts weder um noch kuerzt es mit „…" — es zeichnet den Text
+     einfach ueber den linken Rand der Zeichenflaeche hinaus, wo er
+     abgeschnitten wird. Ein zu langer Name sah damit nicht falsch aus,
+     sondern nur seltsam formuliert.
+     Jetzt gilt die Begrenzung IMMER. Wo der Name in den reservierten
+     Rand passt — der Normalfall — aendert das nichts; wo er nicht
+     passt, bricht er um, statt zu verschwinden. */
   return {
     width: Math.max(56, links - 16),   /* 12 px `margin` + Luft fuer „…" */
     overflow: zweiZeilen ? "break" : "truncate",

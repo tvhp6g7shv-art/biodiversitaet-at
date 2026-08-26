@@ -83,7 +83,19 @@ function baueBiotoptypen(daten) {
 
   d.setOption({
     ...basis(),
-    grid: { ...BIO.balkenGitter(feld, { left: 168, right: 72 }), top: 12 },
+    /* left: 190 statt 168 (26.08.2026). Der Rand muss den LÄNGSTEN
+       Kategorienamen tragen, und der ist „von Vernichtung bedroht":
+       165,6 px in IBM Plex Mono bei 12 px (gemessen aus der Schriftdatei,
+       Vorschub 600/1000). Mit 12 px `margin` blieben von 168 nur 156 px
+       übrig — der Name lief 9,6 px über die Zeichenfläche hinaus und
+       wurde dort abgeschnitten.
+
+       Warum das lange unentdeckt blieb: auf GitHub Pages steht
+       `--viz-font` auf Figtree, dort misst derselbe Text 133,7 px und
+       passt. Sichtbar war der Fehler nur in der WordPress-Auslieferung,
+       wo die idl.css die Mono-Schrift setzt. Wer diesen Wert prüft, muss
+       ihn in der MONO-Auslieferung prüfen. */
+    grid: { ...BIO.balkenGitter(feld, { left: 190, right: 72 }), top: 12 },
     tooltip: {
       ...basis().tooltip, trigger: "axis",
       axisPointer: { type: "shadow", shadowStyle: { color: stil("--viz-grid"), opacity: 0.35 } },
@@ -103,7 +115,7 @@ function baueBiotoptypen(daten) {
     yAxis: { ...achse(), type: "category", inverse: true,
       data: stufen.map((s) => s.name), splitLine: { show: false },
       axisLabel: { color: stil("--viz-text-2"), fontSize: S.serie, margin: 12,
-                   ...BIO.kategorieLabel(feld, 168, stufen.length) } },
+                   ...BIO.kategorieLabel(feld, 190, stufen.length) } },
     series: [{
       type: "bar", name: "Biotoptypen", barWidth: BIO.balkenBreite(feld, "58%"),
       data: stufen.map((s) => ({
