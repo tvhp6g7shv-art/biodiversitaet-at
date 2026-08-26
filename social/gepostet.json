@@ -1,0 +1,12 @@
+{
+  "hinweis": "Zustand des Bluesky-Bots fuer @biodiversitaet-monitor.at. Eine Ausgabe, die hier steht, wird nicht mehr gepostet. V 01 ist vor Inbetriebnahme des Bots erschienen und deshalb vorab eingetragen — ohne diesen Vorlauf haette der erste scharfe Lauf die Erstausgabe mit allen acht Grafiken in eine frische Timeline gekippt. Damit gelten die acht Grafiknamen der Erstausgabe ab sofort als gesehen: gepostet wird erst wieder, wenn eine Ausgabe eine Grafik nennt, die es vorher nicht gab. Soll V 01 doch noch gepostet werden, den Eintrag hier loeschen und in changelog.json einen `social`-Text ergaenzen.",
+  "gepostet": [
+    {
+      "nummer": "01",
+      "datum": "2026-08-24",
+      "gepostet_am": null,
+      "url": null,
+      "grund": "Vorgeschichte — vor Inbetriebnahme des Bots erschienen"
+    }
+  ]
+}

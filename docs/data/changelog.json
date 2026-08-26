@@ -1,0 +1,33 @@
+{
+  "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
+  "aktuell": "01",
+  "basis_url": "https://biodiversitaet-monitor.at",
+  "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
+  "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
+  "ausgaben": [
+    {
+      "nummer": "01",
+      "datum": "2026-08-24",
+      "datum_text": "24. August 2026",
+      "titel": "Erste gezählte Ausgabe — acht Messgrößen zur biologischen Vielfalt",
+      "veroeffentlicht": true,
+      "cacheziffer": 3,
+      "charts": [
+        "schutzgebiete",
+        "vogel",
+        "boden",
+        "rotelisten",
+        "erhaltung",
+        "biotoptypen",
+        "wald",
+        "biolandbau"
+      ],
+      "social": null,
+      "abschnitte": [],
+      "seite": [
+        "Erste gezählte Ausgabe. Acht Abschnitte: Fläche unter Schutz, Feld- und Wiesenvögel, Bodenverbrauch, Alter der Roten Listen, Erhaltungszustand der Lebensraumtypen, gefährdete Biotoptypen, Waldfläche im Nachbarschaftsvergleich und Anteil der biologischen Landwirtschaft. Drei davon stellen die nationale Zahl in den europäischen Zusammenhang.",
+        "Vier Reihen kommen bei jedem Lauf frisch von Eurostat, fünf sind aus Fachberichten abgeschrieben. Letztere tragen ihren Stand offen mit — Österreich veröffentlicht seine Biodiversitätsdaten überwiegend als PDF ohne Datenanhang."
+      ]
+    }
+  ]
+}

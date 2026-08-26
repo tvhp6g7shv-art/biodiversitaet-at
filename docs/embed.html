@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biodiversität Österreich — Grafik</title>
+<meta name="robots" content="noindex">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js" defer></script>
+<!-- Nur die Diagramme, die die Einbettseite anbietet. kpi braucht sie nicht:
+     die Kennzahlenkacheln gehoeren zum Dashboard, nicht zu einer einzelnen
+     Grafik. Cacheziffer wird aus index.html uebernommen — beide Auslieferungen
+     tragen dieselbe, sonst mischt der Browser Staende. -->
+<script src="js/kern.js?v=03" defer></script>
+<script src="js/charts/schutzgebiete.js?v=03" defer></script>
+<script src="js/charts/vogel.js?v=03" defer></script>
+<script src="js/charts/boden.js?v=03" defer></script>
+<script src="js/charts/rotelisten.js?v=03" defer></script>
+<script src="js/charts/erhaltung.js?v=03" defer></script>
+<script src="js/charts/biotoptypen.js?v=03" defer></script>
+<script src="js/charts/wald.js?v=03" defer></script>
+<script src="js/charts/biolandbau.js?v=03" defer></script>
+<link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* ===================================================================
+   ERZEUGT — nicht von Hand aendern.
+   Schrift- und Farbblock stammen aus docs/index.html und werden von
+   code/biodiversitaet-embed-bauen.py hierher kopiert. Wer die Palette
+   aendert, aendert sie in index.html und laesst das Skript neu laufen.
+
+   ANDERS ALS BEIM ARBEITSMARKT ist diese Seite NICHT bunt: dort wurde am
+   19.08.2026 entschieden, der Einbettung eine eigene farbige Palette zu
+   geben, weil eine Grafik auf einer fremden Seite ohne den Kontext des
+   Dashboards lesbar sein muss. Fuer die Biodiversitaet steht dieser
+   Entscheid noch aus — bis dahin gilt die Palette der Live-Seite.
+   =================================================================== */
+
+/* ===================================================================
+   SCHRIFT — Figtree, variabel (SIL Open Font License 1.1)
+   -------------------------------------------------------------------
+   EINE Familie, Gewichtsachse 300–900. Die Lizenzdatei liegt daneben
+   unter fonts/LICENSE-Figtree.txt und muss dort bleiben (OFL-Auflage).
+
+   Warum selbst gehostet und nicht der System-Stack: ECharts legt
+   Achsenbeschriftungen, Abschneidungen und Überlappungen anhand der
+   GEMESSENEN Textbreite fest. Mit system-ui misst jedes Betriebssystem
+   anders — dieselbe Grafik bekäme unter Windows ein anderes Layout als
+   unter macOS. Eine mitgelieferte Schrift macht die Ausgabe berechenbar.
+
+   ▲ ▼ und → sind in Figtree nicht enthalten und fallen glyphweise auf
+   die Systemschrift zurück. Das ist gewollt und war mit der vorherigen
+   Schrift genauso.
+   =================================================================== */
+@font-face {
+  font-family: "Figtree"; font-style: normal; font-weight: 300 900; font-display: swap;
+  src: url("fonts/figtree-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: "Figtree"; font-style: normal; font-weight: 300 900; font-display: swap;
+  src: url("fonts/figtree-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+/* ===================================================================
+   FARBEN UND MASSE
+   In Oxygen 6 überschreibst du diese Variablen einfach im globalen
+   Stylesheet — die Charts ziehen automatisch nach. Die Werte hier sind
+   validierte Voreinstellungen (kontrast- und farbfehlsichtigkeitsgeprüft).
+   =================================================================== */
+.viz-root {
+  color-scheme: light;
+
+  --viz-surface:        #ffffff;
+  --viz-plane:          #fafafa;
+  --viz-text:           #0a0a0a;
+  --viz-text-2:         #0a0a0a;
+  --viz-muted:          #767676;
+  --viz-grid:           #ececec;
+  --viz-axis:           #d9d9d9;
+  --viz-border:         #e5e5e5;
+
+  /* Kategoriale Serien — Reihenfolge ist bewusst gewählt, nicht cyceln.
+     Seit 19.08.2026 monochrom wie die Live-Seite (LifeOS-Restyling v31):
+     1 ist der dunkelste Ton, dann 4, 6, 2, 3, 5. Wer hier bunte Farben
+     einsetzt, bricht die Übereinstimmung mit arbeitsmarkt-monitor.at. */
+  --viz-series-1:       #0a0a0a;
+  --viz-series-2:       #9a9a9a;
+  --viz-series-3:       #c9c9c9;
+  --viz-series-4:       #4d4d4d;
+  --viz-series-5:       #e0e0e0;
+  --viz-series-6:       #737373;
+
+  /* Kategorialer Akzent — KEINE Statusfarbe.
+     Eingeführt 20.08.2026 für „Zwei Österreichs": zwei Graustufen trennten
+     die beiden Ländergruppen im Dunkelmodus nur 2,77 : 1. --viz-gut und
+     --viz-kritisch schieden aus, weil sie „gut" und „schlecht" bedeuten und
+     der Zwischensaisontyp weder das eine noch das andere ist.
+     5,38 : 1 zur Kartenfläche, 3,68 : 1 zu --viz-series-1 — die Gruppen-
+     überschrift trägt denselben Ton und ist Text, deshalb über 4,5. */
+  --viz-akzent:         #1e738f;
+
+  /* Sequenzielle Skala (ein Ton, hell → dunkel) für die Karte.
+     Im Dunkelmodus kehrt sie ihre Leserichtung um (dunkel = wenig),
+     sonst verschwindet die unterste Stufe im Kartengrund. */
+  --viz-seq-1:          #f2f2f2;
+  --viz-seq-2:          #d9d9d9;
+  --viz-seq-3:          #b3b3b3;
+  --viz-seq-4:          #8c8c8c;
+  --viz-seq-5:          #595959;
+  --viz-seq-6:          #262626;
+
+  /* Status — nur für Veränderungen, immer mit Pfeil und Text */
+  --viz-gut:            #04b404;
+  --viz-kritisch:       #f84444;
+
+  /* Divergierende Skala für Veränderungen: Grün = Rückgang, Rot = Anstieg.
+     Neutral in der Mitte ist Grau, nie ein dritter Farbton.
+     Pole seit 19.08.2026 aus den Wertungsfarben der Live-Seite abgeleitet
+     (#3cbb36 / #fa5b56, User-Entscheid 18.08.). Benachbarte Stufen liegen
+     in beiden Farbschemata über ΔE 9,4 (CIE76) auseinander — Rechenweg in
+     dunkelmodus-kontrast.py im Ordner Dashboards. Das Grün ist bewusst
+     heller als das Rot, so trägt die Helligkeit die Unterscheidung mit
+     und nicht der Farbton allein. */
+  --viz-div-neutral:    #f0efec;
+  --viz-div-gut-1:      #d4e7ce;
+  --viz-div-gut-2:      #a5d89e;
+  --viz-div-gut-3:      #77ca6f;
+  --viz-div-gut-4:      #3cbb36;
+  --viz-div-schlecht-1: #f7d7d1;
+  --viz-div-schlecht-2: #fcafa6;
+  --viz-div-schlecht-3: #fd887e;
+  --viz-div-schlecht-4: #fa5b56;
+
+  /* --- Typografie -------------------------------------------------
+     Größen in px, weil ECharts nur Zahlen kennt; kern.js liest sie mit
+     parseFloat aus. Wer in Oxygen umstellt, ändert nur diese Zeilen —
+     die 14 Diagramm-Module holen ihre Größen von hier.
+     ----------------------------------------------------------------- */
+  --viz-font: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --viz-font-display: var(--viz-font);
+
+  --viz-fs-achse:   11px;    /* Achsenbeschriftung, visualMap */
+  --viz-fs-label:   11.5px;  /* Werte am Balken- oder Punktende */
+  --viz-fs-serie:   12px;    /* Kategorienamen, Legende */
+  --viz-fs-tooltip: 12.5px;
+  --viz-fs-eng:     10.5px;  /* Sonderfall: 27 Ländernamen auf einer Achse */
+
+  --viz-fw-normal:   400;
+  --viz-fw-kraeftig: 600;
+  --viz-fw-kpi:      650;    /* echte Zwischenstufe, Figtree ist variabel */
+
+  --viz-radius: 10px;
+  --viz-gap: 20px;
+}
+/* Dunkelmodus — Palette B „weiches Anthrazit", 19.08.2026.
+   Identisch mit Abschnitt 34 in idl.css auf arbeitsmarkt-monitor.at.
+   Alle Werte gerechnet: 0 Verletzungen der Sollkontraste, divergierende
+   Rampe über CIE76-ΔE ≥ 9,4. Wer hier etwas ändert, muss Abschnitt 34
+   mitziehen — sonst laufen die zwei Auslieferungen wieder auseinander. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .viz-root {
+    color-scheme: dark;
+    --viz-surface: #1c1f21; --viz-plane: #161819;
+    --viz-text: #e9eaea;    --viz-text-2: #e9eaea;
+    --viz-muted: #9aa0a3;   --viz-grid: #2b2f31; --viz-axis: #42484c;
+    --viz-border: #373d41;
+    --viz-series-1: #e9eaea; --viz-series-2: #9ca4a8;
+    --viz-series-3: #757d81; --viz-series-4: #c6ccd0;
+    --viz-series-5: #626a6e; --viz-series-6: #868e92;
+    /* Kategorialer Akzent, dunkel: 4,92 : 1 zur Kartenfläche. */
+    --viz-akzent: #4396b1;
+    --viz-seq-1: #292f32; --viz-seq-2: #3c4347; --viz-seq-3: #555d62;
+    --viz-seq-4: #7b8489; --viz-seq-5: #a6aeb2; --viz-seq-6: #dde2e4;
+    --viz-gut: #3fd069;   --viz-kritisch: #f77070;
+    --viz-div-neutral: #2e3336;
+    --viz-div-gut-1: #1a3327; --viz-div-gut-2: #204d38;
+    --viz-div-gut-3: #276b4b; --viz-div-gut-4: #309362;
+    --viz-div-schlecht-1: #3a2224; --viz-div-schlecht-2: #582c2f;
+    --viz-div-schlecht-3: #80393c; --viz-div-schlecht-4: #b84a4d;
+  }
+}
+:root[data-theme="dark"] .viz-root {
+  color-scheme: dark;
+  --viz-surface: #1c1f21; --viz-plane: #161819;
+  --viz-text: #e9eaea;    --viz-text-2: #e9eaea;
+  --viz-muted: #9aa0a3;   --viz-grid: #2b2f31; --viz-axis: #42484c;
+  --viz-border: #373d41;
+  --viz-series-1: #e9eaea; --viz-series-2: #9ca4a8;
+  --viz-series-3: #757d81; --viz-series-4: #c6ccd0;
+  --viz-series-5: #626a6e; --viz-series-6: #868e92;
+  /* Kategorialer Akzent, dunkel: 4,92 : 1 zur Kartenfläche. */
+  --viz-akzent: #4396b1;
+  --viz-seq-1: #292f32; --viz-seq-2: #3c4347; --viz-seq-3: #555d62;
+  --viz-seq-4: #7b8489; --viz-seq-5: #a6aeb2; --viz-seq-6: #dde2e4;
+  --viz-gut: #3fd069;   --viz-kritisch: #f77070;
+  --viz-div-neutral: #2e3336;
+  --viz-div-gut-1: #1a3327; --viz-div-gut-2: #204d38;
+  --viz-div-gut-3: #276b4b; --viz-div-gut-4: #309362;
+  --viz-div-schlecht-1: #3a2224; --viz-div-schlecht-2: #582c2f;
+  --viz-div-schlecht-3: #80393c; --viz-div-schlecht-4: #b84a4d;
+}
+
+/* --- Nur fuer die Einbettung ---------------------------------------
+   Der iframe hat keine Seitenflaeche und keinen Seitenkopf; die
+   Grafik fuellt das Dokument. Deshalb hier eigene Masse statt der
+   Layoutregeln aus index.html. */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: transparent; }
+.viz-root {
+  font-family: var(--viz-font); color: var(--viz-text);
+  background: var(--viz-surface); padding: 16px 18px 12px;
+}
+h2 { font-family: var(--viz-font-display); font-size: 1rem; margin: 0 0 2px; font-weight: var(--viz-fw-kraeftig); }
+.viz-unterzeile { color: var(--viz-muted); font-size: .78rem; margin: 0; }
+.viz-chart { width: 100%; height: 340px; }
+.viz-chart-hoch { height: 420px; }
+.viz-verborgen { display: none; }
+.viz-hinweisfeld { color: var(--viz-muted); font-size: .74rem; line-height: 1.5; margin: 10px 0 0; }
+
+/* Quellenzeile: gehoert zur Grafik, nicht daneben. Wer die Grafik einbettet,
+   bettet die Namensnennung mit ein — genau das verlangt CC BY. */
+.viz-quelle {
+  margin: 12px 0 0; padding-top: 10px; border-top: 1px solid var(--viz-grid);
+  color: var(--viz-muted); font-size: .72rem; line-height: 1.5;
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+.viz-quelle a { color: inherit; }
+
+/* Signaturzeile — Inhalt kommt aus BIO.signaturHtml(), damit die
+   Versionsnummer nur in kern.js steht. */
+.viz-signatur {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px;
+  margin: 8px 0 0; padding-top: 8px; border-top: 1px solid var(--viz-grid);
+  color: var(--viz-muted); font-size: .72rem; line-height: 1.5;
+}
+.viz-signatur a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.viz-signatur-teiler { opacity: .5; }
+</style>
+</head>
+<body>
+<div class="viz-root" id="dashboard">
+  <h2 id="titel">Biodiversität Österreich</h2>
+  <p class="viz-unterzeile" id="untertitel">Daten werden geladen …</p>
+  <div id="buehne"></div>
+  <p class="viz-hinweisfeld" id="hinweisfeld"></p>
+  <!-- Quellenangabe und Signatur zusammen als Fuss der Grafik. Das
+       eingebettete Dokument ist eigenstaendig (eigenes <html> im iframe),
+       deshalb ist <footer> hier auch das contentinfo-Landmark. -->
+  <footer>
+    <p class="viz-quelle">
+      <span id="quelle"></span>
+      <span id="stand"></span>
+    </p>
+    <p class="viz-signatur" id="signatur"></p>
+  </footer>
+</div>
+
+<script>
+/* ===========================================================================
+   Einbettseite: rendert genau eine Grafik, ohne Seitenkopf und ohne Kacheln.
+   Aufruf:  embed.html?chart=<name>
+   =========================================================================== */
+const CHARTS = {
+  schutzgebiete: { titel: "Fläche unter Schutz", dateien: ["schutzgebiete"], bau: (B, d) => B.baueSchutzgebiete(d.schutzgebiete) },
+  vogel: { titel: "Feld- und Wiesenvögel", dateien: ["vogel"], bau: (B, d) => B.baueVogel(d.vogel), hoch: true },
+  boden: { titel: "Bodenverbrauch", dateien: ["boden"], bau: (B, d) => B.baueBoden(d.boden), extra: ["t-boden-kategorien"] },
+  rotelisten: { titel: "Alter der Roten Listen", dateien: ["rotelisten"], bau: (B, d) => B.baueRoteListen(d.rotelisten) },
+  erhaltung: { titel: "Erhaltungszustand der Lebensraumtypen", dateien: ["erhaltung"], bau: (B, d) => B.baueErhaltung(d.erhaltung) },
+  biotoptypen: { titel: "Gefährdete Biotoptypen", dateien: ["biotoptypen"], bau: (B, d) => B.baueBiotoptypen(d.biotoptypen) },
+  wald: { titel: "Waldfläche im Vergleich", dateien: ["wald"], bau: (B, d) => B.baueWald(d.wald) },
+  biolandbau: { titel: "Anteil der biologischen Landwirtschaft", dateien: ["biolandbau"], bau: (B, d) => B.baueBiolandbau(d.biolandbau) },
+};
+
+/* Die Chart-Module sprechen feste Elementkennungen an (c-, t-, u-, h-).
+   Die legen wir hier passend zum gewaehlten Diagramm an, statt alle acht
+   Abschnitte vorzuhalten. `extra` faengt Module ab, die noch ein weiteres
+   Ziel ansprechen — boden.js schreibt seine Kategorientabelle nach
+   t-boden-kategorien; fehlt das Element, bricht der Aufbau ab. */
+function baueBuehne(name, art) {
+  const klasse = art.hoch ? "viz-chart viz-chart-hoch" : "viz-chart";
+  const zusatz = (art.extra || [])
+    .map((kennung) => `<div class="viz-verborgen" id="${kennung}"></div>`)
+    .join("");
+  document.getElementById("buehne").innerHTML =
+    `<div class="${klasse}" id="c-${name}"></div>
+     <div class="viz-verborgen" id="t-${name}"></div>
+     <div class="viz-verborgen" id="s-${name}"></div>
+     <div class="viz-verborgen" id="u-${name}"></div>
+     <div class="viz-verborgen" id="h-${name}"></div>` + zusatz;
+}
+
+async function los() {
+  const B = window.BIO;
+  const name = new URLSearchParams(location.search).get("chart") || "schutzgebiete";
+  const art = CHARTS[name];
+  if (!art) {
+    document.getElementById("untertitel").textContent =
+      `Unbekannte Grafik „${name}“. Verfügbar: ${Object.keys(CHARTS).join(", ")}`;
+    return melde();
+  }
+
+  document.getElementById("titel").textContent = art.titel;
+  baueBuehne(name, art);
+
+  let meta, daten = {};
+  try {
+    meta = await B.hole("meta");
+    for (const datei of art.dateien) daten[datei] = await B.hole(datei);
+  } catch (fehler) {
+    document.getElementById("untertitel").textContent =
+      "Die Daten konnten nicht geladen werden.";
+    return melde();
+  }
+
+  art.bau(B, daten);
+
+  /* Untertitel und Hinweis aus den versteckten Feldern nach oben holen.
+     Der Hinweis steht im Dashboard als sichtbarer Absatz IM Markup und
+     nicht im Datensatz — deshalb der Rueckfall auf das h-Feld. */
+  const unter = document.getElementById(`u-${name}`)?.textContent;
+  document.getElementById("untertitel").textContent = unter || "";
+  const hinweis = document.getElementById(`h-${name}`)?.textContent;
+  document.getElementById("hinweisfeld").textContent = hinweis || "";
+
+  const angaben = meta?.einbettung ?? {};
+  document.getElementById("quelle").innerHTML =
+    `Datenquellen: Eurostat · Umweltbundesamt · ÖROK · BirdLife Österreich` +
+    (angaben.grafik_von
+      ? ` — Grafik: <a href="${angaben.url ?? "#"}" target="_blank" rel="noopener">${angaben.grafik_von}</a>`
+      : "");
+  document.getElementById("stand").textContent =
+    meta?.generiert_am ? "Stand: " + new Date(meta.generiert_am)
+      .toLocaleDateString("de-AT", { month: "long", year: "numeric" }) : "";
+
+  /* Signatur aus kern.js — Guard, weil eine Gastgeberseite eine aeltere
+     kern.js im Cache haben kann; dann fehlt nur diese Zeile, statt dass
+     der Aufbau hier abreisst. */
+  if (typeof B.signaturHtml === "function")
+    document.getElementById("signatur").innerHTML = B.signaturHtml();
+
+  /* Der iframe erbt die Schrift der Gastgeberseite nicht, laedt Figtree also
+     selbst — und ECharts hat womoeglich schon mit der Ersatzschrift gemessen.
+     Darum nach dem Aufbau neu vermessen, sobald die Schrift steht. */
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => { B.neuVermessen(); melde(); });
+  }
+
+  setTimeout(melde, 120);
+  new ResizeObserver(melde).observe(document.documentElement);
+}
+
+/* Hoehe an die einbettende Seite melden — ein iframe kennt sie sonst nicht. */
+let letzteHoehe = 0;
+function melde() {
+  const hoehe = Math.ceil(document.documentElement.scrollHeight);
+  if (hoehe === letzteHoehe) return;
+  letzteHoehe = hoehe;
+  parent.postMessage({ typ: "bio-hoehe", hoehe }, "*");
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const warte = () => (window.BIO && window.echarts) ? los() : setTimeout(warte, 60);
+  warte();
+});
+</script>
+</body>
+</html>
