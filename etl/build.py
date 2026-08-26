@@ -3,8 +3,8 @@
 Datenpipeline für das Biodiversitäts-Dashboard Österreich — Orchestrator.
 
 Was die Pipeline tut:
-  1. Holt die Schutzgebietsreihe frisch von der Eurostat-API
-  2. Legt die drei gepflegten Reihen bei und prüft ihren Pflegestand
+  1. Holt fünf Reihen frisch von der Eurostat-API
+  2. Legt die gepflegten Reihen bei und prüft ihren Pflegestand
   3. Schreibt alles als kleine JSON-Dateien nach docs/data/
 
 Aufruf:  python etl/build.py
@@ -12,19 +12,29 @@ Aufruf:  python etl/build.py
 Module:
     gemeinsam.py     Logging, Download, JSON-stat-Auswertung, Pflegeprüfung
     schutzgebiete.py Eurostat sdg_15_20 (API)
-    vogel.py         Farmland Bird Index 1998–2023 (gepflegt) + EU-Reihe (API)
+    vogel.py         Farmland Bird Index 1998–2025 (gepflegt) + EU-Reihe (API)
     boden.py         ÖROK-Flächeninanspruchnahme und Versiegelung (gepflegt)
     rotelisten.py    Stand der Aktualisierung der Roten Listen (gepflegt)
     erhaltung.py     Erhaltungszustand nach Artikel 17 FFH (gepflegt)
     biotoptypen.py   Rote Liste der Biotoptypen (gepflegt)
     wald.py          Waldfläche AT und Nachbarn, Eurostat for_area (API)
     biolandbau.py    Bio-Anteil im Ländervergleich, Eurostat sdg_02_40 (API)
+    falter.py        Grünland-Schmetterlingsindex, Eurostat sdg_15_61 (API)
+    rueckkehrer.py   Biber und Fischotter, Artikel-17-Spannen (gepflegt)
+    vogelarten.py    Feld- und Wiesenvögel Art für Art (gepflegt)
 
-Österreich ist keine Insel: Vier der acht Abschnitte stellen die
-nationalen Zahlen in einen europäischen Zusammenhang — die Vogelreihe
-gegen das EU-Aggregat, Waldfläche und Bio-Anteil gegen die acht Nachbarn,
-und der Erhaltungszustand ist ohnehin nach den grenzüberschreitenden
-biogeografischen Regionen gegliedert.
+Die drei zuletzt genannten bilden zusammen den Bereich Tiergruppen und
+sind bewusst als Gegensatz gebaut — Verlust, Erholung, Stillstand. Sie
+sollen zeigen, dass Rückgang kein Naturgesetz ist.
+
+Österreich ist keine Insel: Fünf Abschnitte stellen die nationalen Zahlen
+in einen europäischen Zusammenhang — die Vogelreihe gegen das EU-Aggregat,
+Waldfläche und Bio-Anteil gegen die acht Nachbarn, und der
+Erhaltungszustand ist ohnehin nach den grenzüberschreitenden
+biogeografischen Regionen gegliedert. Der Falterindex ist der einzige
+Abschnitt, der **gar keine** österreichische Zahl zeigt: Eurostat führt
+für ihn nur das EU-Aggregat. Das steht in seiner Hinweiszeile und darf
+dort nicht verschwinden.
 
 Die Pipeline ist absichtlich gesprächig: sie schreibt mit, was sie tut, und
 sammelt alle Auffälligkeiten in docs/data/meta.json unter "warnungen".
@@ -42,7 +52,7 @@ from __future__ import annotations
 import datetime as dt
 
 import config
-from gemeinsam import QUELLEN, WARNUNGEN, log, schreibe
+from gemeinsam import QUELLEN, WARNUNGEN, log, schreibe, warnen
 
 from schutzgebiete import baue_schutzgebiete
 from vogel import baue_vogel
@@ -52,6 +62,44 @@ from erhaltung import baue_erhaltung
 from biotoptypen import baue_biotoptypen
 from wald import baue_wald
 from biolandbau import baue_biolandbau
+from falter import baue_falter
+from rueckkehrer import baue_rueckkehrer
+from vogelarten import baue_vogelarten
+
+
+def _vogel_abgleichen(vogel: dict, vogelarten: dict) -> None:
+    """
+    Prüft, ob die beiden Vogelabschnitte denselben Bericht abbilden.
+
+    WARUM ES DIESE PRÜFUNG GIBT: Am 26.08.2026 stand `vogelarten` auf dem
+    Bericht von Juni 2024, während zwei neuere erschienen waren. Die
+    modulinterne Gegenprobe hat das nicht gemerkt — sie vergleicht gegen
+    einen Sollwert aus derselben Ausgabe wie die Daten und prüft damit
+    die Abschrift, nicht die Aktualität. Ein Abgleich ÜBER die Abschnitte
+    hinweg merkt es: sobald einer gehoben wird und der andere nicht,
+    laufen Verteilung oder Artenliste auseinander.
+    """
+    trend_index = {k: v for k, v in vogel["trend"].items() if k != "bewertet"}
+    trend_arten = vogelarten["zaehlung"]
+    if trend_index != trend_arten:
+        warnen(
+            f"Vogelabschnitte uneins: `vogel` nennt {trend_index}, "
+            f"`vogelarten` {trend_arten} — vermutlich wurde nur einer der "
+            f"beiden auf einen neuen Bericht gehoben."
+        )
+
+    namen_a = sorted(vogel["arten"])
+    namen_b = sorted(eintrag["name"] for eintrag in
+                     vogelarten["arten"] + vogelarten["spaete_arten"])
+    if namen_a != namen_b:
+        fehlt = sorted(set(namen_a) ^ set(namen_b))
+        warnen(f"Vogelabschnitte uneins: Artenlisten weichen ab bei {fehlt}.")
+
+    if vogel["stand"] != vogelarten["stand"]:
+        warnen(
+            f"Vogelabschnitte uneins: `vogel` steht auf {vogel['stand']}, "
+            f"`vogelarten` auf {vogelarten['stand']}."
+        )
 
 
 def main() -> None:
@@ -84,6 +132,22 @@ def main() -> None:
     bio = baue_biolandbau()
     if bio:
         ausgaben["biolandbau"] = bio
+
+    # --- Tiergruppen: Verlust, Erholung, Stillstand ------------------------
+    # `falter` holt seine Reihe von Eurostat und fällt bei einem Ausfall auf
+    # eine abgeschriebene Notreihe zurück, statt zu verschwinden — der
+    # Abschnitt meldet das dann selbst laut. Deshalb steht er hier ohne
+    # `if`, anders als die übrigen API-Abschnitte.
+    ausgaben["falter"] = baue_falter()
+    ausgaben["rueckkehrer"] = baue_rueckkehrer()
+    ausgaben["vogelarten"] = baue_vogelarten()
+
+    # Gegenprobe über zwei Abschnitte hinweg: `vogel` und `vogelarten`
+    # stammen aus derselben Erhebung und müssen dieselbe Verteilung und
+    # dieselben Arten nennen. Laufen sie auseinander, wurde einer der
+    # beiden auf einen neuen Bericht gehoben und der andere nicht — genau
+    # der Fehler, der am 26.08.2026 aufgefallen ist.
+    _vogel_abgleichen(ausgaben["vogel"], ausgaben["vogelarten"])
 
     # --- Kennzahlen für den Kopf des Dashboards ----------------------------
     # Vier Zahlen, jede aus einem anderen Abschnitt. Bewusst KEINE
@@ -141,24 +205,29 @@ def main() -> None:
         "stand_daten": kpi["stand"],
         "quellen": QUELLEN,
         "hinweis_beschaffung": (
-            "Vier Reihen kommen bei jedem Lauf frisch von der Eurostat-API "
-            "(Schutzgebiete, EU-Vogelindex, Waldfläche, Bio-Anteil). Die "
-            "übrigen sind aus Publikationen abgeschrieben und tragen ihren "
-            "Stand im Feld \"pflege\" — Österreich veröffentlicht seine "
-            "Biodiversitätsdaten überwiegend als PDF ohne Datenanhang."
+            "Fünf Reihen kommen bei jedem Lauf frisch von der Eurostat-API "
+            "(Schutzgebiete, EU-Vogelindex, Waldfläche, Bio-Anteil, "
+            "Falterindex). Die übrigen sind aus Publikationen abgeschrieben "
+            "und tragen ihren Stand im Feld \"pflege\" — Österreich "
+            "veröffentlicht seine Biodiversitätsdaten überwiegend als PDF "
+            "ohne Datenanhang."
         ),
         "hinweis_definitionen": (
             "Die Abschnitte messen Verschiedenes und lassen sich nicht "
             "gegeneinander aufrechnen: Fläche unter Schutz, Häufigkeit von "
             "Vogelbeständen, neu beanspruchter Boden, das Alter des "
             "Fachwissens, der Erhaltungszustand von Lebensräumen, die "
-            "Gefährdung von Biotoptypen, Waldfläche und Bio-Anteil."
+            "Gefährdung von Biotoptypen, Waldfläche, Bio-Anteil, Falter auf "
+            "festen Strecken und hochgerechnete Bestände zweier Säugetiere."
         ),
         "hinweis_europa": (
             "Österreich ist keine Insel: Vogelindex, Waldfläche und "
             "Bio-Anteil stehen im europäischen Vergleich, und der "
             "Erhaltungszustand ist nach den grenzüberschreitenden "
-            "biogeografischen Regionen alpin und kontinental gegliedert."
+            "biogeografischen Regionen alpin und kontinental gegliedert. "
+            "Der Falterindex zeigt als einziger Abschnitt ausschließlich "
+            "europäische Zahlen — eine österreichische Reihe ab 1991 gibt "
+            "es nicht."
         ),
         "einbettung": config.EINBETTUNG,
         "warnungen": WARNUNGEN,

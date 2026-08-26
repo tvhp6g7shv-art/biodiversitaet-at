@@ -64,7 +64,7 @@ TEILBAENDE = [
 
 
 def baue_biotoptypen() -> dict:
-    log("\n[6/8] Biotoptypen — Rote Liste (gepflegt)")
+    log("\n[6/11] Biotoptypen — Rote Liste (gepflegt)")
 
     belegt = sum(s["anzahl"] for s in STUFEN)
     ohne_angabe = BIOTOPTYPEN_BEWERTET - belegt

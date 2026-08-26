@@ -92,6 +92,30 @@ WALD_PARAMS = {
     "indic_fo": "FOR",      # Waldfläche, nicht OWL („sonstiger Baumbestand")
 }
 
+# sdg_15_61 — Grünland-Schmetterlingsindex. Erhoben von Butterfly
+# Conservation Europe und dem European Butterfly Monitoring Scheme, als
+# Indikator geführt von der EEA (SEBI 028), verbreitet über Eurostat.
+#
+# ACHTUNG, drei Eigenheiten:
+#  1. Es gibt NUR das EU-Aggregat (`geo = EU_V`), keine Länderwerte.
+#     Österreich ist am Monitoring beteiligt, hat aber keine eigene
+#     Reihe ab 1991 — siehe falter.py.
+#  2. `statinfo` hat zwei Kategorien: NSME (ungeglättet) und SME
+#     (geglättet). Wir nehmen SME; die ungeglättete Reihe schwankt
+#     wetterbedingt zweistellig von Jahr zu Jahr.
+#  3. `unit` hat ebenfalls zwei: I91 (1991 = 100) und I00 (2000 = 100).
+#     Wir nehmen I91. Steht das Basisjahr nachher nicht bei 100, hat die
+#     Abfrage die falsche erwischt — falter.py prüft das.
+FALTER_CODE = "sdg_15_61"
+FALTER_PARAMS = {
+    "format": "JSON", "lang": "DE",
+    "statinfo": "SME",      # geglättete Schätzung
+    "unit": "I91",          # Index, 1991 = 100
+}
+# Wird zusätzlich beim Auswerten der Antwort angelegt, falls Eurostat die
+# Filterparameter einmal ignoriert und doch alle Reihen ausliefert.
+FALTER_FILTER = {"statinfo": "SME", "unit": "I91"}
+
 # Österreich und seine acht Nachbarn. EU27 als Bezugsgröße dahinter.
 # Liechtenstein grenzt nicht an Österreich? Doch — 34,9 km gemeinsame
 # Grenze über den Rhein und das Rätikon.
@@ -115,6 +139,8 @@ PFLEGE_RHYTHMUS = {
     "rotelisten":   2,   # Übersicht der Erscheinungsjahre, lose gepflegt
     "erhaltung":    7,   # Artikel 17: Sechsjahreszyklus plus Berichtsverzug
     "biotoptypen": 15,   # Teilbände 2002–2008, Neuauflage nicht angekündigt
+    "rueckkehrer":  7,   # Artikel 17: Sechsjahreszyklus plus Berichtsverzug
+    "vogelarten":   2,   # Artentrends, jährlicher Bericht mit Verzug
 }
 
 # ---------------------------------------------------------------------------

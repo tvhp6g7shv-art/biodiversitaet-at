@@ -18,7 +18,7 @@ from gemeinsam import jsonstat_reihe, lade_json, log, quelle_vermerken, warnen
 
 
 def baue_schutzgebiete() -> dict | None:
-    log("\n[1/8] Schutzgebiete — Eurostat sdg_15_20")
+    log("\n[1/11] Schutzgebiete — Eurostat sdg_15_20")
 
     url = f"{config.EUROSTAT_BASIS}/{config.SCHUTZGEBIETE_CODE}"
     prozent = jsonstat_reihe(

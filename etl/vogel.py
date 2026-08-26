@@ -5,17 +5,39 @@ GEPFLEGTE REIHE. Die Werte stammen aus Tabelle 5 des Jahresberichts und
 sind hier abgeschrieben, nicht abgerufen: BirdLife veröffentlicht den
 Index als PDF ohne Datenanhang.
 
-  Quelle:   Teufelbauer, N. & Seaman, B. (2024): Farmland Bird Index für
-            Österreich — Indikator 2023. BirdLife Österreich im Auftrag
-            des BMLUK, Wien, Juni 2024, Tab. 5, S. 10–11.
-  PDF:      https://assets.ctfassets.net/2oszne1tuxgg/17MCMmQOSsxbYx1QhJMbOI/
-            c46a08bb5031187124ddafdbeccc43fc/2024_Bericht_Farmland_Bird_Index_2023.pdf
-  Abgerufen: 24.08.2026
+  Quelle 1998–2024: Teufelbauer, N. & Seaman, B. (2025): Farmland Bird
+            Index für Österreich: Indikator 2023 bis 2029 — Teilbericht
+            Indikator 2024. BirdLife Österreich im Auftrag des BMLUK,
+            Wien, Juni 2025, Tab. 5, S. 11.
+  PDF:      https://assets.ctfassets.net/2oszne1tuxgg/1VXG9IG1FC9Xr8QY7v4ikd/
+            6b6bf8bbaa8760acab8bae5d2cd25bc5/BirdLife_Österreich_Bericht_
+            Farmland_Bird_Index_2024.pdf
+  Quelle 2025: Presseaussendung BirdLife Österreich vom 10.08.2026 zum
+            Bericht Indikator 2025 („Der Indexwert für das Jahr 2025 ist
+            mit 53,3 Prozent der niedrigste seit 1998").
+  URL:      https://www.birdlife.at/artikel/oesterreichs-feld-und-
+            wiesenvoegel-im-tiefflug-weiteres-hoffen-auf-trendumkehr/
+  Abgerufen: 26.08.2026
   Basis:    1998 = 100, geometrisches Mittel, Verkettung nach Marchant et al. (1990)
 
+DIE REIHE IST EINE MISCHREIHE — UND DAS HAT EINE FOLGE
+
+BirdLife rechnet den Index jedes Jahr komplett neu; ältere Jahre
+verschieben sich dabei um Zehntel. Hier stehen 1998–2024 aus dem Bericht
+2024 und 2025 aus der Aussendung von 2026 nebeneinander. Der Bericht
+2025 selbst liegt nur in der Pressemappe (ZIP, 48 MB) und ist noch nicht
+eingearbeitet.
+
+Konkret gefährlich ist genau eine Aussage: 2025 steht bei 53,3 und 2022
+bei 53,6 — **drei Zehntel Abstand über zwei Berichtsjahrgänge hinweg**.
+„Niedrigster Wert seit 1998" ist deshalb als **Aussage von BirdLife** zu
+führen, nicht als eigene Rechnung. `_tiefpunkt_pruefen()` meldet die Lage
+bei jedem Lauf.
+
 Wenn ein neuer Bericht erscheint: unten die Jahre ergänzen, STAND_JAHR
-hochsetzen, sonst nichts. Die Pipeline meldet von selbst, wenn die Reihe
-älter wird als der erwartete Rhythmus.
+hochsetzen, sonst nichts. **Der Bericht erscheint jährlich Ende Juli /
+Anfang August** als Presseaussendung auf birdlife.at/artikel/ — die
+Pipeline meldet von selbst, wenn die Reihe älter wird als der Rhythmus.
 
 Zu den drei Arten mit spätem Beginn (Heidelerche, Bergpieper, Steinschmätzer,
 Datenlage erst ab 2008) siehe Bericht — sie sind im Gesamtindex enthalten,
@@ -29,17 +51,22 @@ import config
 from gemeinsam import (jsonstat_reihe, lade_json, log, pflegepruefung,
                        quelle_vermerken, warnen)
 
-STAND_JAHR = 2023          # letztes Jahr mit Indexwert
-BERICHT_JAHR = 2024        # Erscheinungsjahr des Berichts
+STAND_JAHR = 2025          # letztes Jahr mit Indexwert
+BERICHT_JAHR = 2026        # Erscheinungsjahr der jüngsten Veröffentlichung
+
+# Jahr, ab dem die Werte aus einer anderen Veröffentlichung stammen als
+# der Rest der Reihe. Siehe Docstring, Abschnitt „Mischreihe".
+MISCHREIHE_AB = 2025
 
 # Jahr -> Indexwert (Basis 1998 = 100)
 REIHE: dict[int, float] = {
-    1998: 100.0, 1999: 102.5, 2000: 98.5, 2001: 91.5, 2002: 93.0,
-    2003: 88.1,  2004: 90.7,  2005: 92.8, 2006: 85.2, 2007: 82.6,
-    2008: 79.8,  2009: 73.9,  2010: 71.0, 2011: 68.5, 2012: 69.5,
-    2013: 63.6,  2014: 60.3,  2015: 63.5, 2016: 58.9, 2017: 61.8,
-    2018: 56.2,  2019: 62.4,  2020: 62.7, 2021: 61.5, 2022: 54.3,
-    2023: 56.8,
+    1998: 100.0, 1999: 102.2, 2000: 98.4, 2001: 91.3, 2002: 92.7,
+    2003: 87.8,  2004: 90.5,  2005: 92.6, 2006: 85.2, 2007: 82.4,
+    2008: 79.5,  2009: 73.8,  2010: 70.9, 2011: 68.3, 2012: 69.4,
+    2013: 63.5,  2014: 60.2,  2015: 63.3, 2016: 58.8, 2017: 61.6,
+    2018: 56.0,  2019: 62.1,  2020: 62.4, 2021: 61.2, 2022: 53.6,
+    2023: 56.8,  2024: 56.1,
+    2025: 53.3,   # Presseaussendung 10.08.2026, nicht aus Tab. 5
 }
 
 # 23 Indikatorarten. Ursprünglich 24 ausgewählt; der Zitronenzeisig wird
@@ -53,9 +80,38 @@ ARTEN = [
     "Goldammer",
 ]
 
-# Langzeittrend 1998–2023, ausgewertet für die 20 Arten mit durchgehender
-# Datenreihe (Bericht, Tab. 6): 15 rückläufig, 3 stabil, 2 zunehmend.
-TREND = {"rueckgang": 15, "stabil": 3, "zunahme": 2, "bewertet": 20}
+# Langzeittrend 1998–2025, ausgewertet für die 20 Arten mit durchgehender
+# Datenreihe: 14 rückläufig, 4 stabil, 2 zunehmend. Gegenüber dem Stand
+# 1998–2023 ist der Neuntöter von „Abnahme" zu „stabil" gewandert.
+# Beleg: Teufelbauer & Seaman (2026), BVM-Bericht Saison 2025, Tab. 3;
+# gleichlautend die Presseaussendung vom 10.08.2026.
+TREND = {"rueckgang": 14, "stabil": 4, "zunahme": 2, "bewertet": 20}
+
+
+def _tiefpunkt_pruefen(reihe: dict[int, float], tiefstjahr: int) -> None:
+    """
+    Meldet, wenn der Tiefpunkt nur knapp vor dem zweitniedrigsten Jahr
+    liegt und die beiden aus verschiedenen Veröffentlichungen stammen.
+
+    Ohne diese Prüfung würde die Aussage „niedrigster Wert seit 1998" auf
+    einem Abstand ruhen, der kleiner ist als die Verschiebung, die eine
+    Neuberechnung ohnehin erzeugt.
+    """
+    sortiert = sorted(reihe.values())
+    if len(sortiert) < 2:
+        return
+    abstand = round(sortiert[1] - sortiert[0], 1)
+    gemischt = (tiefstjahr >= MISCHREIHE_AB) != (
+        min(reihe, key=lambda j: abs(reihe[j] - sortiert[1])) >= MISCHREIHE_AB
+    )
+    if abstand < 1.0 and gemischt:
+        warnen(
+            f"Farmland Bird Index: Der Tiefpunkt {tiefstjahr} liegt nur "
+            f"{abstand} Punkte unter dem zweitniedrigsten Jahr, und beide "
+            f"stammen aus verschiedenen Berichtsjahrgängen. „Niedrigster "
+            f"Wert seit 1998\" nur als Aussage von BirdLife führen, nicht "
+            f"als eigene Rechnung."
+        )
 
 
 def hole_eu_reihe(basisjahr: int) -> tuple[dict[int, float], int | None]:
@@ -105,7 +161,7 @@ def hole_eu_reihe(basisjahr: int) -> tuple[dict[int, float], int | None]:
 
 
 def baue_vogel() -> dict:
-    log("\n[2/8] Feld- und Wiesenvögel — Farmland Bird Index (gepflegt + EU-API)")
+    log("\n[2/11] Feld- und Wiesenvögel — Farmland Bird Index (gepflegt + EU-API)")
 
     jahre = sorted(REIHE)
     start, ende = jahre[0], jahre[-1]
@@ -142,6 +198,7 @@ def baue_vogel() -> dict:
 
     tiefstwert = min(REIHE.values())
     tiefstjahr = min(REIHE, key=REIHE.get)
+    _tiefpunkt_pruefen(REIHE, tiefstjahr)
 
     log(f"    {start}: {REIHE[start]:.1f}  →  {ende}: {aktuell:.1f}  "
         f"({verlust:.1f} Punkte Verlust)")
@@ -151,7 +208,7 @@ def baue_vogel() -> dict:
 
     quelle_vermerken(
         name=("BirdLife Österreich / BMLUK — Farmland Bird Index für "
-              "Österreich, Indikator 2023"),
+              "Österreich, Indikator 2024 und Aussendung Indikator 2025"),
         url=("https://www.bmluk.gv.at/themen/landwirtschaft/bildung-forschung/"
              "Online-Fachzeitschrift-Laendlicher-Raum/archiv/2010/Teufelbauer.html"),
         lizenz="Quellenangabe laut Bericht",
@@ -199,13 +256,18 @@ def baue_vogel() -> dict:
         "eu_stand": eu_ende,
         "eu_arten": 39,
         "eu_vergleich": eu_vergleich,
+        "mischreihe_ab": MISCHREIHE_AB,
         "pflege": {
             "art": "gepflegt",
-            "quelle": ("Teufelbauer, N. & Seaman, B. (2024): Farmland Bird Index "
-                       "für Österreich — Indikator 2023. BirdLife Österreich "
-                       "im Auftrag des BMLUK, Wien, Juni 2024, Tab. 5."),
+            "quelle": ("1998–2024: Teufelbauer, N. & Seaman, B. (2025): Farmland "
+                       "Bird Index für Österreich — Teilbericht Indikator 2024. "
+                       "BirdLife Österreich im Auftrag des BMLUK, Wien, Juni "
+                       "2025, Tab. 5, S. 11. — 2025: Presseaussendung BirdLife "
+                       "Österreich vom 10.08.2026 zum Bericht Indikator 2025. "
+                       "Der Index wird jährlich neu gerechnet; ältere Jahre "
+                       "können sich um Zehntel verschieben."),
             "bericht_jahr": BERICHT_JAHR,
-            "abgerufen": "2026-08-24",
+            "abgerufen": "2026-08-26",
         },
         "hinweis": (
             f"Bestandsindex von {len(ARTEN)} Vogelarten des Offenlands, "

@@ -73,7 +73,7 @@ GRUPPEN = [
 
 
 def baue_erhaltung() -> dict:
-    log("\n[5/8] Erhaltungszustand — Artikel 17 FFH (gepflegt)")
+    log("\n[5/11] Erhaltungszustand — Artikel 17 FFH (gepflegt)")
 
     gruppen = []
     for gruppe in GRUPPEN:

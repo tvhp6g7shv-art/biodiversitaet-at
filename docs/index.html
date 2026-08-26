@@ -207,8 +207,10 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
 .viz-kpi-wert { font-family: var(--viz-font-display); font-size: 2.1rem; line-height: 1.05; font-weight: var(--viz-fw-kpi); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .viz-kpi-delta { font-size: .82rem; margin-top: 7px; display: flex; align-items: center; gap: 5px; font-variant-numeric: tabular-nums; }
 /* Einheit und Bezugsjahr an der Kennzahl. Anders als beim Schwesterprojekt
-   traegt hier JEDE Kachel ihr eigenes Jahr: die vier Zahlen stammen aus
-   2023, 2023, 2025 und 2025 — eine gemeinsame Datumszeile waere falsch. */
+   traegt hier JEDE Kachel ihr eigenes Jahr: die Zahlen stammen aus
+   verschiedenen Erhebungsjahren, eine gemeinsame Datumszeile waere falsch.
+   Die Jahre hier NICHT aufzaehlen — sie wandern (Vogelindex 2023 -> 2025
+   am 26.08.2026), und ein Kommentar mit festen Jahren altert still. */
 .viz-kpi-einheit { font-size: 1.1rem; font-weight: var(--viz-fw-normal); margin-left: 3px; letter-spacing: 0; }
 .viz-kpi-von { font-size: 1.1rem; font-weight: var(--viz-fw-normal); color: inherit; letter-spacing: 0; }
 .viz-kpi-fuss { font-size: .75rem; color: var(--viz-muted); margin-top: 7px; line-height: 1.45; }
@@ -440,7 +442,7 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
     <div class="viz-chart" id="c-boden"></div>
     <div class="viz-verborgen" id="t-boden"></div>
     <div id="t-boden-kategorien" style="margin-top:16px"></div>
-    <p class="viz-unterzeile" style="margin-top:12px" id="h-boden">Die Tageswerte sind Periodenmittel, keine Jahreswerte. Beanspruchte Fläche ist nicht dasselbe wie versiegelte: von 5.681 km² Inanspruchnahme waren 2022 rund 52,8 % tatsächlich versiegelt.</p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-boden">Der Rückgang ist echt, die Fläche wächst trotzdem weiter: Die 6,5 Hektar pro Tag kommen zum Bestand dazu, zurückgewonnen wird kaum etwas. Bodenverbrauch ist eine Summe, keine Bilanz.</p>
   </section>
 
   <!-- 5 — ROTE LISTEN -->

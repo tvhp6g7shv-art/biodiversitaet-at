@@ -34,7 +34,7 @@ TOTHOLZ_PERIODE = "2018–2023"
 
 
 def baue_wald() -> dict | None:
-    log("\n[7/8] Waldfläche — Österreich und Nachbarn (Eurostat for_area)")
+    log("\n[7/11] Waldfläche — Österreich und Nachbarn (Eurostat for_area)")
 
     url = f"{config.EUROSTAT_BASIS}/{config.WALD_CODE}"
     roh = lade_json(url, config.WALD_PARAMS)

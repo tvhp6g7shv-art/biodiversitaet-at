@@ -27,7 +27,7 @@ from gemeinsam import (jsonstat_laender, lade_json, laender_namen, log,
 
 
 def baue_biolandbau() -> dict | None:
-    log("\n[8/8] Biologische Landwirtschaft — EU-Vergleich (Eurostat sdg_02_40)")
+    log("\n[8/11] Biologische Landwirtschaft — EU-Vergleich (Eurostat sdg_02_40)")
 
     url = f"{config.EUROSTAT_BASIS}/{config.BIOLANDBAU_CODE}"
     roh = lade_json(url, config.BIOLANDBAU_PARAMS)

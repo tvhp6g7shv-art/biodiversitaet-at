@@ -74,7 +74,7 @@ PFLANZEN_ARTEN = 1274
 
 
 def baue_rotelisten() -> dict:
-    log("\n[4/8] Rote Listen — Stand der Aktualisierung (gepflegt)")
+    log("\n[4/11] Rote Listen — Stand der Aktualisierung (gepflegt)")
 
     heute = dt.date.today().year
 

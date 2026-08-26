@@ -74,7 +74,7 @@ KATEGORIEN = [
 
 
 def baue_boden() -> dict:
-    log("\n[3/8] Bodenverbrauch — ÖROK-Monitoring (gepflegt)")
+    log("\n[3/11] Bodenverbrauch — ÖROK-Monitoring (gepflegt)")
 
     erst, letzt = TAGESWERTE[0], TAGESWERTE[-1]
     rueckgang = round(
@@ -113,8 +113,7 @@ def baue_boden() -> dict:
         art="gepflegt",
     )
 
-    _bestand_de = f"{BESTAND[2025]:,.0f}".replace(",", ".")
-    _versiegelt_de = str(VERSIEGELUNG_ANTEIL_INANSPRUCHNAHME).replace(".", ",")
+    _aktuell_de = str(letzt["ha_pro_tag"]).replace(".", ",")
 
     return {
         "tageswerte": TAGESWERTE,
@@ -149,11 +148,22 @@ def baue_boden() -> dict:
         # das Satzkomma ("Periodenmittel. keine Jahreswerte") und machte
         # aus 52,8 % ein 52.8 % — benachbarte Literale werden vor dem
         # Methodenaufruf zusammengefuegt.
+        #
+        # NEUFASSUNG 26.08.2026. Die alte Zeile hatte zwei Fehler:
+        # (1) Sie stellte "5.681 km² (Bestand 2025)" neben eine Tabelle,
+        #     die fuer 2025 auf rund 5.679 km² summiert, schrieb die Zahl
+        #     aber dem Versiegelungsstichjahr 2022 zu. Zwei fast gleiche
+        #     Zahlen mit verschiedenen Jahren lesen sich als Fehler. Die
+        #     Inanspruchnahme 2022 war 5.610 km², nicht 5.681.
+        # (2) Satz 1 wiederholte die Unterzeile ("Mittel der Periode"),
+        #     Satz 2 erklaerte einen Begriff, statt etwas auszusagen.
+        # Die neue Zeile beantwortet die Frage, die fallende Balken beim
+        # Leser ausloesen: ist das Problem damit erledigt? Versiegelung
+        # und Periodenmittel stehen in der Methodik, nicht in der Grafik.
         "hinweis": (
-            "Die Tageswerte sind Periodenmittel, keine Jahreswerte. "
-            "Beanspruchte Fläche ist nicht dasselbe wie versiegelte: von "
-            f"{_bestand_de} km² Inanspruchnahme waren "
-            f"{VERSIEGELUNG_STAND} rund {_versiegelt_de} % tatsächlich "
-            "versiegelt."
+            "Der Rückgang ist echt, die Fläche wächst trotzdem weiter: "
+            f"Die {_aktuell_de} Hektar pro Tag kommen zum Bestand dazu, "
+            "zurückgewonnen wird kaum etwas. Bodenverbrauch ist eine "
+            "Summe, keine Bilanz."
         ),
     }
