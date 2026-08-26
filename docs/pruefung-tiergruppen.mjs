@@ -271,6 +271,13 @@ const inst = (id) => echarts.getInstanceByDom(window.document.getElementById(id)
      520 px, das sind 23,8 px je Zeile — ECharts liess daraufhin jeden
      zweiten Artnamen weg, ohne zu melden. Die Zeilenhoehe wird deshalb
      gegen die Schrift gerechnet, nicht gegen das Auge. */
+  /* Gekuerzte Namen sind stille Fehler: „Wacholderdro…" sieht nach einer
+     seltsamen Schreibweise aus, nicht nach zu wenig Platz. */
+  const gekuerzt = texte.filter((e) => /[…]|\.\.\.$/.test(e.t));
+  pruefe(gekuerzt.length === 0,
+    `vogelarten: ${gekuerzt.length} gekuerzte(r) Name(n) — ` +
+    `${gekuerzt.map((e) => e.t).join(", ")}`);
+
   const zeilenhoehe = (HOEHEN["c-vogelarten"] - 44) / liste.length;
   pruefe(zeilenhoehe >= 26,
     `vogelarten: nur ${zeilenhoehe.toFixed(1)} px je Zeile — ECharts laesst ` +

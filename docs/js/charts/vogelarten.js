@@ -117,7 +117,14 @@ function baueVogelarten(daten) {
      der schlechteste Fall bei 4,54 : 1 (Pages hell, „stabil"), alle
      übrigen zwischen 5,56 und 10,80. */
   const ACHSE_MIN = -100, ACHSE_MAX = 130;
-  const randLinks = istEng(feld) ? 14 : 130;
+  /* 150 px, nicht 130: Mit 130 blieben nach Abzug der Polsterung 114 px
+     fuer den Text, und „Wacholderdrossel" brauchte mehr — ECharts kuerzte
+     still auf „Wacholderdro…". Ein abgeschnittener Artname sieht nicht
+     nach zu wenig Platz aus, sondern nach einer seltsamen Schreibweise.
+     Am 26.08.2026 an der Live-Seite nachgemessen. Die Zahl steht an drei
+     Stellen und muss ueberall dieselbe sein: hier, im `grid` und im
+     Aufruf von `kategorieLabel`. */
+  const randLinks = istEng(feld) ? 14 : 150;
   const plotBreite = Math.max(120, (feld.clientWidth || 900) - randLinks - 66);
   const proEinheit = plotBreite / (ACHSE_MAX - ACHSE_MIN);
   const platzLinks = (w) => (w - ACHSE_MIN) * proEinheit;
@@ -147,7 +154,7 @@ function baueVogelarten(daten) {
 
   d.setOption({
     ...basis(),
-    grid: { ...balkenGitter(feld, { left: 130, right: 66 }), top: 24 },
+    grid: { ...balkenGitter(feld, { left: 150, right: 66 }), top: 24 },
     tooltip: {
       ...basis().tooltip, trigger: "axis",
       axisPointer: { type: "shadow", shadowStyle: { color: stil("--viz-grid"), opacity: 0.35 } },
@@ -174,7 +181,7 @@ function baueVogelarten(daten) {
       data: liste.map((a) => a.name), splitLine: { show: false },
       axisLabel: { color: stil("--viz-text-2"),
                    fontSize: istSchmal(feld) ? S.eng : S.serie, margin: 12,
-                   ...kategorieLabel(feld, 130, liste.length) } },
+                   ...kategorieLabel(feld, 150, liste.length) } },
     series: [{
       type: "bar", name: "Bestandsveränderung",
       barWidth: balkenBreite(feld, "62%"),
