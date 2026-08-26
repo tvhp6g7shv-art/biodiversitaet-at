@@ -10,15 +10,18 @@
      die Kennzahlenkacheln gehoeren zum Dashboard, nicht zu einer einzelnen
      Grafik. Cacheziffer wird aus index.html uebernommen — beide Auslieferungen
      tragen dieselbe, sonst mischt der Browser Staende. -->
-<script src="js/kern.js?v=04" defer></script>
-<script src="js/charts/schutzgebiete.js?v=03" defer></script>
-<script src="js/charts/vogel.js?v=03" defer></script>
-<script src="js/charts/boden.js?v=03" defer></script>
-<script src="js/charts/rotelisten.js?v=03" defer></script>
-<script src="js/charts/erhaltung.js?v=03" defer></script>
-<script src="js/charts/biotoptypen.js?v=03" defer></script>
-<script src="js/charts/wald.js?v=03" defer></script>
-<script src="js/charts/biolandbau.js?v=03" defer></script>
+<script src="js/kern.js?v=06" defer></script>
+<script src="js/charts/schutzgebiete.js?v=06" defer></script>
+<script src="js/charts/vogel.js?v=06" defer></script>
+<script src="js/charts/boden.js?v=06" defer></script>
+<script src="js/charts/rotelisten.js?v=06" defer></script>
+<script src="js/charts/erhaltung.js?v=06" defer></script>
+<script src="js/charts/biotoptypen.js?v=06" defer></script>
+<script src="js/charts/wald.js?v=06" defer></script>
+<script src="js/charts/biolandbau.js?v=06" defer></script>
+<script src="js/charts/falter.js?v=06" defer></script>
+<script src="js/charts/rueckkehrer.js?v=06" defer></script>
+<script src="js/charts/vogelarten.js?v=06" defer></script>
 <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* ===================================================================
@@ -269,6 +272,9 @@ const CHARTS = {
   biotoptypen: { titel: "Gefährdete Biotoptypen", dateien: ["biotoptypen"], bau: (B, d) => B.baueBiotoptypen(d.biotoptypen) },
   wald: { titel: "Waldfläche im Vergleich", dateien: ["wald"], bau: (B, d) => B.baueWald(d.wald) },
   biolandbau: { titel: "Anteil der biologischen Landwirtschaft", dateien: ["biolandbau"], bau: (B, d) => B.baueBiolandbau(d.biolandbau) },
+  falter: { titel: "Wiesenfalter in Europa", dateien: ["falter"], bau: (B, d) => B.baueFalter(d.falter) },
+  rueckkehrer: { titel: "Biber und Fischotter", dateien: ["rueckkehrer"], bau: (B, d) => B.baueRueckkehrer(d.rueckkehrer) },
+  vogelarten: { titel: "Feld- und Wiesenvögel je Art", dateien: ["vogelarten"], bau: (B, d) => B.baueVogelarten(d.vogelarten), hoch: true },
 };
 
 /* Die Chart-Module sprechen feste Elementkennungen an (c-, t-, u-, h-).

@@ -305,6 +305,17 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
    muss hier mit — ECharts setzt die Feldhöhe nicht, es hängt von ihr ab. */
 #c-biolandbau { height: 760px; }
 @media (max-width: 560px) { #c-biolandbau { height: 800px; } }
+/* Eine Linie über 34 Jahre — dieselbe Bauform und Höhe wie der Vogelindex. */
+#c-falter { height: 340px; }
+/* Vier Berichtsperioden mal zwei Arten, dazu die Legende oben. Acht Balken
+   auf 300 px sind 37 px je Balkenpaar — genug, dass die Spannen nicht zu
+   Bändern werden. */
+#c-rueckkehrer { height: 300px; }
+/* 20 Arten, je 22 px plus Gitterrand. Wer Arten ergänzt, muss hier mit —
+   ECharts setzt die Feldhöhe nicht, es hängt von ihr ab. Dieselbe Falle
+   wie bei #c-rotelisten und #c-biolandbau. */
+#c-vogelarten { height: 520px; }
+@media (max-width: 560px) { #c-vogelarten { height: 560px; } }
 
 /* --- Filterzeile: EINE Zeile über allem, was sie steuert --- */
 .viz-filter { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--viz-gap); }
@@ -380,16 +391,19 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
   <p class="viz-lead" id="lead">Daten werden geladen …</p>
 
   <div class="viz-hinweis">
-    <strong>Acht Messgrößen, nicht verrechenbar.</strong> Fläche unter Schutz,
+    <strong>Elf Messgrößen, nicht verrechenbar.</strong> Fläche unter Schutz,
     Vogelbestände, neu beanspruchter Boden, das Alter des Fachwissens, der
     Erhaltungszustand von Lebensräumen, die Gefährdung von Biotoptypen,
-    Waldfläche und Bio-Anteil messen Verschiedenes. Es gibt keinen belastbaren
-    Index, der sie zu einer Note zusammenfasst — deshalb steht hier keiner.
+    Waldfläche, Bio-Anteil und die Bestände dreier Tiergruppen messen
+    Verschiedenes. Es gibt keinen belastbaren Index, der sie zu einer Note
+    zusammenfasst — deshalb steht hier keiner.
     <br><br>
-    <strong>Österreich ist keine Insel.</strong> Drei Abschnitte stellen die
+    <strong>Österreich ist keine Insel.</strong> Vier Abschnitte stellen die
     nationalen Zahlen in den europäischen Zusammenhang, und der
     Erhaltungszustand ist ohnehin nach den grenzüberschreitenden
     biogeografischen Regionen <em>alpin</em> und <em>kontinental</em> gegliedert.
+    Der Schmetterlingsindex zeigt als einziger Abschnitt <em>nur</em>
+    europäische Zahlen — eine österreichische Reihe ab 1991 gibt es nicht.
   </div>
 
   <!-- 1 — KENNZAHLEN -->
@@ -530,6 +544,67 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
     <p class="viz-unterzeile" style="margin-top:12px" id="h-biolandbau">Umgestellte Flächen und Flächen in Umstellung zusammen, Anteil an der landwirtschaftlich genutzten Fläche. Alle Länder im selben Jahr 2020 verglichen — der Datensatz reicht weiter, Österreich meldet zuletzt für dieses Jahr.</p>
   </section>
 
+  <!-- ===================================================================
+       TIERGRUPPEN — drei Abschnitte, als Gegensatz gebaut.
+       Verlust (Falter), Erholung (Rückkehrer), Stillstand (Vogelarten).
+       Die Reihenfolge IST die Aussage: Rückgang ist kein Naturgesetz.
+       Wer hier umstellt, nimmt dem Bereich seinen Sinn.
+       =================================================================== -->
+
+  <!-- 10 — WIESENFALTER -->
+  <section class="viz-karte" id="s-falter" data-chart="falter"
+           data-nav="Schmetterlinge" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Bei den Wiesenfaltern ist fast die Hälfte verschwunden</h2>
+        <p class="viz-unterzeile" id="u-falter"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-falter">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-falter"></div>
+    <div class="viz-verborgen" id="t-falter"></div>
+    <p class="viz-notiz" id="n-falter"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-falter">Gezählt werden Falter auf festen Strecken in ganz Europa, nicht nur in Österreich — eine eigene österreichische Reihe gibt es für diesen Zeitraum nicht. Die Linie ist geglättet, weil einzelne Jahre stark vom Wetter abhängen.</p>
+  </section>
+
+  <!-- 11 — BIBER UND FISCHOTTER -->
+  <section class="viz-karte" id="s-rueckkehrer" data-chart="rueckkehrer"
+           data-nav="Rückkehrer" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Biber und Fischotter sind zurückgekommen</h2>
+        <p class="viz-unterzeile" id="u-rueckkehrer"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-rueckkehrer">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-rueckkehrer"></div>
+    <div class="viz-verborgen" id="t-rueckkehrer"></div>
+    <p class="viz-notiz" id="n-rueckkehrer"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-rueckkehrer">Die Zahlen sind Hochrechnungen aus Revierkartierungen, keine Zählungen — deshalb die Spanne. Im Alpenraum meldet Österreich für beide Arten eine echte Erholung, nicht bloß besseres Wissen. Seit 2019 ist begrenzte Entnahme erlaubt.</p>
+  </section>
+
+  <!-- 12 — FELD- UND WIESENVÖGEL ART FÜR ART -->
+  <section class="viz-karte" id="s-vogelarten" data-chart="vogelarten"
+           data-nav="Vogelarten" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Der Rückgang trifft die Arten sehr ungleich</h2>
+        <p class="viz-unterzeile" id="u-vogelarten"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-vogelarten">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-vogelarten"></div>
+    <div class="viz-verborgen" id="t-vogelarten"></div>
+    <p class="viz-notiz" id="n-vogelarten"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-vogelarten">Jeder Balken ist eine Vogelart und zeigt, wie sich ihr Bestand seit 1998 verändert hat. „Gleich geblieben“ heißt: die Zählung zeigt keine gesicherte Richtung. Hinter einer Art stehen sechs Zählstrecken (Grauammer) bis 210 (Stieglitz).</p>
+  </section>
+
   <p class="viz-fuss" id="fuss"></p>
 
 </div>
@@ -539,16 +614,19 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Cacheziffer `?v=NN` hochzaehlen, wenn eine Datei geaendert wurde —
      sie fuehrt eine EIGENE Zaehlung, unabhaengig von der Ausgabenummer
      in kern.js (VERSION.nummer). -->
-<script defer src="js/kern.js?v=04"></script>
-<script defer src="js/charts/kpi.js?v=03"></script>
-<script defer src="js/charts/schutzgebiete.js?v=03"></script>
-<script defer src="js/charts/vogel.js?v=03"></script>
-<script defer src="js/charts/boden.js?v=03"></script>
-<script defer src="js/charts/rotelisten.js?v=03"></script>
-<script defer src="js/charts/erhaltung.js?v=04"></script>
-<script defer src="js/charts/biotoptypen.js?v=03"></script>
-<script defer src="js/charts/wald.js?v=03"></script>
-<script defer src="js/charts/biolandbau.js?v=05"></script>
+<script defer src="js/kern.js?v=06"></script>
+<script defer src="js/charts/kpi.js?v=06"></script>
+<script defer src="js/charts/schutzgebiete.js?v=06"></script>
+<script defer src="js/charts/vogel.js?v=06"></script>
+<script defer src="js/charts/boden.js?v=06"></script>
+<script defer src="js/charts/rotelisten.js?v=06"></script>
+<script defer src="js/charts/erhaltung.js?v=06"></script>
+<script defer src="js/charts/biotoptypen.js?v=06"></script>
+<script defer src="js/charts/wald.js?v=06"></script>
+<script defer src="js/charts/biolandbau.js?v=06"></script>
+<script defer src="js/charts/falter.js?v=06"></script>
+<script defer src="js/charts/rueckkehrer.js?v=06"></script>
+<script defer src="js/charts/vogelarten.js?v=06"></script>
 <script defer>
   document.addEventListener("DOMContentLoaded", () => {
     BIO.setzeWurzel(document.getElementById("dashboard"));

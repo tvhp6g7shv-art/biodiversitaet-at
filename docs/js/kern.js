@@ -569,7 +569,7 @@ async function start() {
      nicht die halbe Seite. Zwingend sind allein meta und kpi. */
   const DATEIEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden",
                    "rotelisten", "erhaltung", "biotoptypen", "wald",
-                   "biolandbau"];
+                   "biolandbau", "falter", "rueckkehrer", "vogelarten"];
   const geladen = {};
   await Promise.all(DATEIEN.map(async (name) => {
     geladen[name] = await hole(name).catch(() => null);
@@ -584,8 +584,8 @@ async function start() {
   }
 
   setzeText("lead",
-    `Acht Messgrößen zum Zustand der biologischen Vielfalt in Österreich, ` +
-    `drei davon im europäischen Vergleich` +
+    `Elf Messgrößen zum Zustand der biologischen Vielfalt in Österreich, ` +
+    `vier davon im europäischen Vergleich` +
     (meta?.generiert_am ? ` · zuletzt aktualisiert am ${datum(meta.generiert_am)}` : ""));
 
   /* Alle Diagramme in EINER Funktion, damit sie beim Wechsel der
@@ -602,6 +602,12 @@ async function start() {
     sicher("Biotoptypen",    () => BIO.baueBiotoptypen(geladen.biotoptypen));
     sicher("Waldfläche",     () => BIO.baueWald(geladen.wald));
     sicher("Biolandbau",     () => BIO.baueBiolandbau(geladen.biolandbau));
+    /* Bereich Tiergruppen — als Gegensatz gebaut: Verlust, Erholung,
+       Stillstand. Die Reihenfolge ist die Aussage und darf nicht nach
+       Bequemlichkeit umgestellt werden. */
+    sicher("Wiesenfalter",   () => BIO.baueFalter(geladen.falter));
+    sicher("Rückkehrer",     () => BIO.baueRueckkehrer(geladen.rueckkehrer));
+    sicher("Vogelarten",     () => BIO.baueVogelarten(geladen.vogelarten));
   }
   baueAlles();
   beiBreitenwechsel(baueAlles);

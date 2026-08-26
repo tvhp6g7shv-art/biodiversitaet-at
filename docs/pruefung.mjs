@@ -91,18 +91,25 @@ const HOEHEN = {
   "c-biotoptypen": 300,
   "c-wald": 340,
   "c-biolandbau": 760,
+  "c-falter": 340,
+  "c-rueckkehrer": 300,
+  "c-vogelarten": 520,
 };
 
 const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/vogel.js", "charts/boden.js", "charts/rotelisten.js",
                 "charts/erhaltung.js", "charts/biotoptypen.js",
-                "charts/wald.js", "charts/biolandbau.js"];
+                "charts/wald.js", "charts/biolandbau.js",
+                "charts/falter.js", "charts/rueckkehrer.js",
+                "charts/vogelarten.js"];
 
 const DATEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden", "rotelisten",
-               "erhaltung", "biotoptypen", "wald", "biolandbau"];
+               "erhaltung", "biotoptypen", "wald", "biolandbau",
+               "falter", "rueckkehrer", "vogelarten"];
 
 const ABSCHNITTE = ["schutzgebiete", "vogel", "boden", "rotelisten",
-                    "erhaltung", "biotoptypen", "wald", "biolandbau"];
+                    "erhaltung", "biotoptypen", "wald", "biolandbau",
+                    "falter", "rueckkehrer", "vogelarten"];
 
 const fehler = [];
 const hinweise = [];

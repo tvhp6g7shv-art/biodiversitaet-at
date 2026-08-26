@@ -44,7 +44,8 @@ import { spawnSync } from "node:child_process";
 const HIER = dirname(fileURLToPath(import.meta.url));
 
 const GRAFIKEN = ["schutzgebiete", "vogel", "boden", "rotelisten",
-                  "erhaltung", "biotoptypen", "wald", "biolandbau"];
+                  "erhaltung", "biotoptypen", "wald", "biolandbau",
+                  "falter", "rueckkehrer", "vogelarten"];
 
 /* Eine Breite reicht: die Einbettung sitzt im iframe der Gastgeberseite,
    und rendern.py setzt dort ein festes Fenster. 1100 px entspricht dem
@@ -223,8 +224,12 @@ process.on("unhandledRejection",
 
 /* --- Die Skripte laden, die embed.html per <script src> einbindet ------- */
 const quellen = [...html.matchAll(/<script src="(js\/[^"?]+)/g)].map((m) => m[1]);
-pruefe(quellen.length === 9,
-  `[${chart}] ${quellen.length} Moduldateien in embed.html verlinkt statt 9`);
+/* Je Grafik ein Modul, dazu kern.js. Die Zahl stand bis 26.08.2026 fest
+   im Text und meldete beim Ergaenzen einer Grafik einen Fehler, den es
+   nicht gab — jetzt folgt sie der Liste. */
+const sollModule = GRAFIKEN.length + 1;
+pruefe(quellen.length === sollModule,
+  `[${chart}] ${quellen.length} Moduldateien in embed.html verlinkt statt ${sollModule}`);
 for (const datei of quellen) {
   window.eval(readFileSync(join(HIER, datei), "utf8"));
 }
