@@ -38,7 +38,7 @@ let DATEN_BASIS = "./data";   // In Oxygen: "https://DEIN-GITHUB-NAME.github.io/
    dafür ist die `?v=NN`-Cacheziffer in index.html zuständig, die eine
    andere Zählung führt. */
 const VERSION = {
-  nummer:     "02",                   // 02: bewegter Hintergrund, drei Aufnahmen
+  nummer:     "05",                   // 05: Vogelarten Art fuer Art (03 Falter, 04 Rueckkehrer)
   datum:      "2026-08-26",           // maschinenlesbar, für <time datetime>
   datum_text: "26. August 2026",      // sichtbar
   changelog:  "https://biodiversitaet-monitor.at/changelog/",

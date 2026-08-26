@@ -1,10 +1,76 @@
 {
   "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "02",
+  "aktuell": "05",
   "basis_url": "https://biodiversitaet-monitor.at",
   "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
   "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
   "ausgaben": [
+    {
+      "nummer": "05",
+      "datum": "2026-08-26",
+      "datum_text": "26. August 2026",
+      "titel": "Feld- und Wiesenvögel Art für Art — der Rückgang trifft sehr ungleich",
+      "veroeffentlicht": true,
+      "cacheziffer": 8,
+      "charts": [
+        "vogelarten"
+      ],
+      "social": "Die Grauammer hat seit 1998 97 % ihres Bestands verloren. Der Stieglitz hat im selben Zeitraum um 122 % zugelegt.\n\nDer Index zeigt nur das Mittel. Diese Grafik zeigt, wie ungleich der Rückgang verteilt ist:\nhttps://biodiversitaet-monitor.at/#s-vogelarten",
+      "abschnitte": [
+        {
+          "chart": "vogelarten",
+          "alt": "Liegende Balken für 20 Feld- und Wiesenvogelarten, sortiert von der stärksten Abnahme zur stärksten Zunahme: Grauammer minus 97 Prozent, Girlitz minus 90, Turteltaube minus 75, bis Turmfalke plus 33 und Stieglitz plus 122 Prozent. Vierzehn Arten sind zurückgegangen, vier zeigen keine gesicherte Richtung, zwei haben zugenommen."
+        }
+      ],
+      "seite": [
+        "Zwanzig liegende Balken zeigen, wie sich die Bestände der einzelnen Indikatorarten seit 1998 verändert haben. Die Spannweite reicht von der Grauammer mit minus 97 Prozent bis zum Stieglitz mit plus 122 Prozent.",
+        "Der Farmland Bird Index daneben ist ein Mittelwert — und ein Mittelwert verdeckt genau diese Ungleichheit. Vierzehn der zwanzig Arten sind gesichert zurückgegangen, vier zeigen keine gesicherte Richtung, zwei haben zugenommen."
+      ]
+    },
+    {
+      "nummer": "04",
+      "datum": "2026-08-26",
+      "datum_text": "26. August 2026",
+      "titel": "Biber und Fischotter — zurück aus dem Nichts",
+      "veroeffentlicht": true,
+      "cacheziffer": 8,
+      "charts": [
+        "rueckkehrer"
+      ],
+      "social": "1869 war der Biber in Österreich ausgerottet. Heute leben hier wieder 13.833 bis 16.654 Tiere, beim Fischotter 3.100 bis 4.700.\n\nRückgang ist kein Naturgesetz:\nhttps://biodiversitaet-monitor.at/#s-rueckkehrer",
+      "abschnitte": [
+        {
+          "chart": "rueckkehrer",
+          "alt": "Balkendiagramm mit Spannen für Biber und Fischotter über vier Berichtsperioden. Der Biber wächst von 2.575 bis 2.890 Tieren in 2001 bis 2006 auf 13.833 bis 16.654 in 2019 bis 2024, der Fischotter von 430 bis 800 auf 3.100 bis 4.700. Beim Fischotter fehlt die Periode 2013 bis 2018, weil Österreich damals Rasterzellen statt Tieren meldete."
+        }
+      ],
+      "seite": [
+        "Spannenbalken über vier Berichtsperioden zeigen die Bestände, die Österreich nach Artikel 17 der FFH-Richtlinie gemeldet hat. 1869 war der Biber im Land ausgerottet; heute leben hier wieder 13.833 bis 16.654 Tiere.",
+        "Gezeigt wird die gemeldete Spanne und kein Mittelwert: Beide Arten werden über Reviere erhoben und auf Individuen hochgerechnet. Im Alpenraum meldet Österreich für beide eine echte Erholung, nicht bloß besseres Wissen."
+      ]
+    },
+    {
+      "nummer": "03",
+      "datum": "2026-08-26",
+      "datum_text": "26. August 2026",
+      "titel": "Wiesenfalter in Europa — fast die Hälfte ist verschwunden",
+      "veroeffentlicht": true,
+      "cacheziffer": 8,
+      "charts": [
+        "falter"
+      ],
+      "social": "Fast die Hälfte der Wiesenfalter in Europa ist seit 1991 verschwunden. Der Grünland-Schmetterlingsindex steht 2024 bei 52,7 von 100.\n\nNeue Grafik im Biodiversitäts-Monitor:\nhttps://biodiversitaet-monitor.at/#s-falter",
+      "abschnitte": [
+        {
+          "chart": "falter",
+          "alt": "Liniendiagramm des Grünland-Schmetterlingsindex von 1991 bis 2024. Die Linie fällt fast durchgehend von 100 im Basisjahr 1991 auf 52,7 im Jahr 2024. Eine gestrichelte Waagrechte markiert den Stand von 1991."
+        }
+      ],
+      "seite": [
+        "Eine Linie über 34 Jahre zeigt den Grünland-Schmetterlingsindex, 1991 gleich 100. Er steht 2024 bei 52,7 — fast die Hälfte der Falter auf den festen Zählstrecken ist verschwunden.",
+        "Die Reihe ist europäisch und nicht österreichisch: Eurostat führt für diesen Indikator ausschließlich das EU-Aggregat. Österreich zählt seit 2020 mit, für einen Verlauf ab 1991 ist diese Reihe zu kurz."
+      ]
+    },
     {
       "nummer": "02",
       "datum": "2026-08-26",
