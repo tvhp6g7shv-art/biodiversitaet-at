@@ -186,6 +186,88 @@ const inst = (id) => echarts.getInstanceByDom(window.document.getElementById(id)
     .map((m) => Number(m[1]));
   pruefe(rechtecke.length > 0, "rueckkehrer: SVG enthält Balkenpfade");
   notiz.push(`  kleinste Balken-x-Koordinate: ${Math.min(...rechtecke).toFixed(1)}`);
+
+  /* JEDER BALKEN MUSS IN SEINER EIGENEN ZEILE LIEGEN.
+     Dieses Modul ist das einzige mit zwei Balkengruppen je Kategorie. Ist
+     die Breite je Gruppe größer als das halbe Band, wird die Gruppe breiter
+     als ihr Band — ECharts meldet nichts, zentriert weiter, und die Balken
+     rutschen in die Nachbarzeilen. Am 26.08.2026 stand deshalb der
+     Fischotter-Balken von 2001–2006 auf der Beschriftung „2007–2012".
+
+     Gemessen wird nicht die Option, sondern die Lage im SVG: y-Spanne jedes
+     gefüllten Balkenpfades gegen die Bandgrenzen um die Beschriftung. */
+  const feld = window.document.getElementById("c-rueckkehrer");
+  const svgKnoten = feld.querySelector("svg");
+  const mitten = perioden.map((p) => {
+    const t = [...svgKnoten.querySelectorAll("text")]
+      .find((n) => n.textContent === p);
+    const m = /translate\(\s*[\d.-]+\s+([\d.-]+)/.exec(t?.getAttribute("transform") || "");
+    return m ? Number(m[1]) : NaN;
+  });
+  pruefe(mitten.every(Number.isFinite),
+    `rueckkehrer: alle ${perioden.length} Periodennamen im SVG gefunden`);
+  const band = Math.abs(mitten[1] - mitten[0]);
+
+  /* Die Legendensymbole tragen dieselbe Füllfarbe wie die Balken und hängen
+     im selben `<g>` — sie lassen sich weder am Elternknoten noch an der
+     Pfadform sicher trennen. Getrennt wird deshalb an der LAGE: alles über
+     `grid.top` liegt außerhalb der Zeichenfläche und ist Legende. Damit
+     dieser Filter nicht stillschweigend alles wegwirft, wird die Zahl der
+     gefundenen Balken gegen die Zahl der gemeldeten Werte gehalten. */
+  const gitterOben = o.grid[0].top;
+  const sollBalken = arten.reduce((n, art) =>
+    n + art.werte.filter((w) => w.unten !== null).length, 0);
+
+  const farben = [token.get("--viz-series-1"), token.get("--viz-series-2")];
+  let ausserhalb = 0, gefunden = 0;
+  const oberkante = new Map();   /* Bandmitte → höchster Balkenanfang */
+  farben.forEach((farbe) => {
+    [...svgKnoten.querySelectorAll("path")]
+      .filter((n) => n.getAttribute("fill") === farbe &&
+                     /^M[\d.]+ [\d.]+L/.test(n.getAttribute("d") || ""))
+      .filter((n) => {
+        const ys = [...n.getAttribute("d").matchAll(/[ML]([\d.]+) ([\d.]+)/g)]
+          .map((m) => Number(m[2]));
+        return (Math.min(...ys) + Math.max(...ys)) / 2 >= gitterOben;
+      })
+      .forEach((n) => {
+        gefunden++;
+        const ys = [...n.getAttribute("d").matchAll(/[ML]([\d.]+) ([\d.]+)/g)]
+          .map((m) => Number(m[2]));
+        const oben = Math.min(...ys), unten = Math.max(...ys);
+        const mitte = (oben + unten) / 2;
+        const naechste = mitten.reduce((a, b) =>
+          Math.abs(b - mitte) < Math.abs(a - mitte) ? b : a);
+        oberkante.set(naechste, Math.min(oberkante.get(naechste) ?? Infinity, oben));
+        if (oben < naechste - band / 2 || unten > naechste + band / 2) {
+          ausserhalb++;
+          notiz.push(`  Balken y ${oben.toFixed(1)}–${unten.toFixed(1)} ` +
+                     `verlässt das Band um ${naechste.toFixed(1)} (${band.toFixed(1)} px)`);
+        }
+      });
+  });
+  pruefe(gefunden === sollBalken,
+    `rueckkehrer: ${gefunden} Balken in der Zeichenfläche (erwartet ${sollBalken})`);
+  pruefe(ausserhalb === 0,
+    `rueckkehrer: kein Balken verlässt seine Zeile (${ausserhalb} Abweichungen, ` +
+    `Bandhöhe ${band.toFixed(1)} px)`);
+
+  /* ENG: der Periodenname steht ÜBER der Balkengruppe, seine Unterkante
+     liegt `BAR_ENG / 2 + 4` = 11 px über der Bandmitte (siehe
+     `kategorieLabel` in kern.js). Die Bandhöhe reicht dort für zwei
+     14-px-Balken — der Bandtest oben schlägt also NICHT an, während die
+     Gruppe längst im Namen steht. Deshalb hier eigens gemessen. */
+  if (breite < 768) {
+    const namensUnterkante = 11;
+    const zuHoch = [...oberkante.entries()].filter(([mitte, oben]) =>
+      oben < mitte - namensUnterkante);
+    zuHoch.forEach(([mitte, oben]) => notiz.push(
+      `  Balkengruppe beginnt bei y ${oben.toFixed(1)}, Name endet bei ` +
+      `${(mitte - namensUnterkante).toFixed(1)}`));
+    pruefe(zuHoch.length === 0,
+      `rueckkehrer ENG: Balken bleiben unter dem Periodennamen ` +
+      `(${zuHoch.length} Überschneidungen)`);
+  }
 }
 
 /* --- 3  vogelarten ----------------------------------------------------- */

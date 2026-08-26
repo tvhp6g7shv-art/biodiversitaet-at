@@ -6,8 +6,8 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
-        diagramme, schrift, istSchmal, balkenGitter, kategorieLabel,
-        balkenBreite, balkenHoehe, legende, hoverDunkler } = BIO;
+        diagramme, schrift, istSchmal, istEng, balkenGitter, kategorieLabel,
+        balkenHoehe, legende, hoverDunkler } = BIO;
 
 /* --- 10 — Biber und Fischotter, der Erholungspol ----------------------
    Liegende Balken, vier Berichtsperioden, zwei Arten.
@@ -88,6 +88,35 @@ function baueRueckkehrer(daten) {
 
   balkenHoehe(d, feld, perioden.length * arten.length, 30);
 
+  /* BALKENBREITE — KORREKTUR 26.08.2026, Befund des Users am Bildschirmfoto.
+     Hier stand `balkenBreite(feld, "62%")` wie in den übrigen Modulen. Dort
+     ist es richtig, weil dort EINE Balkengruppe je Kategorie steht: 62 % der
+     Bandbreite, 38 % Luft. Dieses Modul hat als einziges ZWEI Gruppen je
+     Kategorie (`s0` und `s1` sind getrennte Stapel, damit die Arten
+     nebeneinander stehen). Zwei Gruppen zu je 62 % ergeben 124 % — die
+     Gruppe ist breiter als ihr Band, ECharts zentriert sie trotzdem, und
+     jeder Balken rutscht aus seiner Zeile.
+
+     Gemessen am gerenderten SVG bei 1.058 px Feldbreite: Band 58 px, Balken
+     36 px, Bandmitten bei y = 63/121/179/237. Der Fischotter-Balken der
+     Periode 2001–2006 lag bei y = 64,8–100,8 und damit auf der Beschriftung
+     „2007–2012". Die Grafik ordnete jede Zahl der falschen Periode zu.
+
+     Die Obergrenze für zwei Gruppen liegt bei 50 % minus Zwischenraum.
+     40 % ergibt 23,2 px je Balken, dazu der ECharts-Standardabstand von
+     30 % der Balkenbreite (7 px) — zusammen 53,4 px in einem 58-px-Band.
+
+     ENG (unter 768 px): dort ist die Breite ein fester Pixelwert, weil der
+     Kategoriename ÜBER dem Balken steht. `kategorieLabel` setzt dessen
+     Unterkante auf `BAR_ENG / 2 + 4` = 11 px über die Bandmitte. Der feste
+     Wert BAR_ENG = 14 aus `balkenBreite()` gilt für EINE Gruppe; zwei
+     Gruppen zu 14 px belegen ±16 px und schöben den oberen Balken 5 px in
+     den Namen. Deshalb 8 px: gemessen bei 700 px Fensterbreite belegt die
+     Gruppe y = 66,35–83,15 um die Bandmitte 74,75, die Namensunterkante
+     liegt bei 63,75 — 2,6 px Luft. Wer diesen Wert erhöht, schiebt den
+     Namen in den oberen Balken. */
+  const spannenBreite = istEng(feld) ? 8 : "40%";
+
   /* Je Art ein unsichtbarer Sockel und die sichtbare Spanne, in einem
      eigenen Stapel. `wert()` liest aus der Periodenliste der Art. */
   const reihen = [];
@@ -96,14 +125,14 @@ function baueRueckkehrer(daten) {
     reihen.push({
       name: `${art.name} (Sockel)`, type: "bar", stack: `s${i}`,
       silent: true, legendHoverLink: false,
-      barWidth: balkenBreite(feld, "62%"),
+      barWidth: spannenBreite,
       itemStyle: { color: "transparent" },
       emphasis: { disabled: true },
       data: perioden.map((p, k) => wert(k).unten ?? null),
     });
     reihen.push({
       name: art.name, type: "bar", stack: `s${i}`,
-      barWidth: balkenBreite(feld, "62%"),
+      barWidth: spannenBreite,
       itemStyle: { color: farben[i], borderRadius: 4 },
       emphasis: hoverDunkler(farben[i]),
       data: perioden.map((p, k) => {
