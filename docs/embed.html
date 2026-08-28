@@ -19,11 +19,8 @@
 <script src="js/charts/lebensraeume.js?v=08" defer></script>
 <script src="js/charts/biotoptypen.js?v=08" defer></script>
 <script src="js/charts/wald.js?v=08" defer></script>
-<script src="js/charts/totholz.js?v=08" defer></script>
-<script src="js/charts/fichte.js?v=08" defer></script>
-<script src="js/charts/baumarten.js?v=08" defer></script>
-<script src="js/charts/waldarten.js?v=08" defer></script>
-<script src="js/charts/natura2000.js?v=08" defer></script>
+<!-- Skripte der fuenf Wald-Abschnitte ausgeklinkt 28.08.2026 —
+     Dateien nicht im Repo, siehe js/kern.js -->
 <script src="js/charts/biolandbau.js?v=08" defer></script>
 <script src="js/charts/falter.js?v=08" defer></script>
 <script src="js/charts/rueckkehrer.js?v=08" defer></script>
@@ -307,11 +304,21 @@ const CHARTS = {
   lebensraeume: { titel: "Erhaltungszustand nach Lebensraumgruppen", dateien: ["lebensraeume"], bau: (B, d) => B.baueLebensraeume(d.lebensraeume), hoch: true },
   biotoptypen: { titel: "Gefährdete Biotoptypen", dateien: ["biotoptypen"], bau: (B, d) => B.baueBiotoptypen(d.biotoptypen) },
   wald: { titel: "Waldfläche im Vergleich", dateien: ["wald"], bau: (B, d) => B.baueWald(d.wald) },
+  /* ausgeklinkt 28.08.2026, Datei nicht im Repo:
   totholz: { titel: "Totes Holz im Wald", dateien: ["totholz", "totholz_geo"], bau: (B, d) => B.baueTotholz(d.totholz, d.totholz_geo), hoch: true },
+  */
+  /* ausgeklinkt 28.08.2026, Datei nicht im Repo:
   fichte: { titel: "Fichtenanteil am Wald", dateien: ["fichte"], bau: (B, d) => B.baueFichte(d.fichte) },
+  */
+  /* ausgeklinkt 28.08.2026, Datei nicht im Repo:
   baumarten: { titel: "Nadel- und Laubholz im Wald", dateien: ["baumarten"], bau: (B, d) => B.baueBaumarten(d.baumarten) },
+  */
+  /* ausgeklinkt 28.08.2026, Datei nicht im Repo:
   waldarten: { titel: "Gefährdete Waldpflanzen", dateien: ["waldarten"], bau: (B, d) => B.baueWaldarten(d.waldarten) },
+  */
+  /* ausgeklinkt 28.08.2026, Datei nicht im Repo:
   natura2000: { titel: "Waldzustand nach zwei Messweisen", dateien: ["natura2000"], bau: (B, d) => B.baueNatura2000(d.natura2000) },
+  */
   biolandbau: { titel: "Anteil der biologischen Landwirtschaft", dateien: ["biolandbau"], bau: (B, d) => B.baueBiolandbau(d.biolandbau) },
   falter: { titel: "Wiesenfalter in Europa", dateien: ["falter"], bau: (B, d) => B.baueFalter(d.falter) },
   rueckkehrer: { titel: "Biber und Fischotter", dateien: ["rueckkehrer"], bau: (B, d) => B.baueRueckkehrer(d.rueckkehrer) },

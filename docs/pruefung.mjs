@@ -97,27 +97,24 @@ const HOEHEN = {
   "c-vogelarten": 644,
 };
 
+/* Die fünf Wald-Abschnitte sind am 28.08.2026 ausgeklinkt worden — ihre
+   Dateien liegen im Ordner, aber nicht im Repo. Wieder aufnehmen, sobald
+   sie committet sind; die Listen leiten Sollzahlen aus ihrer Länge ab. */
 const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/vogel.js", "charts/boden.js", "charts/rotelisten.js",
                 "charts/erhaltung.js", "charts/lebensraeume.js",
                 "charts/biotoptypen.js",
-                "charts/wald.js", "charts/totholz.js", "charts/fichte.js",
-                "charts/baumarten.js", "charts/waldarten.js",
-                "charts/natura2000.js",
+                "charts/wald.js",
                 "charts/biolandbau.js",
                 "charts/falter.js", "charts/rueckkehrer.js",
                 "charts/vogelarten.js"];
 
 const DATEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden", "rotelisten",
-               "erhaltung", "lebensraeume", "biotoptypen", "wald",
-               "totholz", "totholz_geo",
-               "fichte", "baumarten", "waldarten", "natura2000", "biolandbau",
+               "erhaltung", "lebensraeume", "biotoptypen", "wald", "biolandbau",
                "falter", "rueckkehrer", "vogelarten"];
 
 const ABSCHNITTE = ["schutzgebiete", "vogel", "boden", "rotelisten",
                     "erhaltung", "lebensraeume", "biotoptypen", "wald",
-                    "totholz", "fichte",
-                    "baumarten", "waldarten", "natura2000",
                     "biolandbau",
                     "falter", "rueckkehrer", "vogelarten"];
 
@@ -281,8 +278,7 @@ for (const kurz of ABSCHNITTE) {
    Wissenslücke ist und keine gute Lage, und dass alle echten
    Verbesserungen im Wald liegen. Ohne Notiz fehlt der halbe Befund. */
 for (const kurz of ["vogel", "rotelisten", "erhaltung", "lebensraeume",
-                    "biotoptypen", "wald", "biolandbau",
-                    "baumarten", "waldarten", "natura2000"]) {
+                    "biotoptypen", "wald", "biolandbau"]) {
   pruefe(t(`n-${kurz}`).length > 0, `[${name}] Notizzeile n-${kurz} ist leer`);
 }
 

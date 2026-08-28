@@ -574,9 +574,19 @@ async function start() {
   const DATEIEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden",
                    "rotelisten", "erhaltung", "lebensraeume",
                    "biotoptypen", "wald",
-                   "biolandbau", "falter", "rueckkehrer", "vogelarten",
-                   "totholz", "totholz_geo", "fichte", "baumarten",
-                   "waldarten", "natura2000"];
+                   "biolandbau", "falter", "rueckkehrer", "vogelarten"];
+  /* AUSGEKLINKT 28.08.2026 — die fünf Wald-Abschnitte (totholz, fichte,
+   baumarten, waldarten, natura2000) sind gebaut und liegen im Ordner, aber
+   ihre Modul- und Datendateien sind NICHT im Repo. Ausgeliefert würden sie
+   elf 404 erzeugen und die rote Störmeldung im Fuß auslösen — derselbe
+   Fehler wie am 21.08. mit `selbstaendige`. Dazu haben totholz, fichte und
+   baumarten eine Live-Sperre bis zur BFW-Freigabe.
+   WIEDER EINHÄNGEN, sobald die Dateien committet sind: hier, in
+   index.html (Skript-Tags), embed.html (CHARTS + Skripte) und in den
+   beiden Prüfskripten. Die <section>-Blöcke stehen unverändert im Markup
+   und bleiben bis dahin display:none, also unsichtbar und folgenlos.
+     Wieder aufzunehmen: "totholz", "totholz_geo", "fichte", "baumarten",
+     "waldarten", "natura2000". */
   const geladen = {};
   await Promise.all(DATEIEN.map(async (name) => {
     geladen[name] = await hole(name).catch(() => null);
@@ -640,15 +650,25 @@ async function start() {
     sicher("Waldfläche",     () => BIO.baueWald(geladen.wald));
     /* Bereich Wald — die Reihenfolge ist die Aussage: erst wie viel Wald es
        gibt, dann was in ihm steht. Die Waldfläche wächst; Totholz und
-       Fichtenanteil sagen, dass daraus noch keine Vielfalt folgt. */
+       Fichtenanteil sagen, dass daraus noch keine Vielfalt folgt.
+
+       AUSGEKLINKT 28.08.2026 — die fünf Wald-Abschnitte (totholz, fichte,
+   baumarten, waldarten, natura2000) sind gebaut und liegen im Ordner, aber
+   ihre Modul- und Datendateien sind NICHT im Repo. Ausgeliefert würden sie
+   elf 404 erzeugen und die rote Störmeldung im Fuß auslösen — derselbe
+   Fehler wie am 21.08. mit `selbstaendige`. Dazu haben totholz, fichte und
+   baumarten eine Live-Sperre bis zur BFW-Freigabe.
+   WIEDER EINHÄNGEN, sobald die Dateien committet sind: hier, in
+   index.html (Skript-Tags), embed.html (CHARTS + Skripte) und in den
+   beiden Prüfskripten. Die <section>-Blöcke stehen unverändert im Markup
+   und bleiben bis dahin display:none, also unsichtbar und folgenlos.
+
     sicher("Totholz",        () => BIO.baueTotholz(geladen.totholz, geladen.totholz_geo));
     sicher("Fichte",         () => BIO.baueFichte(geladen.fichte));
     sicher("Baumarten",      () => BIO.baueBaumarten(geladen.baumarten));
-    /* Erst der Wald selbst, dann was in ihm lebt und wie er bewertet
-       wird. `waldarten` zeigt den Verlust, `natura2000` die Kehrseite:
-       dass dieselbe Meldung je nach Messweise zwei Antworten gibt. */
     sicher("Waldarten",      () => BIO.baueWaldarten(geladen.waldarten));
     sicher("Natura 2000",    () => BIO.baueNatura2000(geladen.natura2000));
+    */
     sicher("Biolandbau",     () => BIO.baueBiolandbau(geladen.biolandbau));
     /* Bereich Tiergruppen — als Gegensatz gebaut: Verlust, Erholung,
        Stillstand. Die Reihenfolge ist die Aussage und darf nicht nach

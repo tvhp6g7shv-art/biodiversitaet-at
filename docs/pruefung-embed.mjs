@@ -43,10 +43,11 @@ import { spawnSync } from "node:child_process";
 
 const HIER = dirname(fileURLToPath(import.meta.url));
 
+/* Die fünf Wald-Abschnitte sind am 28.08.2026 ausgeklinkt worden — ihre
+   Dateien liegen im Ordner, aber nicht im Repo. Wieder aufnehmen, sobald
+   sie committet sind; die Listen leiten Sollzahlen aus ihrer Länge ab. */
 const GRAFIKEN = ["schutzgebiete", "vogel", "boden", "rotelisten",
                   "erhaltung", "lebensraeume", "biotoptypen", "wald",
-                  "totholz", "fichte",
-                  "baumarten", "waldarten", "natura2000",
                   "biolandbau",
                   "falter", "rueckkehrer", "vogelarten"];
 
