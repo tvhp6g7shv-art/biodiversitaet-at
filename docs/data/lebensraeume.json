@@ -1,0 +1,254 @@
+{
+ "gruppen": [
+  {
+   "name": "Fels & Höhlen",
+   "name_lang": "Fels, Schutt, Höhlen & Gletscher",
+   "gruppe_quelle": "Rocky habitats",
+   "anteile": [
+    75.0,
+    6.2,
+    12.5,
+    6.2
+   ],
+   "anzahl": [
+    12,
+    1,
+    2,
+    1
+   ],
+   "bewertungen": 16,
+   "schutzgueter": 10,
+   "genuine": 0,
+   "guenstig": 75.0,
+   "schlecht": 12.5,
+   "unbekannt": 6.2,
+   "zeigen": true
+  },
+  {
+   "name": "Heide & Gebüsch",
+   "name_lang": "Heiden & Gebüsche",
+   "gruppe_quelle": "Heath & scrub",
+   "anteile": [
+    50.0,
+    16.7,
+    0.0,
+    33.3
+   ],
+   "anzahl": [
+    3,
+    1,
+    0,
+    2
+   ],
+   "bewertungen": 6,
+   "schutzgueter": 5,
+   "genuine": 0,
+   "guenstig": 50.0,
+   "schlecht": 0.0,
+   "unbekannt": 33.3,
+   "zeigen": true
+  },
+  {
+   "name": "Wald",
+   "name_lang": "Waldlebensräume",
+   "gruppe_quelle": "Forests",
+   "anteile": [
+    28.1,
+    43.8,
+    28.1,
+    0.0
+   ],
+   "anzahl": [
+    9,
+    14,
+    9,
+    0
+   ],
+   "bewertungen": 32,
+   "schutzgueter": 20,
+   "genuine": 4,
+   "guenstig": 28.1,
+   "schlecht": 28.1,
+   "unbekannt": 0.0,
+   "zeigen": true
+  },
+  {
+   "name": "Grünland",
+   "name_lang": "Grünland & Hochstaudenfluren",
+   "gruppe_quelle": "Grasslands",
+   "anteile": [
+    8.3,
+    37.5,
+    54.2,
+    0.0
+   ],
+   "anzahl": [
+    2,
+    9,
+    13,
+    0
+   ],
+   "bewertungen": 24,
+   "schutzgueter": 15,
+   "genuine": 0,
+   "guenstig": 8.3,
+   "schlecht": 54.2,
+   "unbekannt": 0.0,
+   "zeigen": true
+  },
+  {
+   "name": "Gewässer",
+   "name_lang": "Fließ- & Stillgewässer",
+   "gruppe_quelle": "Freshwater habitats",
+   "anteile": [
+    0.0,
+    18.8,
+    37.5,
+    43.8
+   ],
+   "anzahl": [
+    0,
+    3,
+    6,
+    7
+   ],
+   "bewertungen": 16,
+   "schutzgueter": 9,
+   "genuine": 1,
+   "guenstig": 0.0,
+   "schlecht": 37.5,
+   "unbekannt": 43.8,
+   "zeigen": true
+  },
+  {
+   "name": "Moore & Sümpfe",
+   "name_lang": "Moore, Sümpfe & Quellen",
+   "gruppe_quelle": "Bogs, mires & fens",
+   "anteile": [
+    0.0,
+    31.2,
+    68.8,
+    0.0
+   ],
+   "anzahl": [
+    0,
+    5,
+    11,
+    0
+   ],
+   "bewertungen": 16,
+   "schutzgueter": 9,
+   "genuine": 0,
+   "guenstig": 0.0,
+   "schlecht": 68.8,
+   "unbekannt": 0.0,
+   "zeigen": true
+  }
+ ],
+ "nicht_gezeigt": [
+  {
+   "name": "Salzsteppen",
+   "name_lang": "Pannonische Salzsteppen",
+   "gruppe_quelle": "Coastal habitats",
+   "anteile": [
+    0.0,
+    0.0,
+    100.0,
+    0.0
+   ],
+   "anzahl": [
+    0,
+    0,
+    1,
+    0
+   ],
+   "bewertungen": 1,
+   "schutzgueter": 1,
+   "genuine": 0,
+   "guenstig": 0.0,
+   "schlecht": 100.0,
+   "unbekannt": 0.0,
+   "zeigen": false
+  },
+  {
+   "name": "Binnendünen",
+   "name_lang": "Pannonische Binnendünen",
+   "gruppe_quelle": "Dunes habitats",
+   "anteile": [
+    0.0,
+    0.0,
+    100.0,
+    0.0
+   ],
+   "anzahl": [
+    0,
+    0,
+    1,
+    0
+   ],
+   "bewertungen": 1,
+   "schutzgueter": 1,
+   "genuine": 0,
+   "guenstig": 0.0,
+   "schlecht": 100.0,
+   "unbekannt": 0.0,
+   "zeigen": false
+  },
+  {
+   "name": "Wacholderheiden",
+   "name_lang": "Wacholderheiden",
+   "gruppe_quelle": "Sclerophyllous scrubs",
+   "anteile": [
+    0.0,
+    0.0,
+    100.0,
+    0.0
+   ],
+   "anzahl": [
+    0,
+    0,
+    2,
+    0
+   ],
+   "bewertungen": 2,
+   "schutzgueter": 1,
+   "genuine": 0,
+   "guenstig": 0.0,
+   "schlecht": 100.0,
+   "unbekannt": 0.0,
+   "zeigen": false
+  }
+ ],
+ "kategorien": [
+  {
+   "kuerzel": "FV",
+   "name": "günstig"
+  },
+  {
+   "kuerzel": "U1",
+   "name": "unzureichend"
+  },
+  {
+   "kuerzel": "U2",
+   "name": "schlecht"
+  },
+  {
+   "kuerzel": "XX",
+   "name": "unbekannt"
+  }
+ ],
+ "periode": "2019–2024",
+ "stand": 2026,
+ "bewertungen_gesamt": 114,
+ "schutzgueter_gesamt": 71,
+ "wald_guenstig": 28.1,
+ "gruenland_guenstig": 8.3,
+ "pflege": {
+  "art": "gepflegt",
+  "quelle": "Eionet, Article 17 Web Tool: Meldung Österreichs nach Artikel 17 FFH-Richtlinie, Berichtsperiode 2019–2024, alle neun Lebensraumgruppen einzeln ausgezählt am 28.08.2026. Die Gruppensummen sind gegen die unabhängige Gesamtauszählung im Abschnitt Erhaltungszustand geprüft.",
+  "bericht_jahr": 2026,
+  "abgerufen": "2026-08-28"
+ },
+ "notiz": "Die Reihenfolge folgt der Nutzung: Oben steht, was niemand bewirtschaftet — Fels, Gletscher und Höhlen, 75 % davon in gutem Zustand. Unten die Kulturlandschaft. Von den vier bewirtschafteten Wiesentypen ist in <strong>beiden</strong> Naturräumen keine einzige der acht Bewertungen günstig; die zwei guten Grünlandwerte liegen im Hochgebirge. Bei den Gewässern sind 44 % „unbekannt“ — das ist eine Lücke im Wissen, keine gute Lage. Und von den fünf Änderungen, die der Bericht als <strong>tatsächlich</strong> meldet und nicht als Folge besseren Wissens, entfallen vier auf den Wald und keine einzige auf das Grünland.",
+ "hinweis": "Gezählt werden Bewertungen, nicht Lebensraumtypen: Jeder Typ wird in jedem Naturraum, in dem er vorkommt, einzeln beurteilt. Salzsteppen, Binnendünen und Wacholderheiden fehlen im Balken — zusammen vier Bewertungen."
+}

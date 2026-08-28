@@ -44,7 +44,10 @@ import { spawnSync } from "node:child_process";
 const HIER = dirname(fileURLToPath(import.meta.url));
 
 const GRAFIKEN = ["schutzgebiete", "vogel", "boden", "rotelisten",
-                  "erhaltung", "biotoptypen", "wald", "biolandbau",
+                  "erhaltung", "lebensraeume", "biotoptypen", "wald",
+                  "totholz", "fichte",
+                  "baumarten", "waldarten", "natura2000",
+                  "biolandbau",
                   "falter", "rueckkehrer", "vogelarten"];
 
 /* Eine Breite reicht: die Einbettung sitzt im iframe der Gastgeberseite,

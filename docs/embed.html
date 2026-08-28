@@ -16,8 +16,14 @@
 <script src="js/charts/boden.js?v=08" defer></script>
 <script src="js/charts/rotelisten.js?v=08" defer></script>
 <script src="js/charts/erhaltung.js?v=08" defer></script>
+<script src="js/charts/lebensraeume.js?v=08" defer></script>
 <script src="js/charts/biotoptypen.js?v=08" defer></script>
 <script src="js/charts/wald.js?v=08" defer></script>
+<script src="js/charts/totholz.js?v=08" defer></script>
+<script src="js/charts/fichte.js?v=08" defer></script>
+<script src="js/charts/baumarten.js?v=08" defer></script>
+<script src="js/charts/waldarten.js?v=08" defer></script>
+<script src="js/charts/natura2000.js?v=08" defer></script>
 <script src="js/charts/biolandbau.js?v=08" defer></script>
 <script src="js/charts/falter.js?v=08" defer></script>
 <script src="js/charts/rueckkehrer.js?v=08" defer></script>
@@ -134,6 +140,28 @@
   --viz-div-schlecht-3: #fd887e;
   --viz-div-schlecht-4: #fa5b56;
 
+  /* Rote Sequenzrampe. Bis 28.08.2026 stand sie NUR in der idl.css der
+     WordPress-Auslieferung — hier fehlte sie, und ECharts zeichnete
+     stattdessen seine Vorgabefarben: `erhaltung` bekam fuer
+     „unzureichend" ein Blau (#5470c6) mitten in eine Ampel, `biotoptypen`
+     fuer vier von sechs Stufen gar keine Fuellung. Am SVG gemessen, nicht
+     vermutet.
+
+     Die Toene der idl.css lassen sich NICHT uebernehmen: die gehoeren zur
+     Salbei-Palette. Stufe 1 bis 4 sind deshalb zeichengleich mit
+     --viz-div-schlecht-1 bis -4 dieser Palette; 5 und 6 setzen dieselbe
+     Helligkeitsleiter fort, mit an den Farbraum geklemmter Saettigung.
+     Ohne diese Klemmung laufen 5 und 6 in dasselbe Rot (Nachbarkontrast
+     1,07). Gerechnet in OKLCH, Helligkeit streng fallend, kleinster
+     Nachbarkontrast 1,31 — dieselbe Groessenordnung wie die vorhandenen
+     div-schlecht-Stufen. */
+  --viz-seq-rot-1:      #f7d7d1;
+  --viz-seq-rot-2:      #fcafa6;
+  --viz-seq-rot-3:      #fd887e;
+  --viz-seq-rot-4:      #fa5b56;
+  --viz-seq-rot-5:      #ec2729;
+  --viz-seq-rot-6:      #c61f21;
+
   /* --- Typografie -------------------------------------------------
      Größen in px, weil ECharts nur Zahlen kennt; kern.js liest sie mit
      parseFloat aus. Wer in Oxygen umstellt, ändert nur diese Zeilen —
@@ -153,6 +181,7 @@
   --viz-fw-kpi:      650;    /* echte Zwischenstufe, Figtree ist variabel */
 
   --viz-radius: 10px;
+  --viz-radius-s: 6px;   /* war nur in der idl.css; kern.js fiel auf 8px zurueck, das CSS auf 6px */
   --viz-gap: 20px;
 }
 /* Dunkelmodus — Palette B „weiches Anthrazit", 19.08.2026.
@@ -180,6 +209,9 @@
     --viz-div-gut-3: #276b4b; --viz-div-gut-4: #309362;
     --viz-div-schlecht-1: #3a2224; --viz-div-schlecht-2: #582c2f;
     --viz-div-schlecht-3: #80393c; --viz-div-schlecht-4: #b84a4d;
+    --viz-seq-rot-1: #3a2224; --viz-seq-rot-2: #582c2f;
+    --viz-seq-rot-3: #80393c; --viz-seq-rot-4: #b84a4d;
+    --viz-seq-rot-5: #e65664; --viz-seq-rot-6: #f98086;
   }
 }
 :root[data-theme="dark"] .viz-root {
@@ -201,6 +233,9 @@
   --viz-div-gut-3: #276b4b; --viz-div-gut-4: #309362;
   --viz-div-schlecht-1: #3a2224; --viz-div-schlecht-2: #582c2f;
   --viz-div-schlecht-3: #80393c; --viz-div-schlecht-4: #b84a4d;
+  --viz-seq-rot-1: #3a2224; --viz-seq-rot-2: #582c2f;
+  --viz-seq-rot-3: #80393c; --viz-seq-rot-4: #b84a4d;
+  --viz-seq-rot-5: #e65664; --viz-seq-rot-6: #f98086;
 }
 
 /* --- Nur fuer die Einbettung ---------------------------------------
@@ -269,8 +304,14 @@ const CHARTS = {
   boden: { titel: "Bodenverbrauch", dateien: ["boden"], bau: (B, d) => B.baueBoden(d.boden), extra: ["t-boden-kategorien"] },
   rotelisten: { titel: "Alter der Roten Listen", dateien: ["rotelisten"], bau: (B, d) => B.baueRoteListen(d.rotelisten) },
   erhaltung: { titel: "Erhaltungszustand der Lebensraumtypen", dateien: ["erhaltung"], bau: (B, d) => B.baueErhaltung(d.erhaltung) },
+  lebensraeume: { titel: "Erhaltungszustand nach Lebensraumgruppen", dateien: ["lebensraeume"], bau: (B, d) => B.baueLebensraeume(d.lebensraeume), hoch: true },
   biotoptypen: { titel: "Gefährdete Biotoptypen", dateien: ["biotoptypen"], bau: (B, d) => B.baueBiotoptypen(d.biotoptypen) },
   wald: { titel: "Waldfläche im Vergleich", dateien: ["wald"], bau: (B, d) => B.baueWald(d.wald) },
+  totholz: { titel: "Totes Holz im Wald", dateien: ["totholz", "totholz_geo"], bau: (B, d) => B.baueTotholz(d.totholz, d.totholz_geo), hoch: true },
+  fichte: { titel: "Fichtenanteil am Wald", dateien: ["fichte"], bau: (B, d) => B.baueFichte(d.fichte) },
+  baumarten: { titel: "Nadel- und Laubholz im Wald", dateien: ["baumarten"], bau: (B, d) => B.baueBaumarten(d.baumarten) },
+  waldarten: { titel: "Gefährdete Waldpflanzen", dateien: ["waldarten"], bau: (B, d) => B.baueWaldarten(d.waldarten) },
+  natura2000: { titel: "Waldzustand nach zwei Messweisen", dateien: ["natura2000"], bau: (B, d) => B.baueNatura2000(d.natura2000) },
   biolandbau: { titel: "Anteil der biologischen Landwirtschaft", dateien: ["biolandbau"], bau: (B, d) => B.baueBiolandbau(d.biolandbau) },
   falter: { titel: "Wiesenfalter in Europa", dateien: ["falter"], bau: (B, d) => B.baueFalter(d.falter) },
   rueckkehrer: { titel: "Biber und Fischotter", dateien: ["rueckkehrer"], bau: (B, d) => B.baueRueckkehrer(d.rueckkehrer) },

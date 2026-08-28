@@ -88,6 +88,7 @@ const HOEHEN = {
   "c-boden": 340,
   "c-rotelisten": 690,
   "c-erhaltung": 260,
+  "c-lebensraeume": 340,
   "c-biotoptypen": 300,
   "c-wald": 340,
   "c-biolandbau": 760,
@@ -98,17 +99,26 @@ const HOEHEN = {
 
 const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/vogel.js", "charts/boden.js", "charts/rotelisten.js",
-                "charts/erhaltung.js", "charts/biotoptypen.js",
-                "charts/wald.js", "charts/biolandbau.js",
+                "charts/erhaltung.js", "charts/lebensraeume.js",
+                "charts/biotoptypen.js",
+                "charts/wald.js", "charts/totholz.js", "charts/fichte.js",
+                "charts/baumarten.js", "charts/waldarten.js",
+                "charts/natura2000.js",
+                "charts/biolandbau.js",
                 "charts/falter.js", "charts/rueckkehrer.js",
                 "charts/vogelarten.js"];
 
 const DATEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden", "rotelisten",
-               "erhaltung", "biotoptypen", "wald", "biolandbau",
+               "erhaltung", "lebensraeume", "biotoptypen", "wald",
+               "totholz", "totholz_geo",
+               "fichte", "baumarten", "waldarten", "natura2000", "biolandbau",
                "falter", "rueckkehrer", "vogelarten"];
 
 const ABSCHNITTE = ["schutzgebiete", "vogel", "boden", "rotelisten",
-                    "erhaltung", "biotoptypen", "wald", "biolandbau",
+                    "erhaltung", "lebensraeume", "biotoptypen", "wald",
+                    "totholz", "fichte",
+                    "baumarten", "waldarten", "natura2000",
+                    "biolandbau",
                     "falter", "rueckkehrer", "vogelarten"];
 
 const fehler = [];
@@ -260,8 +270,19 @@ for (const kurz of ABSCHNITTE) {
 }
 
 /* Notizzeilen: nur dort Pflicht, wo ein Befund ausserhalb der Grafik steht. */
-for (const kurz of ["vogel", "rotelisten", "erhaltung", "biotoptypen",
-                    "wald", "biolandbau"]) {
+/* `baumarten`, `waldarten` und `natura2000` stehen hier, weil ihr
+   eigentlicher Befund AUSSERHALB der Grafik liegt: der Nennerwechsel der
+   Waldinventur, die Gegenprobe an den Moosen, und die Regel, die aus
+   93 % Fläche eine 28-%-Bewertung macht. Fehlt die Notiz, sieht jeder
+   der drei Abschnitte aus wie ein Datenfehler. */
+/* `lebensraeume` gehört aus demselben Grund dazu: Der Balken zeigt die
+   Rangfolge, aber nicht, dass die zwei günstigen Grünlandwerte im
+   Hochgebirge liegen, dass „unbekannt" bei den Gewässern eine
+   Wissenslücke ist und keine gute Lage, und dass alle echten
+   Verbesserungen im Wald liegen. Ohne Notiz fehlt der halbe Befund. */
+for (const kurz of ["vogel", "rotelisten", "erhaltung", "lebensraeume",
+                    "biotoptypen", "wald", "biolandbau",
+                    "baumarten", "waldarten", "natura2000"]) {
   pruefe(t(`n-${kurz}`).length > 0, `[${name}] Notizzeile n-${kurz} ist leer`);
 }
 
@@ -277,6 +298,41 @@ for (const kurz of ABSCHNITTE) {
   pruefe(doc.querySelectorAll(`#t-${kurz} tbody tr`).length > 0,
     `[${name}] Tabelle t-${kurz} ist leer`);
 }
+/* --- Überschrift gegen die Daten lesen --------------------------------
+   „Zwei von 24 Grünland-Bewertungen sind gut, im Wald neun von 32" nennt
+   vier Zahlen, die im HTML fest stehen. Beim nächsten Berichtszyklus
+   ändern sie sich, und eine feste Überschrift altert dann STILL — die
+   Grafik zeigt neue Werte, die Zeile darüber die alten. Genau dieser
+   Fehler ist im Schwesterprojekt schon vorgekommen.
+
+   Geprüft wird gegen die JSON, nicht gegen Konstanten: Ein Sollwert aus
+   derselben Quelle wie die Daten könnte den Fehler nicht finden. */
+{
+  const d = JSON.parse(readFileSync(join(HIER, "data", "lebensraeume.json"), "utf8"));
+  const gr = d.gruppen.find((g) => g.gruppe_quelle === "Grasslands");
+  const wa = d.gruppen.find((g) => g.gruppe_quelle === "Forests");
+  const h2 = doc.querySelector("#s-lebensraeume h2")?.textContent ?? "";
+  const WORT = ["null", "eine", "zwei", "drei", "vier", "fünf", "sechs",
+                "sieben", "acht", "neun", "zehn", "elf", "zwölf"];
+  /* Jede Zahl darf als Ziffer ODER als Wort dastehen — die Überschrift
+     schreibt kleine Zahlen aus, große nicht. */
+  const steht = (n) => {
+    const wort = WORT[n];
+    return new RegExp(`\\b${n}\\b`).test(h2)
+        || (wort && new RegExp(wort, "i").test(h2));
+  };
+  for (const [n, was] of [
+    [gr.anzahl[0], "günstige Grünland-Bewertungen"],
+    [gr.bewertungen, "Grünland-Bewertungen gesamt"],
+    [wa.anzahl[0], "günstige Wald-Bewertungen"],
+    [wa.bewertungen, "Wald-Bewertungen gesamt"],
+  ]) {
+    pruefe(steht(n),
+      `[${name}] Überschrift s-lebensraeume nennt ${was} nicht mehr ` +
+      `(${n} laut Daten): „${h2}"`);
+  }
+}
+
 const rlZeilen = doc.querySelectorAll("#t-rotelisten tbody tr").length;
 pruefe(rlZeilen === 23, `[${name}] Rote-Listen-Tabelle: ${rlZeilen} Zeilen statt 23`);
 pruefe(t("n-rotelisten").includes("keine"),

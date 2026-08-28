@@ -105,6 +105,28 @@
   --viz-div-schlecht-3: #fd887e;
   --viz-div-schlecht-4: #fa5b56;
 
+  /* Rote Sequenzrampe. Bis 28.08.2026 stand sie NUR in der idl.css der
+     WordPress-Auslieferung — hier fehlte sie, und ECharts zeichnete
+     stattdessen seine Vorgabefarben: `erhaltung` bekam fuer
+     „unzureichend" ein Blau (#5470c6) mitten in eine Ampel, `biotoptypen`
+     fuer vier von sechs Stufen gar keine Fuellung. Am SVG gemessen, nicht
+     vermutet.
+
+     Die Toene der idl.css lassen sich NICHT uebernehmen: die gehoeren zur
+     Salbei-Palette. Stufe 1 bis 4 sind deshalb zeichengleich mit
+     --viz-div-schlecht-1 bis -4 dieser Palette; 5 und 6 setzen dieselbe
+     Helligkeitsleiter fort, mit an den Farbraum geklemmter Saettigung.
+     Ohne diese Klemmung laufen 5 und 6 in dasselbe Rot (Nachbarkontrast
+     1,07). Gerechnet in OKLCH, Helligkeit streng fallend, kleinster
+     Nachbarkontrast 1,31 — dieselbe Groessenordnung wie die vorhandenen
+     div-schlecht-Stufen. */
+  --viz-seq-rot-1:      #f7d7d1;
+  --viz-seq-rot-2:      #fcafa6;
+  --viz-seq-rot-3:      #fd887e;
+  --viz-seq-rot-4:      #fa5b56;
+  --viz-seq-rot-5:      #ec2729;
+  --viz-seq-rot-6:      #c61f21;
+
   /* --- Typografie -------------------------------------------------
      Größen in px, weil ECharts nur Zahlen kennt; kern.js liest sie mit
      parseFloat aus. Wer in Oxygen umstellt, ändert nur diese Zeilen —
@@ -124,6 +146,7 @@
   --viz-fw-kpi:      650;    /* echte Zwischenstufe, Figtree ist variabel */
 
   --viz-radius: 10px;
+  --viz-radius-s: 6px;   /* war nur in der idl.css; kern.js fiel auf 8px zurueck, das CSS auf 6px */
   --viz-gap: 20px;
 }
 /* Dunkelmodus — Palette B „weiches Anthrazit", 19.08.2026.
@@ -151,6 +174,9 @@
     --viz-div-gut-3: #276b4b; --viz-div-gut-4: #309362;
     --viz-div-schlecht-1: #3a2224; --viz-div-schlecht-2: #582c2f;
     --viz-div-schlecht-3: #80393c; --viz-div-schlecht-4: #b84a4d;
+    --viz-seq-rot-1: #3a2224; --viz-seq-rot-2: #582c2f;
+    --viz-seq-rot-3: #80393c; --viz-seq-rot-4: #b84a4d;
+    --viz-seq-rot-5: #e65664; --viz-seq-rot-6: #f98086;
   }
 }
 :root[data-theme="dark"] .viz-root {
@@ -172,6 +198,9 @@
   --viz-div-gut-3: #276b4b; --viz-div-gut-4: #309362;
   --viz-div-schlecht-1: #3a2224; --viz-div-schlecht-2: #582c2f;
   --viz-div-schlecht-3: #80393c; --viz-div-schlecht-4: #b84a4d;
+  --viz-seq-rot-1: #3a2224; --viz-seq-rot-2: #582c2f;
+  --viz-seq-rot-3: #80393c; --viz-seq-rot-4: #b84a4d;
+  --viz-seq-rot-5: #e65664; --viz-seq-rot-6: #f98086;
 }
 
 /* --- Grundgerüst (in Oxygen ersetzt du das durch deine eigenen Sektionen) ---
@@ -297,6 +326,12 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
 /* Zwei Balken plus Legende — mehr Höhe als der Standard braucht es nicht,
    weniger würde die Balken zu Bändern quetschen. */
 #c-erhaltung { height: 260px; }
+/* Sechs Gruppen plus Legende. (340 − 46 Legende − 34 Achse) / 6 ergibt
+   43 px je Zeile; bei 56 % Balkenbreite sind das 24 px hohe Balken —
+   dieselbe Grössenordnung wie bei den Biotoptypen. Wer eine Gruppe
+   ergaenzt, muss hier mit: ECharts setzt die Feldhoehe nicht, es haengt
+   von ihr ab. Unter 768 px uebernimmt `balkenHoehe()` im Modul. */
+#c-lebensraeume { height: 340px; }
 /* Sechs Gefährdungsstufen, je 26 px plus Gitterrand. */
 #c-biotoptypen { height: 300px; }
 /* Neun Länder. */
@@ -586,6 +621,23 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
     <p class="viz-unterzeile" style="margin-top:12px" id="h-erhaltung">Gezählt werden Bewertungen, nicht Schutzgüter: Österreich liegt in zwei Naturräumen, und jede Art wird in jedem einzeln beurteilt. Beide reichen weit über die Staatsgrenze hinaus — der Alpenraum bis nach Frankreich.</p>
   </section>
 
+  <!-- 6b — ERHALTUNGSZUSTAND NACH LEBENSRAUMGRUPPEN -->
+  <section class="viz-karte" id="s-lebensraeume" data-chart="lebensraeume" data-nav="Lebensräume" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Zwei von 24 Grünland-Bewertungen sind gut, im Wald neun von 32</h2>
+        <p class="viz-unterzeile" id="u-lebensraeume"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-lebensraeume">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-lebensraeume"></div>
+    <div class="viz-verborgen" id="t-lebensraeume"></div>
+    <p class="viz-notiz" id="n-lebensraeume"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-lebensraeume">Gezählt werden Bewertungen, nicht Lebensraumtypen: Jeder Typ wird in jedem Naturraum, in dem er vorkommt, einzeln beurteilt. Salzsteppen, Binnendünen und Wacholderheiden fehlen im Balken — zusammen vier Bewertungen.</p>
+  </section>
+
   <!-- 7 — BIOTOPTYPEN -->
   <section class="viz-karte" id="s-biotoptypen" data-chart="biotoptypen" style="display:none">
     <header class="viz-kopfzeile">
@@ -618,6 +670,89 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
     <div class="viz-verborgen" id="t-wald"></div>
     <p class="viz-notiz" id="n-wald"></p>
     <p class="viz-unterzeile" style="margin-top:12px" id="h-wald">Waldfläche ist eine Mengenangabe, kein Zustandsmaß — eine Fichtenmonokultur zählt so viel wie ein Auwald. Der eigentliche Indikator im Wald ist das Totholz; sein Anteil am Holzvorrat liegt in Österreich bei rund 3 % (2018–2023).</p>
+  </section>
+
+  <section class="viz-karte" id="s-totholz" data-chart="totholz" data-nav="Totes Holz" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>In manchen Bundesländern bleibt doppelt so viel totes Holz stehen wie in anderen</h2>
+        <p class="viz-unterzeile" id="u-totholz"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-totholz">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-totholz"></div>
+    <div class="viz-verborgen" id="t-totholz"></div>
+    <p class="viz-notiz" id="n-totholz"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-totholz"></p>
+  </section>
+
+  <section class="viz-karte" id="s-fichte" data-chart="fichte" data-nav="Fichte" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Auf fast der Hälfte des bewirtschafteten Waldes steht Fichte</h2>
+        <p class="viz-unterzeile" id="u-fichte"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-fichte">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-fichte"></div>
+    <div class="viz-verborgen" id="t-fichte"></div>
+    <p class="viz-notiz" id="n-fichte"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-fichte"></p>
+  </section>
+
+  <!-- 8c — NADEL- UND LAUBHOLZ -->
+  <section class="viz-karte" id="s-baumarten" data-chart="baumarten" data-nav="Nadel und Laub" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Nadelholz fällt von 69 auf 60 Prozent des bewirtschafteten Waldes</h2>
+        <p class="viz-unterzeile" id="u-baumarten"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-baumarten">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-baumarten"></div>
+    <div class="viz-verborgen" id="t-baumarten"></div>
+    <p class="viz-notiz" id="n-baumarten"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-baumarten"></p>
+  </section>
+
+  <!-- 8d — GEFÄHRDETE WALDPFLANZEN -->
+  <section class="viz-karte" id="s-waldarten" data-chart="waldarten" data-nav="Gefährdete Arten" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Die Zahl der Waldpflanzen kurz vor dem Verschwinden hat sich vervierfacht</h2>
+        <p class="viz-unterzeile" id="u-waldarten"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-waldarten">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-waldarten"></div>
+    <div class="viz-verborgen" id="t-waldarten"></div>
+    <p class="viz-notiz" id="n-waldarten"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-waldarten"></p>
+  </section>
+
+  <!-- 8e — ZWEI MESSWEISEN, ZWEI ANTWORTEN -->
+  <section class="viz-karte" id="s-natura2000" data-chart="natura2000" data-nav="Zwei Messweisen" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Je nach Messweise sind 93 oder 28 Prozent der Wälder in gutem Zustand</h2>
+        <p class="viz-unterzeile" id="u-natura2000"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-natura2000">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-natura2000"></div>
+    <div class="viz-verborgen" id="t-natura2000"></div>
+    <p class="viz-notiz" id="n-natura2000"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-natura2000"></p>
   </section>
 
   <!-- 9 — BIOLOGISCHE LANDWIRTSCHAFT -->
@@ -717,8 +852,14 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
 <script defer src="js/charts/boden.js?v=08"></script>
 <script defer src="js/charts/rotelisten.js?v=08"></script>
 <script defer src="js/charts/erhaltung.js?v=08"></script>
+<script defer src="js/charts/lebensraeume.js?v=08"></script>
 <script defer src="js/charts/biotoptypen.js?v=08"></script>
 <script defer src="js/charts/wald.js?v=08"></script>
+<script defer src="js/charts/totholz.js?v=08"></script>
+<script defer src="js/charts/fichte.js?v=08"></script>
+<script defer src="js/charts/baumarten.js?v=08"></script>
+<script defer src="js/charts/waldarten.js?v=08"></script>
+<script defer src="js/charts/natura2000.js?v=08"></script>
 <script defer src="js/charts/biolandbau.js?v=08"></script>
 <script defer src="js/charts/falter.js?v=08"></script>
 <script defer src="js/charts/rueckkehrer.js?v=08"></script>

@@ -567,9 +567,16 @@ const diagramme = [];
 async function start() {
   /* Jede Datei einzeln laden. Fällt eine aus, fehlt nur ihr Abschnitt —
      nicht die halbe Seite. Zwingend sind allein meta und kpi. */
+  /* `totholz_geo` ist die Kartengeometrie und damit die mit Abstand grösste
+     Datei (rund 310 KB gegen 2 KB für die Werte). Sie steht bewusst als
+     eigener Eintrag: Fällt sie aus, zeigt der Abschnitt weiterhin seine
+     Tabelle, statt ganz zu verschwinden. */
   const DATEIEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden",
-                   "rotelisten", "erhaltung", "biotoptypen", "wald",
-                   "biolandbau", "falter", "rueckkehrer", "vogelarten"];
+                   "rotelisten", "erhaltung", "lebensraeume",
+                   "biotoptypen", "wald",
+                   "biolandbau", "falter", "rueckkehrer", "vogelarten",
+                   "totholz", "totholz_geo", "fichte", "baumarten",
+                   "waldarten", "natura2000"];
   const geladen = {};
   await Promise.all(DATEIEN.map(async (name) => {
     geladen[name] = await hole(name).catch(() => null);
@@ -583,10 +590,35 @@ async function start() {
     return;
   }
 
-  setzeText("lead",
-    `Elf Messgrößen zum Zustand der biologischen Vielfalt in Österreich, ` +
-    `vier davon im europäischen Vergleich` +
-    (meta?.generiert_am ? ` · zuletzt aktualisiert am ${datum(meta.generiert_am)}` : ""));
+  /* Die Vorspannzeile ZÄHLT, statt eine feste Zahl zu nennen.
+     Bis zum 28.08.2026 stand hier „Elf Messgrößen". Die Zahl stimmte, als
+     sie geschrieben wurde, und war beim nächsten Abschnitt still falsch —
+     derselbe Fehler wie bei der fest verdrahteten Notiz in erhaltung.js.
+     Gezählt werden die Abschnitte, die ihre Daten bekommen haben und
+     deshalb sichtbar sind; ein Abschnitt ohne Datei bleibt ausgeblendet
+     und darf nicht mitgezählt werden.
+
+     Die europäischen Abschnitte stehen als Liste da und nicht als Zahl,
+     damit beim Hinzufügen sofort sichtbar ist, wo nachzutragen wäre. */
+  const EUROPAEISCH = ["vogel", "wald", "biolandbau", "falter"];
+  const WORTE = ["null", "eine", "zwei", "drei", "vier", "fünf", "sechs",
+                 "sieben", "acht", "neun", "zehn", "elf", "zwölf",
+                 "dreizehn", "vierzehn", "fünfzehn", "sechzehn", "siebzehn",
+                 "achtzehn", "neunzehn", "zwanzig"];
+  const wortzahl = (n, grossAmSatzanfang) => {
+    const w = WORTE[n] ?? String(n);
+    return grossAmSatzanfang ? w[0].toUpperCase() + w.slice(1) : w;
+  };
+  function vorspannSetzen() {
+    const sichtbar = [...document.querySelectorAll("section.viz-karte")]
+      .filter((s) => s.style.display !== "none");
+    const eu = sichtbar.filter((s) => EUROPAEISCH.includes(s.id.replace(/^s-/, "")));
+    setzeText("lead",
+      `${wortzahl(sichtbar.length, true)} Messgrößen zum Zustand der ` +
+      `biologischen Vielfalt in Österreich, ${wortzahl(eu.length, false)} ` +
+      `davon im europäischen Vergleich` +
+      (meta?.generiert_am ? ` · zuletzt aktualisiert am ${datum(meta.generiert_am)}` : ""));
+  }
 
   /* Alle Diagramme in EINER Funktion, damit sie beim Wechsel der
      Breitenschwelle vollstaendig neu gebaut werden koennen. Was nur
@@ -599,8 +631,24 @@ async function start() {
     sicher("Bodenverbrauch", () => BIO.baueBoden(geladen.boden));
     sicher("Rote Listen",    () => BIO.baueRoteListen(geladen.rotelisten));
     sicher("Erhaltungszustand", () => BIO.baueErhaltung(geladen.erhaltung));
+    /* Loest den Durchschnitt des Abschnitts darueber auf: 22,8 % guenstig
+       ist ein Mittelwert ueber Gruppen zwischen 0 und 75 %. Muss direkt
+       dahinter stehen — getrennt gelesen ist keiner von beiden falsch,
+       aber der erste allein laesst die Spanne verschwinden. */
+    sicher("Lebensraumgruppen", () => BIO.baueLebensraeume(geladen.lebensraeume));
     sicher("Biotoptypen",    () => BIO.baueBiotoptypen(geladen.biotoptypen));
     sicher("Waldfläche",     () => BIO.baueWald(geladen.wald));
+    /* Bereich Wald — die Reihenfolge ist die Aussage: erst wie viel Wald es
+       gibt, dann was in ihm steht. Die Waldfläche wächst; Totholz und
+       Fichtenanteil sagen, dass daraus noch keine Vielfalt folgt. */
+    sicher("Totholz",        () => BIO.baueTotholz(geladen.totholz, geladen.totholz_geo));
+    sicher("Fichte",         () => BIO.baueFichte(geladen.fichte));
+    sicher("Baumarten",      () => BIO.baueBaumarten(geladen.baumarten));
+    /* Erst der Wald selbst, dann was in ihm lebt und wie er bewertet
+       wird. `waldarten` zeigt den Verlust, `natura2000` die Kehrseite:
+       dass dieselbe Meldung je nach Messweise zwei Antworten gibt. */
+    sicher("Waldarten",      () => BIO.baueWaldarten(geladen.waldarten));
+    sicher("Natura 2000",    () => BIO.baueNatura2000(geladen.natura2000));
     sicher("Biolandbau",     () => BIO.baueBiolandbau(geladen.biolandbau));
     /* Bereich Tiergruppen — als Gegensatz gebaut: Verlust, Erholung,
        Stillstand. Die Reihenfolge ist die Aussage und darf nicht nach
@@ -610,6 +658,9 @@ async function start() {
     sicher("Vogelarten",     () => BIO.baueVogelarten(geladen.vogelarten));
   }
   baueAlles();
+  /* NACH baueAlles(): erst dort blenden die Module ihre Abschnitte ein.
+     Vorher gezählt wäre das Ergebnis immer null. */
+  sicher("Vorspannzeile", vorspannSetzen);
   beiBreitenwechsel(baueAlles);
   sicher("Einordnung einklappen", einordnungEinklappen);
 
@@ -713,11 +764,41 @@ function springeZuAbschnitt() {
   versuchen();
 }
 
+/* --- Karten: Zuschnitt in Pixeln ------------------------------------
+   ECharts kennt für Geokarten kein „passe dich dem Container an". Weder ein
+   prozentuales `layoutSize` noch `left/right/top/bottom` erzeugen einen
+   verzerrungsfreien Zuschnitt — `layoutSize` will eine Pixelzahl.
+
+   Die Rechnung: Aus dem Kartenrahmen in Grad und dem `aspectScale` ergibt
+   sich das Seitenverhältnis der Karte. Je nachdem, ob sie breiter oder
+   höher als der Container ist, begrenzt die Breite oder die Höhe. Die 98 %
+   am Ende sind Luft für den Rand, damit Vorarlberg nicht an der Kante klebt.
+
+   WICHTIG: Das Ergebnis ist eine Pixelzahl und überlebt kein resize. Module,
+   die diesen Helfer nutzen, müssen sich ein `__neuLayouten` an die
+   Diagramminstanz hängen — `neuVermessen()` ruft es beim Umbau auf. */
+function kartenLayout(feld, rahmen, aspectScale) {
+  const breite = feld.clientWidth || 1;
+  const hoehe = feld.clientHeight || 1;
+  const gradBreit = rahmen[1][0] - rahmen[0][0];
+  const gradHoch = rahmen[1][1] - rahmen[0][1];
+  const verhaeltnis = (gradBreit * aspectScale) / gradHoch;
+  const groesse = verhaeltnis >= 1
+    ? Math.min(breite, hoehe * verhaeltnis)     // breiter als hoch: Breite begrenzt
+    : Math.min(hoehe, breite / verhaeltnis);    // höher als breit: Höhe begrenzt
+  return {
+    aspectScale,
+    boundingCoords: rahmen,
+    layoutCenter: ["50%", "50%"],
+    layoutSize: Math.floor(groesse * 0.98),
+  };
+}
+
 /* --- Namensraum: die Chart-Dateien hängen sich hier an ---------------- */
 const BIO = {
   hole, basis, achse, tabelle, stil, zahl, pz, monat, datum,
   setzeText, setzeHtml, sicher, diagramme, baueFuss,
-  schrift, px, neuVermessen,
+  schrift, px, neuVermessen, kartenLayout,
   VERSION, signaturHtml,
   /* Breitenabhaengiges Layout — siehe „Schmale Fenster" oben */
   istSchmal, istEng, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe,

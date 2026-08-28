@@ -138,10 +138,117 @@ PFLEGE_RHYTHMUS = {
     "boden":        4,   # ÖROK-Monitoring, Zyklus seit 2025 dreijährig
     "rotelisten":   2,   # Übersicht der Erscheinungsjahre, lose gepflegt
     "erhaltung":    7,   # Artikel 17: Sechsjahreszyklus plus Berichtsverzug
+    "lebensraeume": 7,   # dieselbe Meldung, nach Gruppen aufgeschlüsselt
     "biotoptypen": 15,   # Teilbände 2002–2008, Neuauflage nicht angekündigt
     "rueckkehrer":  7,   # Artikel 17: Sechsjahreszyklus plus Berichtsverzug
     "vogelarten":   2,   # Artentrends, jährlicher Bericht mit Verzug
+    "totholz":      2,   # ÖWI-Zwischenauswertung, zuletzt 2018/23 im Jan. 2025
+    "fichte":       2,   # dieselbe Quelle, derselbe Rhythmus
+    "baumarten":    2,   # dieselbe Quelle, derselbe Rhythmus
+    "waldarten":   25,   # Rote Liste Gefäßpflanzen: 1986, 1999, 2022
+    "natura2000":   7,   # Artikel 17: Sechsjahreszyklus plus Berichtsverzug
 }
+
+# ---------------------------------------------------------------------------
+# Quelle Waldinventur — Hinweis für die Pflege
+# ---------------------------------------------------------------------------
+#
+# waldinventur.at hat KEINE dokumentierte Schnittstelle. Die Werte in
+# totholz.py und fichte.py sind abgeschrieben. Zum Nachziehen:
+#
+#   Perioden:    https://www.waldinventur.at/data/erhebungen.txt
+#   Werte:       https://www.waldinventur.at/data/{periode}/datajson/{id}.json
+#
+#   378_l_A  stehendes Totholz, Vfm/ha      Bund, Bundesland, BFI
+#   22_01_A  Fichte, Waldfläche             Bund, Bundesland
+#   22_08_A  Nadelholz gesamt, Waldfläche   Bund, Bundesland
+#   22_34_A  Laubholz gesamt, Waldfläche    Bund, Bundesland
+#   1_l      Ertragswald, Fläche            Bund, Bundesland, BFI
+#
+# Nur die Waldfläche-Baumarten sind so grob gegliedert: die Abfrage kennt
+# dort 13 Positionen, die Tabellen des Berichts 30. Wer einzelne Laubarten
+# braucht, kommt über `datajson` nicht heran.
+#
+# Regionscode Lbfi: 0 = Österreich, 1–9 = Bundesländer (1 Bgld, 2 Ktn, 3 NÖ,
+# 4 OÖ, 5 Sbg, 6 Stmk, 7 Tirol, 8 Vbg, 9 Wien).
+#
+# ACHTUNG BEIM NACHZIEHEN: Das Feld `_Proz` ist zwischen den Perioden NICHT
+# vergleichbar — 2018/23 rechnet gegen den Gesamtwald, 2016/21 gegen den
+# Ertragswald. Anteile immer selbst aus Fläche und `1_l` rechnen.
+WALDINVENTUR_PERIODE = "erg9_10"      # 2018/23, Zwischenauswertung
+
+# ---------------------------------------------------------------------------
+# Quelle Baulandreserven — OGD-FeatureServer des Umweltbundesamts
+# ---------------------------------------------------------------------------
+#
+# Die zweite echte API dieser Pipeline neben Eurostat. Der Dienst speist auch
+# den öffentlichen GIS-Viewer der ÖROK. Lizenz CC BY 4.0, gelistet auf
+# data.gv.at als hochwertiger Datensatz nach HVD-Verordnung.
+#
+# Der Dienst kann serverseitig gruppieren und summieren
+# (`supportsStatistics`), es muss also keine einzige Geometrie geladen werden:
+# 538.541 Grundstücke werden zu 2.086 Gemeindezeilen, bevor irgendetwas über
+# die Leitung geht.
+#
+# NICHT `Shape__Area` verwenden — Web Mercator, Flächen um Faktor ~2,2
+# aufgebläht. Die FLAECHE_*-Felder sind echte Quadratmeter.
+
+BLR_ABFRAGE_URL = (
+    "https://services7.arcgis.com/JhrnFQUbVgiJfOG5/arcgis/rest/services/"
+    "Baulandreserven_2025_OGD/FeatureServer/0/query"
+)
+
+# Der Dienst meldet maxRecordCount 2000. Wer mehr anfordert, bekommt trotzdem
+# 2000 — und merkt es nicht, wenn er nicht blättert.
+BLR_SEITENGROESSE = 2000
+
+# Bei 2.086 Gemeinden reichen zwei Seiten. Sechs sind Luft für Wachstum und
+# zugleich die Reißleine, falls das Blättern in eine Schleife läuft.
+BLR_MAX_SEITEN = 6
+
+# Österreich hat rund 2.093 Gemeinden; 2.086 davon führen Baulandreserven
+# (Stand 27.08.2026). Wien zählt als EINE Gemeinde, nicht als 23 Bezirke.
+BLR_GEMEINDEN_MIN = 1_950
+BLR_GEMEINDEN_MAX = 2_200
+
+# Anteil der Grundstücke mit FLAECHE_SONSTIGE = -1 ("nicht ermittelt"), ab dem
+# gewarnt wird. Am 27.08.2026 waren es 0,10 %.
+BLR_SENTINEL_GRENZE = 2.0
+
+# Flächeninanspruchnahme gesamt in Hektar, Stichjahr 2025 (568.120 ha =
+# 5.681,2 km², siehe boden.py). Reserven sind laut ÖROK-Definition eine
+# Teilmenge davon und können sie nicht übersteigen — die Gegenprobe dazu
+# steht in baulandreserven.py.
+BLR_FI_BESTAND_HA = 568_120
+
+# ---------------------------------------------------------------------------
+# Quelle Gemeindegrenzen — Statistik Austria WFS
+# ---------------------------------------------------------------------------
+#
+# ACHTUNG bei der Adresse: Der Dienst leitet von statistik.gv.at auf
+# statistik.at um. Wer die .gv.at-Adresse aus dem Browser heraus abruft,
+# scheitert an der Same-Origin-Regel — in Python ist das gleichgültig,
+# beim Prüfen im Browser nicht.
+#
+# Der Layername trägt den Gebietsstand: ..._GEM_20250101 ist der Stand
+# 01.01.2025. Er muss zum Stichjahr der Daten passen, sonst fallen
+# umnummerierte Gemeinden lautlos aus der Einfärbung.
+
+GRENZEN_WFS_URL = "https://www.statistik.at/gs-open/GEODATA/ows"
+GRENZEN_LAYER = "STATISTIK_AUSTRIA_GEM_20250101"
+
+# 45 MB über eine Leitung, die man nicht kennt — großzügig bemessen.
+GRENZEN_TIMEOUT_SEKUNDEN = 300
+
+# Vereinfachungstoleranz in Metern (die Projektion rechnet in Metern).
+# 150 m liegen bei einer Österreichkarte deutlich unter einem Bildpunkt.
+GRENZEN_TOLERANZ_METER = 150
+
+# Unterhalb dieser Zahl stimmt etwas nicht — vermutlich deckelt der Dienst.
+GRENZEN_MIN_GEMEINDEN = 2_000
+
+# Ab dieser Dateigröße wird gewarnt: die Karte lädt sonst spürbar langsam.
+GRENZEN_MAX_KB = 900
 
 # ---------------------------------------------------------------------------
 # Ausgabe

@@ -14,6 +14,7 @@ Module:
     schutzgebiete.py Eurostat sdg_15_20 (API)
     vogel.py         Farmland Bird Index 1998–2025 (gepflegt) + EU-Reihe (API)
     boden.py         ÖROK-Flächeninanspruchnahme und Versiegelung (gepflegt)
+    baulandreserven.py  Landnutzung der Baulandreserven je Gemeinde (API)
     rotelisten.py    Stand der Aktualisierung der Roten Listen (gepflegt)
     erhaltung.py     Erhaltungszustand nach Artikel 17 FFH (gepflegt)
     biotoptypen.py   Rote Liste der Biotoptypen (gepflegt)
@@ -50,6 +51,8 @@ Erscheinungsrhythmus überschreitet.
 from __future__ import annotations
 
 import datetime as dt
+import json
+from pathlib import Path
 
 import config
 from gemeinsam import QUELLEN, WARNUNGEN, log, schreibe, warnen
@@ -59,12 +62,20 @@ from vogel import baue_vogel
 from boden import baue_boden
 from rotelisten import baue_rotelisten
 from erhaltung import baue_erhaltung
+from lebensraeume import baue_lebensraeume
 from biotoptypen import baue_biotoptypen
 from wald import baue_wald
 from biolandbau import baue_biolandbau
 from falter import baue_falter
 from rueckkehrer import baue_rueckkehrer
 from vogelarten import baue_vogelarten
+from totholz import baue_totholz
+from fichte import baue_fichte
+from baumarten import baue_baumarten
+from waldarten import baue_waldarten
+from natura2000 import baue_natura2000
+from baulandreserven import baue_baulandreserven
+from gemeindegrenzen import baue_gemeindegrenzen
 
 
 def _vogel_abgleichen(vogel: dict, vogelarten: dict) -> None:
@@ -123,6 +134,11 @@ def main() -> None:
         ausgaben["rotelisten"] = rote
 
     ausgaben["erhaltung"] = baue_erhaltung()
+    # Dieselbe Meldung, nach Lebensraumgruppen aufgeschlüsselt. Steht
+    # unmittelbar hinter `erhaltung`, weil sie dessen Durchschnitt auflöst:
+    # 22,8 % günstig ist ein Mittelwert über Gruppen, die zwischen 0 und
+    # 75 % liegen.
+    ausgaben["lebensraeume"] = baue_lebensraeume()
     ausgaben["biotoptypen"] = baue_biotoptypen()
 
     wald = baue_wald()
@@ -132,6 +148,115 @@ def main() -> None:
     bio = baue_biolandbau()
     if bio:
         ausgaben["biolandbau"] = bio
+
+    # --- Wald: was in ihm steht -------------------------------------------
+    # Der Waldabschnitt oben zeigt, dass die Fläche wächst. Diese beiden
+    # zeigen, dass daraus noch keine Vielfalt folgt.
+    #
+    # Die Kartengeometrie entsteht aus der Bezirkskarte des Schwesterprojekts
+    # arbeitsmarkt-at, die neun Bundesländer werden daraus verschmolzen. Das
+    # spart einen zweiten Download derselben Grenzen. Liegt die Datei nicht
+    # neben diesem Repo, entfällt nur die Karte — die Werte bleiben.
+    bezirke_geo = None
+    bezirke_pfad = (
+        Path(__file__).resolve().parent.parent.parent
+        / "arbeitsmarkt-at" / "docs" / "data" / "karte_geo.json"
+    )
+    if bezirke_pfad.exists():
+        with bezirke_pfad.open(encoding="utf-8") as datei:
+            bezirke_geo = json.load(datei)
+    else:
+        warnen(
+            f"Bezirksgeometrie nicht gefunden ({bezirke_pfad}) — die "
+            f"Totholzkarte entfällt, die Tabelle bleibt."
+        )
+
+    totholz, totholz_geo = baue_totholz(bezirke_geo)
+    if totholz:
+        ausgaben["totholz"] = totholz
+    if totholz_geo:
+        ausgaben["totholz_geo"] = totholz_geo
+
+    ausgaben["fichte"] = baue_fichte()
+    ausgaben["baumarten"] = baue_baumarten()
+    # Nicht an der waldinventur.at-Freigabe hängend: Tab. 7 des
+    # Waldbiodiversitätsberichts, dessen Impressum den auszugsweisen
+    # Abdruck mit Quellenangabe ausdrücklich gestattet.
+    ausgaben["waldarten"] = baue_waldarten()
+    ausgaben["natura2000"] = baue_natura2000()
+
+    # Gegenprobe über DREI Abschnitte hinweg. Alle ziehen aus derselben
+    # Artikel-17-Meldung, jeder mit eigenem Zuschnitt: `erhaltung` die
+    # Gesamtheit, `lebensraeume` die Gliederung nach Gruppen, `natura2000`
+    # den Wald-Ausschnitt. Wird einer nachgezogen und die anderen nicht,
+    # stehen zwei Berichtsstände nebeneinander.
+    perioden = {name: ausgaben[name]["periode"]
+                for name in ("erhaltung", "lebensraeume", "natura2000")}
+    if len(set(perioden.values())) > 1:
+        warnen(
+            "Artikel-17-Abschnitte uneins: "
+            + ", ".join(f"`{n}` auf {p}" for n, p in perioden.items())
+        )
+
+    # Und die inhaltliche Klammer: Der Waldwert muss in beiden Modulen
+    # derselbe sein. Sie zählen ihn unabhängig voneinander aus derselben
+    # Tabelle — `natura2000` als Ganzes, `lebensraeume` als eine von neun
+    # Gruppen. Weichen sie ab, hat eine der beiden Auszählungen einen
+    # Fehler, und zwar bevor irgendein Balken das zeigt.
+    wald_lr = ausgaben["lebensraeume"]["wald_guenstig"]
+    wald_n2k = ausgaben["natura2000"]["nach_bewertung"]["guenstig_prozent"]
+    if abs(wald_lr - wald_n2k) > 0.05:
+        warnen(
+            f"Waldanteil uneins: `lebensraeume` nennt {wald_lr} % günstig, "
+            f"`natura2000` {wald_n2k} % — beide zählen dieselben 32 "
+            f"Bewertungen der Gruppe Forests."
+        )
+
+    # Gegenprobe über die Waldabschnitte hinweg: Alle drei ziehen ihre Werte
+    # aus derselben Inventurperiode. Wird einer nachgezogen und die anderen
+    # nicht, stehen zwei Datenstände nebeneinander — derselbe Fehler wie
+    # bei den Vogelabschnitten im August 2026.
+    wald_staende = {
+        name: ausgaben[name]["stand"]
+        for name in ("totholz", "fichte", "baumarten")
+        if ausgaben.get(name)
+    }
+    if len(set(wald_staende.values())) > 1:
+        warnen(
+            "Waldabschnitte uneins: "
+            + ", ".join(f"`{n}` auf {s}" for n, s in wald_staende.items())
+        )
+
+    # --- Baulandreserven ---------------------------------------------------
+    # Nachbarabschnitt zu `boden`, nicht dessen Fortsetzung: `boden` zeigt den
+    # Verbrauch je Tag, dieser hier den Vorrat, der rechtlich schon vergeben
+    # ist. Beide Zahlen stammen aus demselben ÖROK-Monitoring, aber aus
+    # verschiedenen Auswertungen — die Gegenprobe unten hält sie zusammen.
+    ausgaben["baulandreserven"] = baue_baulandreserven(
+        (ausgaben.get("boden") or {}).get("aktuell_ha_pro_tag")
+    )
+
+    # Gegenprobe über die beiden Bodenabschnitte hinweg: Baulandreserven sind
+    # laut ÖROK-Definition Teil der Flächeninanspruchnahme. Wird `boden`
+    # irgendwann auf einen neuen Zyklus gehoben und die Konstante in config
+    # nicht mitgezogen, faellt es hier auf.
+    if ausgaben.get("baulandreserven") and ausgaben.get("boden"):
+        bestand_ha = round(ausgaben["boden"]["bestand_km2"] * 100)
+        if abs(bestand_ha - config.BLR_FI_BESTAND_HA) > 1_000:
+            warnen(
+                f"Bodenabschnitte uneins: `boden` nennt {bestand_ha:,} ha "
+                f"Flächeninanspruchnahme, config.BLR_FI_BESTAND_HA steht auf "
+                f"{config.BLR_FI_BESTAND_HA:,} ha. Die Gegenprobe der "
+                f"Baulandreserven prüft damit gegen einen veralteten Wert."
+            )
+
+    # Die Karte braucht Umrisse. Sie werden nur gebaut, wenn sie fehlen oder
+    # der Gebietsstand wechselt — und danach direkt gegen die Kennziffern der
+    # Daten gehalten, damit keine Gemeinde stumm grau bleibt.
+    if ausgaben.get("baulandreserven"):
+        baue_gemeindegrenzen(
+            {g["gkz"] for g in ausgaben["baulandreserven"]["gemeinden"]}
+        )
 
     # --- Tiergruppen: Verlust, Erholung, Stillstand ------------------------
     # `falter` holt seine Reihe von Eurostat und fällt bei einem Ausfall auf
