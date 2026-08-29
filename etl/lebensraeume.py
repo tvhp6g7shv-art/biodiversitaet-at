@@ -347,20 +347,31 @@ def baue_lebensraeume() -> dict:
             "bericht_jahr": STAND_JAHR,
             "abgerufen": "2026-08-29",
         },
+        # 29.08.2026 — von 583 auf rund 290 Zeichen gekürzt. Befund des
+        # Users: einundzwanzig Zeilen in der schmalen Kopfspalte. Zwei
+        # der vier Befunde sind entfallen — dass die zwei guten
+        # Grünlandwerte im Hochgebirge liegen, und die „unbekannt“-Quote
+        # der Gewässer. Geblieben sind die beiden, die der Balken NICHT
+        # zeigt: dass unter den bewirtschafteten Wiesentypen kein
+        # einziger günstiger Fall steht, und dass alle echten
+        # Verbesserungen im Wald liegen. Beide Zahlen kommen weiter aus
+        # den Daten; wer die entfallenen Befunde zurückholt, muss an
+        # anderer Stelle kürzen.
+        #
+        # ACHTUNG BEIM KÜRZEN DIESES SATZES: „alle echten Verbesserungen
+        # liegen im Wald" wäre FALSCH. Der Wald trägt 4 der 5 als
+        # `genuine` gemeldeten Änderungen, die fünfte liegt bei den
+        # Gewässern. Deshalb bleiben beide Zahlen im Satz, und beide
+        # kommen aus den Daten.
         "notiz": (
-            f"Die Reihenfolge folgt der Nutzung: Oben steht, was niemand "
-            f"bewirtschaftet — Fels, Gletscher und Höhlen, "
+            f"Die Reihenfolge folgt der Nutzung: oben, was niemand "
+            f"bewirtschaftet — Fels, Gletscher, Höhlen, "
             f"{bester['guenstig']:.0f} % davon in gutem Zustand. Unten die "
             f"Kulturlandschaft. Von den vier bewirtschafteten Wiesentypen "
-            f"ist in <strong>beiden</strong> Naturräumen keine einzige der "
-            f"{_wort(WIESEN_BEWERTUNGEN)} Bewertungen günstig; die zwei "
-            f"guten Grünlandwerte liegen im Hochgebirge. Bei den Gewässern "
-            f"sind {gewaesser['unbekannt']:.0f} % „unbekannt“ — das ist "
-            f"eine Lücke im Wissen, keine gute Lage. Und von den "
-            f"{_wort(genuine_gesamt)} Änderungen, die der Bericht als "
-            f"<strong>tatsächlich</strong> meldet und nicht als Folge "
-            f"besseren Wissens, entfallen {_wort(wald['genuine'])} auf den "
-            f"Wald und keine einzige auf das Grünland."
+            f"ist keine einzige der {_wort(WIESEN_BEWERTUNGEN)} Bewertungen "
+            f"günstig; von {_wort(genuine_gesamt)} <strong>echten</strong> "
+            f"Änderungen entfallen {_wort(wald['genuine'])} auf den Wald "
+            f"und keine auf das Grünland."
         ),
         # 29.08.2026 — der erste Satz erklärte dasselbe wie der erste Satz
         # im Abschnitt „erhaltung" direkt darüber, und die Unterzeile hier

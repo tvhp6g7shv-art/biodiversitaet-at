@@ -266,20 +266,22 @@ def baue_erhaltung() -> dict:
             "bericht_jahr": STAND_JAHR,
             "abgerufen": "2026-08-26",
         },
+        # 29.08.2026 — von 412 auf rund 220 Zeichen gekürzt. Befund des
+        # Users: in der schmalen Kopfspalte der Karte waren das fünfzehn
+        # Zeilen unter der Grafik. Entfallen sind die Zwischenschritte
+        # (wie viele Bewertungen sich in welche Richtung bewegt haben und
+        # wie viele davon echt sind) und die nach „unbekannt“ gerutschten
+        # Bewertungen. Was bleibt, ist die Aussage samt Endergebnis: der
+        # Zuwachs bei „günstig“ ist zum größten Teil besseres Wissen.
+        # Die Zahlen kommen weiter aus den Daten, nicht aus dem Text.
         "notiz": (
-            f"Dass „günstig“ zunimmt, heißt weniger, als es aussieht. Der "
-            f"Bericht vermerkt bei jeder Änderung, ob sie <strong>echt</strong> "
-            f"ist oder nur auf besserem Wissen beruht. Bei den Arten wurden "
-            f"{arten['wechsel']['verbessert']} Bewertungen besser und "
-            f"{arten['wechsel']['verschlechtert']} schlechter — als "
-            f"tatsächliche Veränderung gemeldet sind davon "
-            f"{arten['wechsel']['verbessert_echt']} und "
-            f"{arten['wechsel']['verschlechtert_echt']}. Netto bleiben "
-            f"{arten['wechsel']['netto_echt']} von {arten['bewertungen']}. "
-            f"Bei den Lebensraumtypen sind von "
+            f"Dass „günstig“ zunimmt, heißt weniger, als es aussieht: Der "
+            f"Bericht trennt <strong>echte</strong> Veränderung von bloß "
+            f"besserem Wissen. Bei den Arten bleiben netto "
+            f"{arten['wechsel']['netto_echt']} von {arten['bewertungen']} "
+            f"übrig, bei den Lebensraumtypen sind von "
             f"{lrt['wechsel']['verbessert']} Verbesserungen "
-            f"{lrt['wechsel']['verbessert_echt']} echt. Gleichzeitig "
-            f"rutschten {nach_unbekannt} Bewertungen nach „unbekannt“."
+            f"{lrt['wechsel']['verbessert_echt']} echt."
         ),
         "hinweis": (
             "Gezählt werden Bewertungen, nicht Schutzgüter: Österreich liegt "
