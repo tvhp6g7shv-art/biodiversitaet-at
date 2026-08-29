@@ -1,10 +1,32 @@
 {
   "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "05",
+  "aktuell": "06",
   "basis_url": "https://biodiversitaet-monitor.at",
   "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
   "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
   "ausgaben": [
+    {
+      "nummer": "06",
+      "datum": "2026-08-28",
+      "datum_text": "28. August 2026",
+      "titel": "Erhaltungszustand nach Lebensraumgruppen — die Rangfolge folgt der Nutzung",
+      "veroeffentlicht": true,
+      "cacheziffer": 9,
+      "charts": [
+        "lebensraeume"
+      ],
+      "social": "Von Österreichs vier bewirtschafteten Wiesentypen ist keine einzige Bewertung gut — in beiden Naturräumen nicht.\n\nSortiert nach Zustand entsteht eine Rangfolge der Nutzung: Fels 75 % günstig, Wald 28 %, Grünland 8 %, Moore 0 %.\nhttps://biodiversitaet-monitor.at/#s-lebensraeume",
+      "abschnitte": [
+        {
+          "chart": "lebensraeume",
+          "alt": "Sechs gestapelte Balken für Lebensraumgruppen, sortiert nach dem Anteil günstiger Bewertungen: Fels und Höhlen 75 Prozent günstig, Heide und Gebüsch 50, Wald 28, Grünland 8, Gewässer 0 Prozent günstig bei 44 Prozent unbekannt, Moore und Sümpfe 0 Prozent günstig und 69 Prozent schlecht."
+        }
+      ],
+      "seite": [
+        "Sechs gestapelte Balken zeigen den Erhaltungszustand der geschützten Lebensraumtypen, aufgeschlüsselt nach Gruppen und sortiert nach dem Anteil günstiger Bewertungen. Grundlage sind 114 Bewertungen aus 71 Lebensraumtypen, Berichtsperiode 2019–2024.",
+        "Die Rangfolge folgt der Nutzung: Fels und Höhlen stehen bei 75 Prozent günstig, Wald bei 28, Grünland bei 8, Moore bei 0. Von den vier bewirtschafteten Wiesentypen ist keine der acht Bewertungen günstig — die zwei guten Grünlandwerte liegen im Hochgebirge."
+      ]
+    },
     {
       "nummer": "05",
       "datum": "2026-08-26",

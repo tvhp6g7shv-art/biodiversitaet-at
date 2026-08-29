@@ -38,9 +38,9 @@ let DATEN_BASIS = "./data";   // In Oxygen: "https://DEIN-GITHUB-NAME.github.io/
    dafür ist die `?v=NN`-Cacheziffer in index.html zuständig, die eine
    andere Zählung führt. */
 const VERSION = {
-  nummer:     "05",                   // 05: Vogelarten Art fuer Art (03 Falter, 04 Rueckkehrer)
-  datum:      "2026-08-26",           // maschinenlesbar, für <time datetime>
-  datum_text: "26. August 2026",      // sichtbar
+  nummer:     "06",                   // 06: Lebensraumgruppen (03 Falter, 04 Rueckkehrer, 05 Vogelarten)
+  datum:      "2026-08-28",           // maschinenlesbar, für <time datetime>
+  datum_text: "28. August 2026",      // sichtbar
   changelog:  "https://biodiversitaet-monitor.at/changelog/",
 };
 
@@ -441,25 +441,49 @@ function setzeHtml(id, html) {
    - Der Text bleibt Text im Dokument. Die Diagrammmodule fuellen ihn
      weiterhin ueber `setzeText(id, ...)`; die Kennungen wandern mit.
 
-   Ab 768 px ist das <details> offen und die Zusammenfassungszeile per
-   CSS versteckt — die Karte sieht dort aus wie zuvor. Ohne JavaScript
-   stehen beide Absaetze schlicht offen da. */
+   28.08.2026 — ZWEI STUFEN STATT EINER. Befund des Users am
+   Vogel-Abschnitt: neben der Grafik steht dreimal dieselbe Angabe
+   („1998 = 100" in Unterzeile, Notiz und Einordnung). Der Aufklapper
+   griff bisher nur unter 768 px; auf dem Desktop stand alles offen.
+
+   Seither gilt:
+   - AB 768 px liegt nur die Einordnung (`#h-...`) im Aufklapper. Die
+     Notiz bleibt sichtbar — sie traegt den Befund, also das, wofuer
+     der Abschnitt ueberhaupt da ist.
+   - UNTER 768 px wandert die Notiz zusaetzlich hinein. Dort war der
+     Anlass ein anderer (mehr Text als Grafik), und der gilt weiter.
+
+   DER BEHAELTER IST PFLICHT, NICHT KOSMETIK. Auf der Website ist jede
+   Sektion ein vierspaltiges Raster, in dem Kopf und Grafik ihren Platz
+   ausdruecklich zugewiesen bekommen und die Einordnung ihn per
+   Auto-Platzierung findet. Das funktioniert nur, solange die Karte
+   GENAU DREI sichtbare Kinder hat (Abschnitt 59 der idl.css, dort am
+   Live-Stand gemessen). Eine Notiz, die neben dem <details> als
+   viertes Kind stuende, riss die Karte auf. `div.viz-einordnung` haelt
+   beide zusammen und bleibt damit das eine dritte Kind. */
 const ENG_MQ = "(max-width: 767.98px)";
 
 function einordnungEinklappen() {
   const karten = document.querySelectorAll(".viz-karte");
   karten.forEach((karte) => {
-    if (karte.querySelector(":scope > .viz-mehr")) return;
-    const teile = [...karte.querySelectorAll(
-      ':scope > p[id^="n-"], :scope > p[id^="h-"]')];
-    if (!teile.length) return;
+    if (karte.querySelector(":scope > .viz-einordnung")) return;
+    const notiz = karte.querySelector(':scope > p[id^="n-"]');
+    const hinweis = karte.querySelector(':scope > p[id^="h-"]');
+    if (!notiz && !hinweis) return;
+
+    const behaelter = document.createElement("div");
+    behaelter.className = "viz-einordnung";
+    (notiz ?? hinweis).before(behaelter);
+    if (notiz) behaelter.appendChild(notiz);
+
+    if (!hinweis) return;
     const auf = document.createElement("details");
     auf.className = "viz-mehr";
     const zeile = document.createElement("summary");
     zeile.textContent = "Einordnung";
     auf.appendChild(zeile);
-    teile[0].before(auf);
-    teile.forEach((p) => auf.appendChild(p));
+    auf.appendChild(hinweis);
+    behaelter.appendChild(auf);
   });
 
   /* matchMedia ist die genaue Auskunft; die Breitenabfrage ist der
@@ -470,15 +494,33 @@ function einordnungEinklappen() {
   const engJetzt = () => medien ? medien.matches
     : document.documentElement.clientWidth < ENG;
 
-  /* Weit: immer offen, die Zeile ist per CSS weg. Eng: zu — es sei
-     denn, jemand hat dieses <details> in dieser Sitzung selbst
-     aufgeklappt. */
-  const stellen = () => document.querySelectorAll(".viz-mehr").forEach((d) => {
-    d.open = !engJetzt() || d.dataset.selbst === "1";
+  /* Die Notiz wandert mit der Breite in den Aufklapper und wieder
+     heraus. Verschoben wird der Absatz selbst, nicht eine Kopie: die
+     Diagrammmodule halten keine Referenz darauf, sie schreiben ueber
+     `getElementById`. Die Kennung wandert mit, also findet
+     `setzeText("n-...")` ihn an beiden Orten. */
+  const stellen = () => document.querySelectorAll(".viz-einordnung").forEach((b) => {
+    const auf = b.querySelector(":scope > .viz-mehr");
+    const notiz = b.querySelector('p[id^="n-"]');
+    if (auf && notiz) {
+      if (engJetzt()) {
+        /* In den Aufklapper, aber HINTER die Zusammenfassungszeile. */
+        if (notiz.parentElement !== auf) auf.appendChild(notiz);
+        if (notiz.previousElementSibling?.tagName !== "SUMMARY") {
+          auf.querySelector(":scope > summary")?.after(notiz);
+        }
+      } else if (notiz.parentElement !== b) {
+        b.prepend(notiz);
+      }
+    }
+    /* Zugeklappt auf allen Breiten — es sei denn, jemand hat dieses
+       <details> in dieser Sitzung selbst aufgeklappt. */
+    if (auf) auf.open = auf.dataset.selbst === "1";
   });
+
   document.addEventListener("toggle", (e) => {
     const d = e.target;
-    if (d.classList?.contains("viz-mehr") && engJetzt()) {
+    if (d.classList?.contains("viz-mehr")) {
       d.dataset.selbst = d.open ? "1" : "0";
     }
   }, true);

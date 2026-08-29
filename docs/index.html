@@ -246,10 +246,18 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
 /* Zusatzsatz unter einer Grafik — dort, wo eine Zahl NICHT im Diagramm
    steht und der Grund dafuer erklaert werden muss. */
 .viz-notiz { font-size: .82rem; color: var(--viz-text-2); line-height: 1.55; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--viz-grid); }
-/* --- Einordnung unter der Grafik: am Handy eingeklappt ---------------
-   kern.js haengt Notiz und Einordnungsabsatz zur Laufzeit in dieses
-   <details> und setzt `open` selbst — unter 768 px zu, darueber offen.
+/* --- Einordnung unter der Grafik: eingeklappt -------------------------
+   kern.js baut zur Laufzeit `div.viz-einordnung` und haengt die
+   Einordnung (`#h-...`) in ein <details> darin. Die Notiz (`#n-...`)
+   steht ab 768 px daneben offen und wandert darunter mit hinein.
    Hier steht nur, wie es aussieht.
+
+   28.08.2026 — DIE MEDIA QUERY IST ENTFALLEN. Sie hielt den Aufklapper
+   ab 768 px offen und versteckte die Zusammenfassungszeile; auf dem
+   Desktop stand damit alles offen. Genau das war der Befund des Users:
+   neben der Grafik dreimal dieselbe Angabe. Der Aufklapper gilt jetzt
+   auf allen Breiten, und mit ihm faellt die Spezifitaetsfalle weg, die
+   der Kommentar hier bisher abwehren musste.
 
    Die Zusammenfassungszeile ist als KNOPF gebaut, nicht als fette
    Zeile: sie traegt Rahmen, Radius und Groesse des Tabellen-Schalters
@@ -260,13 +268,18 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
 
    Abgesetzt wird oben am BEHAELTER, nicht am Knopf: die Linie soll
    ueber die ganze Kartenbreite laufen, der Knopf aber nur so breit
-   sein wie sein Text.
-
-   Grundregel und Media Query tragen bewusst DIESELBEN Selektoren. */
+   sein wie sein Text. */
 .viz-root .viz-mehr {
   margin: 14px 0 0;
   padding-top: 12px;
   border-top: 1px solid var(--viz-grid);
+}
+/* Steht die Notiz sichtbar davor, traegt SIE die Trennlinie unter der
+   Grafik. Der Aufklapper bekaeme sonst 12 px darunter eine zweite. */
+.viz-root .viz-einordnung > .viz-notiz + .viz-mehr {
+  margin-top: 10px;
+  padding-top: 0;
+  border-top: 0;
 }
 .viz-root .viz-mehr > summary {
   list-style: none;
@@ -294,18 +307,15 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
   transition: transform .15s ease;
 }
 .viz-root .viz-mehr[open] > summary::after { transform: rotate(180deg); }
-/* Im Aufklapper traegt der Behaelter die Trennlinie — die Notiz bringt
-   sonst eine zweite direkt darunter mit. */
+/* Unter 768 px liegt die Notiz IM Aufklapper. Dort traegt der Behaelter
+   die Trennlinie — die Notiz braechte sonst eine zweite mit. */
 .viz-root .viz-mehr > .viz-notiz { border-top: 0; padding-top: 0; margin-top: 12px; }
-@media (min-width: 768px) {
-  .viz-root .viz-mehr { margin: 0; padding-top: 0; border-top: 0; }
-  .viz-root .viz-mehr > summary { display: none; }
-  .viz-root .viz-mehr > .viz-notiz {
-    border-top: 1px solid var(--viz-grid);
-    padding-top: 12px;
-    margin-top: 14px;
-  }
-}
+/* Der Behaelter selbst ist unsichtbar. Er existiert nur, damit die
+   Sektion auf der Website drei Rasterkinder behaelt (siehe kern.js und
+   Abschnitt 59 der idl.css). `display: contents` waere hier falsch —
+   das hoebe Notiz und Aufklapper einzeln ins Raster und machte genau
+   die vier Kinder, die vermieden werden sollen. */
+.viz-root .viz-einordnung { min-width: 0; }
 /* Herkunftsmarke im Fuss: „laufend" oder „Stand 2025". Ohne sie liest
    sich eine dreijaehrige Zahl wie eine tagesaktuelle. */
 .viz-quelle-art { display: inline-block; font-size: .72rem; padding: 1px 6px; border: 1px solid var(--viz-border); border-radius: 4px; color: var(--viz-muted); white-space: nowrap; }
@@ -767,16 +777,16 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Cacheziffer `?v=NN` hochzaehlen, wenn eine Datei geaendert wurde —
      sie fuehrt eine EIGENE Zaehlung, unabhaengig von der Ausgabenummer
      in kern.js (VERSION.nummer). -->
-<script defer src="js/kern.js?v=08"></script>
-<script defer src="js/charts/kpi.js?v=08"></script>
-<script defer src="js/charts/schutzgebiete.js?v=08"></script>
-<script defer src="js/charts/vogel.js?v=08"></script>
-<script defer src="js/charts/boden.js?v=08"></script>
-<script defer src="js/charts/rotelisten.js?v=08"></script>
-<script defer src="js/charts/erhaltung.js?v=08"></script>
-<script defer src="js/charts/lebensraeume.js?v=08"></script>
-<script defer src="js/charts/biotoptypen.js?v=08"></script>
-<script defer src="js/charts/wald.js?v=08"></script>
+<script defer src="js/kern.js?v=10"></script>
+<script defer src="js/charts/kpi.js?v=09"></script>
+<script defer src="js/charts/schutzgebiete.js?v=09"></script>
+<script defer src="js/charts/vogel.js?v=09"></script>
+<script defer src="js/charts/boden.js?v=09"></script>
+<script defer src="js/charts/rotelisten.js?v=09"></script>
+<script defer src="js/charts/erhaltung.js?v=09"></script>
+<script defer src="js/charts/lebensraeume.js?v=09"></script>
+<script defer src="js/charts/biotoptypen.js?v=09"></script>
+<script defer src="js/charts/wald.js?v=09"></script>
 <!-- Die fuenf Wald-Abschnitte (totholz, fichte, baumarten, waldarten,
      natura2000) sind am 28.08.2026 ausgeklinkt: gebaut und im Ordner, aber
      ihre Modul- und Datendateien nicht im Repo. Ausgeliefert haetten sie elf
@@ -786,10 +796,10 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Sektionen liegen wortgleich in docs/.ausgeklinkt-wald.html. Wieder
      einhaengen: Sektionen von dort zurueck, Skript-Zeilen hier, dazu
      js/kern.js, embed.html und die beiden Pruefskripte. -->
-<script defer src="js/charts/biolandbau.js?v=08"></script>
-<script defer src="js/charts/falter.js?v=08"></script>
-<script defer src="js/charts/rueckkehrer.js?v=08"></script>
-<script defer src="js/charts/vogelarten.js?v=08"></script>
+<script defer src="js/charts/biolandbau.js?v=09"></script>
+<script defer src="js/charts/falter.js?v=09"></script>
+<script defer src="js/charts/rueckkehrer.js?v=09"></script>
+<script defer src="js/charts/vogelarten.js?v=09"></script>
 <script defer>
   document.addEventListener("DOMContentLoaded", () => {
     BIO.setzeWurzel(document.getElementById("dashboard"));
