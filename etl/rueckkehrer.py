@@ -192,11 +192,13 @@ def baue_rueckkehrer() -> dict:
             "abgerufen": "2026-08-26",
         },
         "hinweis": (
-            # 230 Zeichen, Fenster 150–234. Die Lücke beim Fischotter steht
+            # 170 Zeichen, Fenster 150–234. Die Lücke beim Fischotter steht
             # bewusst nicht hier, sondern an der leeren Periode im Diagramm.
+            # 28.08.2026: Der Satz über die echte Erholung im Alpenraum ist
+            # entfallen — er stand WÖRTLICH schon in der Notiz darüber, dort
+            # sogar mit dem Beleg (Wechsel des Erhaltungszustands).
             "Die Zahlen sind Hochrechnungen aus Revierkartierungen, keine "
-            "Zählungen — deshalb die Spanne. Im Alpenraum meldet Österreich "
-            "für beide Arten eine echte Erholung, nicht bloß besseres Wissen. "
-            "Seit 2019 ist begrenzte Entnahme erlaubt."
+            "Zählungen — deshalb steht dort eine Spanne und keine einzelne "
+            "Zahl. Seit 2019 ist begrenzte Entnahme erlaubt."
         ),
     }

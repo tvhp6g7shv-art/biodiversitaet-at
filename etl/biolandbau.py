@@ -117,10 +117,16 @@ def baue_biolandbau() -> dict | None:
         "luecke": round(config.BIOLANDBAU_ZIEL - oesterreich["wert"], 1),
         "datensatz_bis": int(letztes_im_satz),
         "meldeluecke": veraltet,
+        # 28.08.2026 — der zweite Satz stand fast wörtlich schon in der
+        # Notiz, der Bezug auf die landwirtschaftlich genutzte Fläche in
+        # der Unterzeile. Was hier bleibt, ist der GRUND für das gemeinsame
+        # Vergleichsjahr, und der stand bisher nirgends.
+        # Die beiden Jahre kommen aus den Daten, nicht aus dem Text: sobald
+        # Österreich neuer meldet, wandert der Satz mit.
         "hinweis": (
-            f"Umgestellte Flächen und Flächen in Umstellung zusammen, Anteil "
-            f"an der landwirtschaftlich genutzten Fläche. Alle Länder im "
-            f"selben Jahr {vergleichsjahr} verglichen — der Datensatz reicht "
-            f"weiter, Österreich meldet zuletzt für dieses Jahr."
+            f"Umgestellte Flächen und Flächen in Umstellung zusammen. Alle "
+            f"Länder im selben Jahr verglichen — sonst stünde ein Land von "
+            f"{int(letztes_im_satz)} neben einem von {int(vergleichsjahr)}, "
+            f"und der Abstand wäre teils Zeit, teils Unterschied."
         ),
     }

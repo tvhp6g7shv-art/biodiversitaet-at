@@ -69,7 +69,7 @@ from biolandbau import baue_biolandbau
 from falter import baue_falter
 from rueckkehrer import baue_rueckkehrer
 from vogelarten import baue_vogelarten
-# AUSGEKLINKT 28.08.2026 — sieben Module liegen im Ordner, sind aber NICHT
+# AUSGEKLINKT 29.08.2026 — sieben Module liegen im Ordner, sind aber NICHT
 # im Repo. Die Pipeline läuft in GitHub Actions bei jeder Änderung an
 # `etl/**`; ein Import einer fehlenden Datei bricht sie mit ImportError ab,
 # bevor eine einzige Zahl gerechnet wird. Wieder aufnehmen, sobald die
@@ -168,7 +168,7 @@ def main() -> None:
             + ", ".join(f"`{n}` auf {p}" for n, p in perioden.items())
         )
 
-    # AUSGEKLINKT 28.08.2026 — alles Folgende hängt an Modulen, die im Ordner
+    # AUSGEKLINKT 29.08.2026 — alles Folgende hängt an Modulen, die im Ordner
     # liegen, aber nicht im Repo sind; in GitHub Actions bräche die Pipeline
     # daran ab. Wieder aufnehmen, sobald `totholz.py`, `fichte.py`,
     # `baumarten.py`, `waldarten.py`, `natura2000.py`, `baulandreserven.py`

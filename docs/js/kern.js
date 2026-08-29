@@ -39,8 +39,8 @@ let DATEN_BASIS = "./data";   // In Oxygen: "https://DEIN-GITHUB-NAME.github.io/
    andere Zählung führt. */
 const VERSION = {
   nummer:     "06",                   // 06: Lebensraumgruppen (03 Falter, 04 Rueckkehrer, 05 Vogelarten)
-  datum:      "2026-08-28",           // maschinenlesbar, für <time datetime>
-  datum_text: "28. August 2026",      // sichtbar
+  datum:      "2026-08-29",           // maschinenlesbar, für <time datetime>
+  datum_text: "29. August 2026",      // sichtbar
   changelog:  "https://biodiversitaet-monitor.at/changelog/",
 };
 
@@ -617,7 +617,7 @@ async function start() {
                    "rotelisten", "erhaltung", "lebensraeume",
                    "biotoptypen", "wald",
                    "biolandbau", "falter", "rueckkehrer", "vogelarten"];
-  /* AUSGEKLINKT 28.08.2026 — die fünf Wald-Abschnitte (totholz, fichte,
+  /* AUSGEKLINKT 29.08.2026 — die fünf Wald-Abschnitte (totholz, fichte,
    baumarten, waldarten, natura2000) sind gebaut und liegen im Ordner, aber
    ihre Modul- und Datendateien sind NICHT im Repo. Ausgeliefert würden sie
    elf 404 erzeugen und die rote Störmeldung im Fuß auslösen — derselbe
@@ -694,7 +694,7 @@ async function start() {
        gibt, dann was in ihm steht. Die Waldfläche wächst; Totholz und
        Fichtenanteil sagen, dass daraus noch keine Vielfalt folgt.
 
-       AUSGEKLINKT 28.08.2026 — die fünf Wald-Abschnitte (totholz, fichte,
+       AUSGEKLINKT 29.08.2026 — die fünf Wald-Abschnitte (totholz, fichte,
    baumarten, waldarten, natura2000) sind gebaut und liegen im Ordner, aber
    ihre Modul- und Datendateien sind NICHT im Repo. Ausgeliefert würden sie
    elf 404 erzeugen und die rote Störmeldung im Fuß auslösen — derselbe

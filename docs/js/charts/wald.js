@@ -112,12 +112,16 @@ function baueWald(daten) {
 
   const at = daten.oesterreich;
   if (at) {
+    /* 28.08.2026 — der Schlusssatz („Dass die Fläche wächst, sagt nichts
+       darüber, was auf ihr wächst") ist entfallen. Die Einordnung
+       darunter sagt dasselbe, nur konkret: „eine Fichtenmonokultur zählt
+       so viel wie ein Auwald". Von zwei Fassungen desselben Gedankens
+       bleibt die mit dem Bild. */
     setzeHtml("n-wald",
       `Österreichs Waldfläche wuchs zwischen ${at.von} und ${at.bis} um ` +
       `<strong>${pz(at.veraenderung)} %</strong> auf ${zahl(Math.round(at.flaeche_bis))} ` +
       `Tausend Hektar — Platz ${daten.rang} von ${daten.anzahl} im ` +
-      `Nachbarschaftsvergleich. Dass die Fläche wächst, sagt allerdings nichts ` +
-      `darüber, was auf ihr wächst.`);
+      `Nachbarschaftsvergleich.`);
   }
 
   setzeHtml("t-wald", tabelle(

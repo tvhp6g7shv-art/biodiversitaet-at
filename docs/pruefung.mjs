@@ -97,7 +97,7 @@ const HOEHEN = {
   "c-vogelarten": 644,
 };
 
-/* Die fünf Wald-Abschnitte sind am 28.08.2026 ausgeklinkt worden — ihre
+/* Die fünf Wald-Abschnitte sind am 29.08.2026 ausgeklinkt worden — ihre
    Dateien liegen im Ordner, aber nicht im Repo. Wieder aufnehmen, sobald
    sie committet sind; die Listen leiten Sollzahlen aus ihrer Länge ab. */
 const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
@@ -473,7 +473,10 @@ for (const feldId of BALKENFELDER) {
   }
 }
 
-/* --- Einordnung: eingeklappt oder nicht -------------------------------- */
+/* --- Einordnung: eingeklappt oder nicht --------------------------------
+   28.08.2026 — die Erwartung „ab 768 px offen" ist entfallen. Der
+   Aufklapper ist jetzt auf ALLEN Breiten zu; was sich mit der Breite
+   aendert, ist nur, ob die Notiz mit hineinwandert. */
 const aufklapper = doc.querySelectorAll(".viz-mehr");
 pruefe(aufklapper.length === ABSCHNITTE.length,
   `[${name}] ${aufklapper.length} Aufklapper statt ${ABSCHNITTE.length} — wurde ein Absatz nicht eingesammelt?`);
@@ -482,9 +485,45 @@ for (const d of aufklapper) {
     `[${name}] Aufklapper ohne Zusammenfassungszeile`);
   pruefe(d.querySelectorAll(":scope > p").length > 0,
     `[${name}] Aufklapper ohne Inhalt`);
-  /* Ohne matchMedia entscheidet in jsdom die Dokumentbreite. */
-  pruefe(d.open === (breite >= 768),
-    `[${name}] Aufklapper ist ${d.open ? "offen" : "zu"} — bei ${breite} px erwartet: ${breite >= 768 ? "offen" : "zu"}`);
+  pruefe(d.open === false,
+    `[${name}] Aufklapper ist offen — erwartet: zu, auf jeder Breite`);
+  pruefe(d.parentElement?.classList.contains("viz-einordnung"),
+    `[${name}] Aufklapper haengt nicht im Behaelter .viz-einordnung`);
+}
+
+/* Die Notiz steht weit NEBEN dem Aufklapper und eng DARIN. Ohne diese
+   Pruefung faellt eine kaputte Verschiebung erst am Geraet auf. */
+for (const kurz of ["vogel", "rotelisten", "erhaltung", "lebensraeume",
+                    "biotoptypen", "wald", "biolandbau"]) {
+  const notiz = doc.getElementById(`n-${kurz}`);
+  const drin = notiz?.closest(".viz-mehr") !== null;
+  pruefe(drin === (breite < 768),
+    `[${name}] n-${kurz} liegt ${drin ? "im" : "neben dem"} Aufklapper — bei ${breite} px erwartet: ${breite < 768 ? "im" : "neben dem"}`);
+}
+
+/* DER GRUND FUER DEN BEHAELTER, hier nachgemessen statt geglaubt: Auf
+   der Website findet die Einordnung ihren Rasterplatz per
+   Auto-Platzierung — und das trifft nur, solange die Sektion GENAU DREI
+   sichtbare Kinder hat (Abschnitt 59 der idl.css, dort am Live-Stand
+   gemessen). Zwei Gruppen von Ausnahmen, beide mit eigener Regel:
+
+   - `#s-boden` traegt eine zweite Tabelle (`#t-boden-kategorien`) und
+     bekommt seinen Platz ausdruecklich aus Abschnitt 26.
+   - Die drei Tiergruppen-Abschnitte tragen ein Plakat (`#k-...`) und
+     stehen seit 26.08.2026 bewusst OHNE Rasterregel in voller Breite.
+
+   Die Zahlen sind dieselben wie vor dem Umbau vom 28.08.: `div.viz-
+   einordnung` steht genau dort, wo vorher `details.viz-mehr` stand. */
+const PLAKATABSCHNITTE = ["falter", "rueckkehrer", "vogelarten"];
+for (const kurz of ABSCHNITTE) {
+  const sektion = doc.getElementById(`s-${kurz}`);
+  const sichtbar = [...sektion.children].filter(
+    (k) => !k.classList.contains("viz-verborgen"));
+  const soll = 3 + (kurz === "boden" ? 1 : 0)
+                 + (PLAKATABSCHNITTE.includes(kurz) ? 1 : 0);
+  pruefe(sichtbar.length === soll,
+    `[${name}] s-${kurz}: ${sichtbar.length} sichtbare Rasterkinder statt ${soll} — ${
+      [...sichtbar].map((k) => k.tagName.toLowerCase() + (k.id ? "#" + k.id : "." + k.className)).join(", ")}`);
 }
 /* Der Text muss im Dokument bleiben, auch wenn er zu ist — sonst ist die
    Einordnung für Suchmaschinen weg. */

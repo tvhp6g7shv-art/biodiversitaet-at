@@ -123,10 +123,15 @@ def baue_biotoptypen() -> dict:
             "bericht_jahr": STAND_JAHR,
             "abgerufen": "2026-08-24",
         },
+        # 28.08.2026 — Satz 1 wiederholte die Notiz („Die übrigen 105 der
+        # insgesamt 488 …"), Satz 2 die Unterzeile („Teilbände 2002 bis
+        # 2008"). Neu ist hier nur, dass die Neuauflage aussteht — also
+        # bleibt genau das, plus der Nenner, auf den sich die Anteile
+        # beziehen.
         "hinweis": (
-            f"Von {BIOTOPTYPEN_GESAMT} Biotoptypen wurden {BIOTOPTYPEN_BEWERTET} "
-            f"als schutzwürdig eingestuft und bewertet; alle Anteile beziehen "
-            f"sich auf diese {BIOTOPTYPEN_BEWERTET}. Die Teilbände erschienen "
-            f"zwischen {ERSTER_BAND} und {STAND_JAHR} — eine Neuauflage steht aus."
+            f"Alle Anteile beziehen sich auf die {BIOTOPTYPEN_BEWERTET} "
+            f"bewerteten Typen, nicht auf alle {BIOTOPTYPEN_GESAMT}. Eine "
+            f"Neuauflage steht aus — die jüngsten Teilbände sind bald "
+            f"zwanzig Jahre alt."
         ),
     }

@@ -269,14 +269,19 @@ def baue_vogel() -> dict:
             "bericht_jahr": BERICHT_JAHR,
             "abgerufen": "2026-08-26",
         },
+        # 28.08.2026 — der erste Satz stand fast wörtlich schon in der
+        # Unterzeile („23 Vogelarten … 1998 = 100"), und mit ihm die zwei
+        # Fachbegriffe, die am 25.08. aus eben dieser Unterzeile entfernt
+        # wurden: „Bestandsindex" und „Offenland". Was hier bleibt, ist
+        # das, was NICHT anderswo steht.
         "hinweis": (
-            f"Bestandsindex von {len(ARTEN)} Vogelarten des Offenlands, "
-            f"{start} = 100. Er misst Häufigkeit, nicht Artenzahl. Die "
-            f"EU-Linie zählt 39 Arten aus 26 Staaten, auf dasselbe Basisjahr "
-            f"umgerechnet — gleiche Richtung, nicht dieselbe Messgröße."
+            "Gezählt wird Häufigkeit, nicht Artenzahl — ein Rückgang heißt "
+            "weniger Vögel, nicht weniger Arten. Die EU-Linie zählt 39 Arten "
+            "aus 26 Staaten, auf dasselbe Basisjahr umgerechnet: gleiche "
+            "Richtung, nicht dieselbe Messgröße."
         ) if eu else (
-            f"Bestandsindex von {len(ARTEN)} Vogelarten des Offenlands, "
-            f"{start} = 100. Er misst Häufigkeit, nicht Artenzahl: eine Art "
-            f"kann seltener werden, ohne zu verschwinden."
+            "Gezählt wird Häufigkeit, nicht Artenzahl — eine Art kann "
+            "seltener werden, ohne zu verschwinden. Der Wert sagt also, wie "
+            "viele Vögel unterwegs sind, nicht wie viele Arten es noch gibt."
         ),
     }

@@ -163,10 +163,12 @@ def baue_falter() -> dict:
             "abgerufen": "2026-08-26",
         },
         "hinweis": (
-            # 224 Zeichen, Fenster 150–234. Vorher 240 und damit außerhalb.
-            "Gezählt werden Falter auf festen Strecken in ganz Europa, nicht "
-            "nur in Österreich — eine eigene österreichische Reihe gibt es "
-            "für diesen Zeitraum nicht. Die Linie ist geglättet, weil "
-            "einzelne Jahre stark vom Wetter abhängen."
+            # 159 Zeichen, Fenster 150–234.
+            # 28.08.2026: Satz 1 ist entfallen. „Europa, nicht Österreich"
+            # steht in der Unterzeile UND in der Notiz darüber, dort mit
+            # dem Grund (die österreichische Reihe beginnt erst 2020).
+            "Die Linie ist geglättet, weil einzelne Jahre stark vom Wetter "
+            "abhängen — ein einzelner Jahreswert sagt hier wenig, die "
+            "Richtung über drei Jahrzehnte umso mehr."
         ),
     }

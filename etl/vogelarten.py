@@ -209,11 +209,13 @@ def baue_vogelarten() -> dict:
             "abgerufen": "2026-08-26",
         },
         "hinweis": (
-            # 234 Zeichen — obere Kante des Fensters 150–234. Wer hier
-            # etwas ergänzt, muss an anderer Stelle kürzen.
-            "Jeder Balken ist eine Vogelart und zeigt, wie sich ihr Bestand "
-            f"seit {BEGINN} verändert hat. „Gleich geblieben“ heißt: die "
-            "Zählung zeigt keine gesicherte Richtung. Hinter einer Art stehen "
-            "sechs Zählstrecken (Grauammer) bis 210 (Stieglitz)."
+            # 198 Zeichen, Fenster 150–234.
+            # 28.08.2026: Satz 1 beschrieb, was der Balken zeigt — das
+            # steht als Angabe schon in der Unterzeile („Bestandsveränderung
+            # je Art · 1998 bis 2025") und ist am Balken selbst zu sehen.
+            "„Gleich geblieben“ heißt nicht Stillstand, sondern: die Zählung "
+            "zeigt keine gesicherte Richtung. Wie sicher eine Art gezählt "
+            "ist, hängt an den Strecken — sechs bei der Grauammer, 210 beim "
+            "Stieglitz."
         ),
     }

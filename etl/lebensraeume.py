@@ -7,7 +7,7 @@ GEPFLEGTE REIHE, eigene Auszählung aus dem Eionet-Berichtswerkzeug.
              (2019–2024), alle neun Lebensraumgruppen einzeln abgerufen.
   URL:       https://nature-art17.eionet.europa.eu/article17/habitat/report/
              ?period=6&group=<GRUPPE>&country=AT&region=
-  Abgerufen: 28.08.2026
+  Abgerufen: 29.08.2026
 
 WARUM DIESER ABSCHNITT NEBEN ZWEI BESTEHENDEN STEHT
 
@@ -340,12 +340,12 @@ def baue_lebensraeume() -> dict:
             "quelle": (
                 "Eionet, Article 17 Web Tool: Meldung Österreichs nach "
                 "Artikel 17 FFH-Richtlinie, Berichtsperiode 2019–2024, alle "
-                "neun Lebensraumgruppen einzeln ausgezählt am 28.08.2026. "
+                "neun Lebensraumgruppen einzeln ausgezählt am 29.08.2026. "
                 "Die Gruppensummen sind gegen die unabhängige "
                 "Gesamtauszählung im Abschnitt Erhaltungszustand geprüft."
             ),
             "bericht_jahr": STAND_JAHR,
-            "abgerufen": "2026-08-28",
+            "abgerufen": "2026-08-29",
         },
         "notiz": (
             f"Die Reihenfolge folgt der Nutzung: Oben steht, was niemand "
@@ -362,10 +362,15 @@ def baue_lebensraeume() -> dict:
             f"besseren Wissens, entfallen {_wort(wald['genuine'])} auf den "
             f"Wald und keine einzige auf das Grünland."
         ),
+        # 29.08.2026 — der erste Satz erklärte dasselbe wie der erste Satz
+        # im Abschnitt „erhaltung" direkt darüber, und die Unterzeile hier
+        # trägt die Unterscheidung ohnehin als Zahl („114 Bewertungen aus
+        # 71 Lebensraumtypen"). Die Erklärung steht jetzt einmal, oben;
+        # hier bleibt der Verweis und das, was nur hier gilt.
         "hinweis": (
-            "Gezählt werden Bewertungen, nicht Lebensraumtypen: Jeder Typ "
-            "wird in jedem Naturraum, in dem er vorkommt, einzeln beurteilt. "
             "Salzsteppen, Binnendünen und Wacholderheiden fehlen im Balken — "
-            f"zusammen {_wort(rest_bewertungen)} Bewertungen."
+            f"zusammen {_wort(rest_bewertungen)} Bewertungen. Gezählt wird "
+            "wie im Abschnitt darüber: jede Bewertung einzeln, nicht jeder "
+            "Lebensraumtyp."
         ),
     }
