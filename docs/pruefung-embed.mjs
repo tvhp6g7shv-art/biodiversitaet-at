@@ -48,6 +48,7 @@ const HIER = dirname(fileURLToPath(import.meta.url));
    sie committet sind; die Listen leiten Sollzahlen aus ihrer Länge ab. */
 const GRAFIKEN = ["schutzgebiete", "vogel", "boden", "rotelisten",
                   "erhaltung", "lebensraeume", "biotoptypen", "wald",
+                  "baumarten", "waldarten", "natura2000",
                   "biolandbau",
                   "falter", "rueckkehrer", "vogelarten"];
 

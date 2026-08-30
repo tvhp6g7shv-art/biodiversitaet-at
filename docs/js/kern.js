@@ -616,19 +616,31 @@ async function start() {
   const DATEIEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden",
                    "rotelisten", "erhaltung", "lebensraeume",
                    "biotoptypen", "wald",
+                   "baumarten", "waldarten", "natura2000",
                    "biolandbau", "falter", "rueckkehrer", "vogelarten"];
-  /* AUSGEKLINKT 29.08.2026 — die fünf Wald-Abschnitte (totholz, fichte,
-   baumarten, waldarten, natura2000) sind gebaut und liegen im Ordner, aber
-   ihre Modul- und Datendateien sind NICHT im Repo. Ausgeliefert würden sie
-   elf 404 erzeugen und die rote Störmeldung im Fuß auslösen — derselbe
-   Fehler wie am 21.08. mit `selbstaendige`. Dazu haben totholz, fichte und
-   baumarten eine Live-Sperre bis zur BFW-Freigabe.
-   WIEDER EINHÄNGEN, sobald die Dateien committet sind: hier, in
-   index.html (Skript-Tags), embed.html (CHARTS + Skripte) und in den
-   beiden Prüfskripten. Die <section>-Blöcke stehen unverändert im Markup
-   und bleiben bis dahin display:none, also unsichtbar und folgenlos.
-     Wieder aufzunehmen: "totholz", "totholz_geo", "fichte", "baumarten",
-     "waldarten", "natura2000". */
+  /* STAND 30.08.2026 — drei der fünf Wald-Abschnitte hängen wieder drin.
+   Am 29.08. waren alle fünf ausgeklinkt, weil ihre Modul- und Datendateien
+   nicht im Repo lagen: ausgeliefert hätten sie 404 erzeugt und die rote
+   Störmeldung im Fuß ausgelöst, derselbe Fehler wie am 21.08. mit
+   `selbstaendige`. Das war richtig und bleibt die Regel — **erst
+   committen, dann einhängen**.
+
+   Die Sperre galt aber nie für alle fünf. Sie gilt für Daten, die aus
+   `waldinventur.at/data/` gezogen werden, also für `totholz` und
+   `fichte`. `baumarten` bezieht seine Bundeswerte aus Tab. 2 des
+   Waldbiodiversitätsberichts, dessen Impressum den auszugsweisen Abdruck
+   mit Quellenangabe ausdrücklich gestattet; `waldarten` und `natura2000`
+   stammen aus Tab. 7 desselben Berichts bzw. aus dem Eionet-Werkzeug.
+
+   NOCH AUSGEKLINKT, bis die BFW-Freigabe da ist: "totholz", "totholz_geo",
+   "fichte". Wieder einzuhängen sind dann vier Stellen — hier, index.html
+   (Sektionsblock UND Skript-Tag), embed.html über den Generator, und die
+   beiden Prüfskripte.
+
+   ZUR NOTIZ VOM 29.08., die hier stand: Sie versprach, die
+   <section>-Blöcke stünden unverändert im Markup. Das stimmte nicht —
+   sie waren mitentfernt worden. Wer sich darauf verlässt, sucht an vier
+   Stellen und braucht fünf. */
   const geladen = {};
   await Promise.all(DATEIEN.map(async (name) => {
     geladen[name] = await hole(name).catch(() => null);
@@ -694,23 +706,21 @@ async function start() {
        gibt, dann was in ihm steht. Die Waldfläche wächst; Totholz und
        Fichtenanteil sagen, dass daraus noch keine Vielfalt folgt.
 
-       AUSGEKLINKT 29.08.2026 — die fünf Wald-Abschnitte (totholz, fichte,
-   baumarten, waldarten, natura2000) sind gebaut und liegen im Ordner, aber
-   ihre Modul- und Datendateien sind NICHT im Repo. Ausgeliefert würden sie
-   elf 404 erzeugen und die rote Störmeldung im Fuß auslösen — derselbe
-   Fehler wie am 21.08. mit `selbstaendige`. Dazu haben totholz, fichte und
-   baumarten eine Live-Sperre bis zur BFW-Freigabe.
-   WIEDER EINHÄNGEN, sobald die Dateien committet sind: hier, in
-   index.html (Skript-Tags), embed.html (CHARTS + Skripte) und in den
-   beiden Prüfskripten. Die <section>-Blöcke stehen unverändert im Markup
-   und bleiben bis dahin display:none, also unsichtbar und folgenlos.
+       NOCH AUSGEKLINKT (Stand 30.08.2026): Totholz und Fichte ziehen ihre
+       Werte aus `waldinventur.at/data/` und warten auf die BFW-Freigabe.
+       Sobald sie da ist: hier einhängen, dazu Sektionsblock und Skript-Tag
+       in index.html, den Generator für embed.html und die beiden
+       Prüfskripte.
 
     sicher("Totholz",        () => BIO.baueTotholz(geladen.totholz, geladen.totholz_geo));
     sicher("Fichte",         () => BIO.baueFichte(geladen.fichte));
+    */
     sicher("Baumarten",      () => BIO.baueBaumarten(geladen.baumarten));
+    /* Erst der Wald selbst, dann was in ihm lebt und wie er bewertet wird.
+       `waldarten` zeigt den Verlust, `natura2000` die Kehrseite: dass
+       dieselbe Meldung je nach Messweise zwei Antworten gibt. */
     sicher("Waldarten",      () => BIO.baueWaldarten(geladen.waldarten));
     sicher("Natura 2000",    () => BIO.baueNatura2000(geladen.natura2000));
-    */
     sicher("Biolandbau",     () => BIO.baueBiolandbau(geladen.biolandbau));
     /* Bereich Tiergruppen — als Gegensatz gebaut: Verlust, Erholung,
        Stillstand. Die Reihenfolge ist die Aussage und darf nicht nach

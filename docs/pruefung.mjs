@@ -105,16 +105,20 @@ const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/erhaltung.js", "charts/lebensraeume.js",
                 "charts/biotoptypen.js",
                 "charts/wald.js",
+                "charts/baumarten.js", "charts/waldarten.js",
+                "charts/natura2000.js",
                 "charts/biolandbau.js",
                 "charts/falter.js", "charts/rueckkehrer.js",
                 "charts/vogelarten.js"];
 
 const DATEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden", "rotelisten",
-               "erhaltung", "lebensraeume", "biotoptypen", "wald", "biolandbau",
+               "erhaltung", "lebensraeume", "biotoptypen", "wald",
+               "baumarten", "waldarten", "natura2000", "biolandbau",
                "falter", "rueckkehrer", "vogelarten"];
 
 const ABSCHNITTE = ["schutzgebiete", "vogel", "boden", "rotelisten",
                     "erhaltung", "lebensraeume", "biotoptypen", "wald",
+                    "baumarten", "waldarten", "natura2000",
                     "biolandbau",
                     "falter", "rueckkehrer", "vogelarten"];
 
@@ -278,7 +282,8 @@ for (const kurz of ABSCHNITTE) {
    Wissenslücke ist und keine gute Lage, und dass alle echten
    Verbesserungen im Wald liegen. Ohne Notiz fehlt der halbe Befund. */
 for (const kurz of ["vogel", "rotelisten", "erhaltung", "lebensraeume",
-                    "biotoptypen", "wald", "biolandbau"]) {
+                    "biotoptypen", "wald", "biolandbau",
+                    "baumarten", "waldarten", "natura2000"]) {
   pruefe(t(`n-${kurz}`).length > 0, `[${name}] Notizzeile n-${kurz} ist leer`);
 }
 
@@ -494,7 +499,8 @@ for (const d of aufklapper) {
 /* Die Notiz steht weit NEBEN dem Aufklapper und eng DARIN. Ohne diese
    Pruefung faellt eine kaputte Verschiebung erst am Geraet auf. */
 for (const kurz of ["vogel", "rotelisten", "erhaltung", "lebensraeume",
-                    "biotoptypen", "wald", "biolandbau"]) {
+                    "biotoptypen", "wald", "biolandbau",
+                    "baumarten", "waldarten", "natura2000"]) {
   const notiz = doc.getElementById(`n-${kurz}`);
   const drin = notiz?.closest(".viz-mehr") !== null;
   pruefe(drin === (breite < 768),
