@@ -1,7 +1,26 @@
-<!-- Am 28.08.2026 aus docs/index.html herausgenommen, weil die zugehoerigen
-     Modul- und Datendateien nicht im Repo sind. Wortgleich zurueckstellen,
-     sobald sie committet sind — Einfuegestelle: vor der Sektion
-     s-biolandbau, in genau dieser Reihenfolge. -->
+<!-- ZURUECKGESTELLTE ABSCHNITTE — nicht Teil der ausgelieferten Seite.
+
+     Der Punkt am Dateianfang ist Absicht: GitHub Pages verarbeitet docs/
+     mit Jekyll, und Jekyll liefert Dateien, die mit "." beginnen, nicht aus.
+     Am 30.08.2026 gegengeprueft — 404 fuer diese Datei, 200 fuer index.html
+     und pruefung.mjs aus demselben Ordner. Die Datei ist also versioniert,
+     aber nicht veroeffentlicht. Wer sie umbenennt, publiziert sie.
+
+     Stand 30.08.2026: zurueckgestellt sind nur noch s-totholz und s-fichte.
+     Ihre Modul- und Datendateien liegen im ARBEITSORDNER, sind aber bewusst
+     NICHT versioniert — sie stehen in .gitignore, solange die Freigabe des
+     BFW fuer die zugrundeliegenden OEWI-Zahlen aussteht
+     -> ../../doku/bfw-anfrage-datenfreigabe.md (abgeschickt 27.08.).
+     "Auf der Platte" ist nicht "im Repo": am 30.08. hat ein `git add -A`
+     genau diese neun Dateien eingesammelt. Der Push scheiterte an fremden
+     Commits, sonst waeren sie oeffentlich gewesen.
+
+     Am 28.08. standen hier fuenf Abschnitte. s-baumarten, s-waldarten und
+     s-natura2000 sind seit dem 30.08. live und wurden hier entfernt, damit
+     niemand versehentlich einen veralteten Stand zurueckkopiert.
+
+     Einfuegestelle beim Zurueckstellen: vor der Sektion s-biolandbau,
+     in genau dieser Reihenfolge. -->
 
   <section class="viz-karte" id="s-totholz" data-chart="totholz" data-nav="Totes Holz" style="display:none">
     <header class="viz-kopfzeile">
@@ -33,55 +52,4 @@
     <div class="viz-verborgen" id="t-fichte"></div>
     <p class="viz-notiz" id="n-fichte"></p>
     <p class="viz-unterzeile" style="margin-top:12px" id="h-fichte"></p>
-  </section>
-
-  <!-- 8c — NADEL- UND LAUBHOLZ -->
-  <section class="viz-karte" id="s-baumarten" data-chart="baumarten" data-nav="Nadel und Laub" style="display:none">
-    <header class="viz-kopfzeile">
-      <div>
-        <h2>Nadelholz fällt von 69 auf 60 Prozent des bewirtschafteten Waldes</h2>
-        <p class="viz-unterzeile" id="u-baumarten"></p>
-      </div>
-      <div class="viz-knopfreihe">
-        <button class="viz-tabelle-schalter" data-ziel="t-baumarten">Tabelle</button>
-      </div>
-    </header>
-    <div class="viz-chart" id="c-baumarten"></div>
-    <div class="viz-verborgen" id="t-baumarten"></div>
-    <p class="viz-notiz" id="n-baumarten"></p>
-    <p class="viz-unterzeile" style="margin-top:12px" id="h-baumarten"></p>
-  </section>
-
-  <!-- 8d — GEFÄHRDETE WALDPFLANZEN -->
-  <section class="viz-karte" id="s-waldarten" data-chart="waldarten" data-nav="Gefährdete Arten" style="display:none">
-    <header class="viz-kopfzeile">
-      <div>
-        <h2>Die Zahl der Waldpflanzen kurz vor dem Verschwinden hat sich vervierfacht</h2>
-        <p class="viz-unterzeile" id="u-waldarten"></p>
-      </div>
-      <div class="viz-knopfreihe">
-        <button class="viz-tabelle-schalter" data-ziel="t-waldarten">Tabelle</button>
-      </div>
-    </header>
-    <div class="viz-chart" id="c-waldarten"></div>
-    <div class="viz-verborgen" id="t-waldarten"></div>
-    <p class="viz-notiz" id="n-waldarten"></p>
-    <p class="viz-unterzeile" style="margin-top:12px" id="h-waldarten"></p>
-  </section>
-
-  <!-- 8e — ZWEI MESSWEISEN, ZWEI ANTWORTEN -->
-  <section class="viz-karte" id="s-natura2000" data-chart="natura2000" data-nav="Zwei Messweisen" style="display:none">
-    <header class="viz-kopfzeile">
-      <div>
-        <h2>Je nach Messweise sind 93 oder 28 Prozent der Wälder in gutem Zustand</h2>
-        <p class="viz-unterzeile" id="u-natura2000"></p>
-      </div>
-      <div class="viz-knopfreihe">
-        <button class="viz-tabelle-schalter" data-ziel="t-natura2000">Tabelle</button>
-      </div>
-    </header>
-    <div class="viz-chart" id="c-natura2000"></div>
-    <div class="viz-verborgen" id="t-natura2000"></div>
-    <p class="viz-notiz" id="n-natura2000"></p>
-    <p class="viz-unterzeile" style="margin-top:12px" id="h-natura2000"></p>
   </section>

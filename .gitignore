@@ -28,3 +28,20 @@ package-lock.json
 # noch im Repo landen.
 *conflicted*
 *[Cc]onflict*
+
+# BFW/ÖWI und Gemeindedaten — NICHT committen, solange die Freigaben offen sind.
+# Die Dateien liegen im Arbeitsordner und werden lokal gebaut, dürfen aber nicht
+# ins öffentliche Repo. Am 30.08.2026 hat ein `git add -A` genau das getan; der
+# Push wurde nur deshalb nicht wirksam, weil GitHub ihn wegen fremder Commits
+# abgewiesen hat. Freigabe BFW: doku/bfw-anfrage-datenfreigabe.md (abgeschickt
+# 27.08., Antwort steht aus). Freigabe UBA: doku/uba-anfrage-gemeindedaten-2026-08-27.md
+# (noch nicht abgeschickt). Nach Eintreffen der Freigabe diesen Block entfernen.
+docs/data/totholz.json
+docs/data/totholz_geo.json
+docs/data/fichte.json
+docs/js/charts/totholz.js
+docs/js/charts/fichte.js
+etl/totholz.py
+etl/fichte.py
+etl/baulandreserven.py
+etl/gemeindegrenzen.py
