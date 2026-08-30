@@ -1,10 +1,76 @@
 {
   "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "06",
+  "aktuell": "09",
   "basis_url": "https://biodiversitaet-monitor.at",
   "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
   "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
   "ausgaben": [
+    {
+      "nummer": "09",
+      "datum": "2026-08-30",
+      "datum_text": "30. August 2026",
+      "titel": "Waldzustand nach zwei Messweisen — 93 Prozent gut oder 28 Prozent günstig",
+      "veroeffentlicht": true,
+      "cacheziffer": 11,
+      "charts": [
+        "natura2000"
+      ],
+      "social": "Wie gut geht es Österreichs geschützten Wäldern? Dieselbe EU-Meldung belegt zwei Antworten: 93 Prozent oder 28.\n\nNach Fläche ist fast alles gut. In der Gesamtbewertung kippt ein schlechter Teilwert von vier den ganzen Typ.\nhttps://biodiversitaet-monitor.at/#s-natura2000",
+      "abschnitte": [
+        {
+          "chart": "natura2000",
+          "alt": "Zwei gestapelte Balken für dieselbe EU-Meldung. Nach Fläche gemessen sind 92,8 Prozent der Waldlebensraumtypen in gutem Zustand, 7,1 Prozent nicht gut. Nach der Gesamtbewertung sind nur 28,1 Prozent günstig und 71,9 Prozent ungünstig."
+        }
+      ],
+      "seite": [
+        "Zwei gestapelte Balken stellen dieselbe Meldung Österreichs an die EU auf zwei Arten dar: einmal flächenbezogen nach dem Zustand von Struktur und Funktion, einmal nach der zusammenfassenden Gesamtbewertung. Grundlage sind 32 Bewertungen über 20 Waldlebensraumtypen der Berichtsperiode 2019–2024.",
+        "Nach Fläche sind 92,8 Prozent in gutem Zustand, nach Gesamtbewertung nur 28,1 Prozent günstig. Der Abstand entsteht durch die Zusammenfassungsregel: Ein Waldtyp gilt als ungünstig, sobald einer von vier Teilwerten ungünstig ist — auch wenn seine Fläche zum größten Teil in gutem Zustand ist."
+      ]
+    },
+    {
+      "nummer": "08",
+      "datum": "2026-08-30",
+      "datum_text": "30. August 2026",
+      "titel": "Gefährdete Waldpflanzen — die Summe wächst, die Schwere schneller",
+      "veroeffentlicht": true,
+      "cacheziffer": 11,
+      "charts": [
+        "waldarten"
+      ],
+      "social": "Bei Österreichs Waldpflanzen hat sich die Zahl der Arten kurz vor dem Verschwinden vervierfacht: von 11 auf 43.\n\nDie Zahl aller gefährdeten stieg nur von 200 auf 286. Die bereits gefährdeten rutschen weiter ab.\nhttps://biodiversitaet-monitor.at/#s-waldarten",
+      "abschnitte": [
+        {
+          "chart": "waldarten",
+          "alt": "Drei gestapelte Balken für die Roten Listen 1986, 1999 und 2022. Die Zahl gefährdeter waldgebundener Gefäßpflanzen steigt von 200 über 253 auf 286. Die Stufe „vom Aussterben bedroht\" wächst von 11 über 13 auf 43 Arten, „stark gefährdet\" von 67 auf 83, während „gefährdet\" seit 1999 von 170 auf 157 zurückgeht."
+        }
+      ],
+      "seite": [
+        "Drei gestapelte Balken, einer je Roter Liste, zeigen die gefährdeten waldgebundenen Gefäßpflanzen nach Gefährdungsstufe. Alle drei Listen bewerten denselben Bestand von 1.341 Arten, die Balken sind deshalb ohne Umrechnung vergleichbar.",
+        "Die Zahl steigt von 200 im Jahr 1986 über 253 auf 286 im Jahr 2022. Die Verschiebung wiegt schwerer als die Summe: „vom Aussterben bedroht\" vervierfacht sich von 11 auf 43 Arten, während die unterste Stufe seit 1999 zurückgeht. Moose und Farne liegen unverändert bei 96 gefährdeten Arten."
+      ]
+    },
+    {
+      "nummer": "07",
+      "datum": "2026-08-30",
+      "datum_text": "30. August 2026",
+      "titel": "Nadel- und Laubholz im Wald — die Hälfte des Rückgangs steckt im Nenner",
+      "veroeffentlicht": true,
+      "cacheziffer": 11,
+      "charts": [
+        "baumarten"
+      ],
+      "social": "Nadelholz fällt seit den 1990ern von 69 auf 60 Prozent des bewirtschafteten Waldes.\n\nDie Waldinventur weist zuletzt 50 Prozent aus — sie wechselt die Bezugsgröße. Gut die Hälfte des Einbruchs ist Rechenweg, nicht Wald.\nhttps://biodiversitaet-monitor.at/#s-baumarten",
+      "abschnitte": [
+        {
+          "chart": "baumarten",
+          "alt": "Vier gestapelte Balken für die Erhebungsperioden 1992/96, 2000/02, 2007/09 und 2018/23. Nadelholz sinkt von 69,2 auf 59,8 Prozent, Laubholz steigt von 22,3 auf 25,8 Prozent, Blößen, Lücken und Sträucher wachsen von 8,5 auf 14,3 Prozent."
+        }
+      ],
+      "seite": [
+        "Vier gestapelte Balken, einer je Erhebungsperiode der Österreichischen Waldinventur, zeigen die Anteile von Nadelholz, Laubholz und unbestockten Flächen am bewirtschafteten Wald zwischen 1992/96 und 2018/23.",
+        "Nadelholz fällt von 69,2 auf 59,8 Prozent, Laubholz steigt von 22,3 auf 25,8. Die Waldinventur weist für die letzte Erhebung 50,0 Prozent aus — sie rechnet dort gegen die gesamte Waldfläche statt gegen den bewirtschafteten Wald und macht den Rückgang damit doppelt so groß, wie er ist."
+      ]
+    },
     {
       "nummer": "06",
       "datum": "2026-08-29",

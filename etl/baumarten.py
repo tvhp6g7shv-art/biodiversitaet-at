@@ -262,7 +262,24 @@ def baue_baumarten() -> dict | None:
             "tatsaechlicher_rueckgang": round(
                 nadel[0]["anteil"] - nadel[-1]["anteil"], 1),
         },
-        "eintraege": eintraege,
+        # `eintraege` (die neun Bundesländerwerte) wird BEWUSST NICHT
+        # ausgeliefert — Stand 30.08.2026.
+        #
+        # Der Abschnitt ist veröffentlichbar, weil seine Bundeswerte in
+        # Tab. 2 des Waldbiodiversitätsberichts abgedruckt sind und dessen
+        # Impressum den auszugsweisen Abdruck mit Quellenangabe gestattet.
+        # Die Bundesländerwerte stehen dort NICHT — die stammen direkt aus
+        # `waldinventur.at/data/`, und genau deren Veröffentlichung
+        # untersagt das BFW-Impressum ohne schriftliche Zustimmung. Sie in
+        # die JSON-Datei zu schreiben hieße, sie auf GitHub Pages und der
+        # Website auszuliefern.
+        #
+        # Das Chart-Modul greift sie nirgends ab (geprüft: null Treffer),
+        # das Weglassen ändert also nichts am Sichtbaren. Sobald die
+        # Freigabe da ist, kann die Zeile wieder aufgenommen und daraus
+        # ein Ländervergleich gebaut werden — die Werte stehen oben im
+        # Modul und sind nachgerechnet.
+        #   "eintraege": eintraege,
         # Einordnung unter der Grafik, Konvention 150–234 Zeichen. Gemessen: 213.
         "hinweis": (
             "Alle Anteile gegen den bewirtschafteten Wald gerechnet, nicht gegen "
