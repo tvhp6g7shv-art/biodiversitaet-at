@@ -184,7 +184,7 @@ function baueVogelarten(daten) {
                    ...kategorieLabel(feld, 150, liste.length) } },
     series: [{
       type: "bar", name: "Bestandsveränderung",
-      barWidth: balkenBreite(feld, "62%"),
+      barWidth: balkenBreite(feld, "62%", liste.length),
       data: liste.map((a) => ({
         value: a.wert,
         itemStyle: {

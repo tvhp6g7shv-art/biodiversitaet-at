@@ -120,14 +120,14 @@ function baueRoteListen(daten) {
                           ...kategorieLabel(feld, 150, zeilen.length) } },
     series: [
       {
-        name: "im Soll-Zeitraum", type: "bar", stack: "alter", barWidth: balkenBreite(feld, "64%"),
+        name: "im Soll-Zeitraum", type: "bar", stack: "alter", barWidth: balkenBreite(feld, "64%", zeilen.length),
         data: zeilen.map((z) => Math.min(z.alter, z.soll_jahre)),
         itemStyle: { color: farbeInnen, borderRadius: [4, 0, 0, 4] },
         emphasis: hoverDunkler(farbeInnen),
         label: { show: false },
       },
       {
-        name: "darüber hinaus", type: "bar", stack: "alter", barWidth: balkenBreite(feld, "64%"),
+        name: "darüber hinaus", type: "bar", stack: "alter", barWidth: balkenBreite(feld, "64%", zeilen.length),
         data: zeilen.map((z) => Math.max(0, z.ueberzug)),
         itemStyle: {
           color: farbeUeber, borderRadius: [0, 4, 4, 0],

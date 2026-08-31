@@ -186,7 +186,31 @@ const RAND_RECHTS = 60;
 const ROW_ENG = 40;
 const BAR_ENG = 14;
 
-const balkenBreite = (el, desktop) => istEng(el) ? BAR_ENG : desktop;
+/* Zweite Stufe fuer Diagramme mit WENIGEN Zeilen.
+
+   Die 14 px oben sind aus dem dichtesten Fall gerechnet (23 Tiergruppen
+   auf 690 px). Bei zwei bis vier Zeilen ist das unnoetig duenn: dort ist
+   Platz da, der Balken nutzt ihn nur nicht. Gemessen am 31.08.2026 auf
+   1024 px — Zeichenflaeche 659 px, also eng — standen Fliessgewaesser,
+   Natura 2000, Waldarten und Baumarten alle auf 14 px.
+
+   Zeile und Balken muessen zusammen wachsen, sonst klebt der Name am
+   Balken der Zeile darueber (dieselbe Falle wie bei ROW_ENG):
+     60 px Zeile = 16 Text + 6 Luft + 28 Balken + 10 Luft nach unten.
+
+   `anzahl` ist die Zahl der Kategoriezeilen. Fehlt sie, bleibt es bei
+   der dichten Stufe — ein Modul, das sie nicht uebergibt, wird also
+   nicht ueberraschend breiter. */
+const ROW_ENG_WEIT = 60;
+const BAR_ENG_WEIT = 28;
+const WENIG_ZEILEN = 4;
+
+const engStufe = (anzahl) => (anzahl > 0 && anzahl <= WENIG_ZEILEN)
+  ? { zeile: ROW_ENG_WEIT, balken: BAR_ENG_WEIT }
+  : { zeile: ROW_ENG,      balken: BAR_ENG };
+
+const balkenBreite = (el, desktop, anzahl) =>
+  istEng(el) ? engStufe(anzahl).balken : desktop;
 
 /* Kartenhoehe eng aus der Zahl der Kategorien setzen.
 
@@ -212,7 +236,7 @@ function balkenHoehe(d, el, anzahl, obenExtra = 0) {
     }
     return;
   }
-  const soll = Math.round(anzahl * ROW_ENG + 44 + obenExtra);
+  const soll = Math.round(anzahl * engStufe(anzahl).zeile + 44 + obenExtra);
   if (parseFloat(el.style.height) === soll) return;
   el.style.height = `${soll}px`;
   el.dataset.hoeheGesetzt = "1";
@@ -319,7 +343,7 @@ const hoverDunkler = (farbe) => ({ itemStyle: { color: hervor(farbe) } });
    Kategorien: Passen zwei Textzeilen nicht in die Hoehe einer
    Kategoriezeile, wird gekuerzt statt umgebrochen. Ohne das kleben bei
    27 Tiergruppen die zweizeiligen Namen ineinander. */
-function kategorieLabel(el, desktopLinks = 120, anzahl = 0) {
+function kategorieLabel(el, desktopLinks = 120, anzahl = 0, balkenPx = null) {
   /* Eng: der Name steht ueber seinem Balken statt links daneben.
 
      Wie das geht: `margin: 0` setzt den Ankerpunkt auf die Achslinie
@@ -329,16 +353,21 @@ function kategorieLabel(el, desktopLinks = 120, anzahl = 0) {
      Polsterung unten hebt ihn von dort um die halbe Balkenhoehe plus
      4 px an, also knapp ueber den Balken.
 
-     Die halbe Balkenhoehe ist keine Schaetzung, sondern BAR_ENG / 2 —
-     dieselbe Zahl, die `balkenBreite()` als `barWidth` an die Module
-     gibt. Beide Seiten haengen an einer Konstante; wer nur eine aendert,
-     schiebt den Namen in den Balken. */
+     Die halbe Balkenhoehe ist keine Schaetzung, sondern dieselbe Zahl,
+     die `balkenBreite()` als `barWidth` an die Module gibt — seit der
+     Staffelung vom 31.08.2026 also `engStufe(anzahl).balken`, nicht mehr
+     die feste Konstante. Beide Seiten haengen an derselben Stufe; wer nur
+     eine aendert, schiebt den Namen in den Balken.
+
+     `balkenPx` ist der Ausweg fuer Module, die ihre Balkenhoehe eng SELBST
+     setzen statt sie von `balkenBreite()` zu holen — bisher nur
+     rueckkehrer.js mit zwei Gruppen je Kategorie. */
   if (istEng(el)) {
     return {
       align: "left",
       verticalAlign: "bottom",
       margin: 0,
-      padding: [0, 0, BAR_ENG / 2 + 4, 0],
+      padding: [0, 0, (balkenPx ?? engStufe(anzahl).balken) / 2 + 4, 0],
       width: Math.max(120, feldBreite(el) - 14 - RAND_RECHTS),
       overflow: "truncate",
       lineHeight: ZEILE,

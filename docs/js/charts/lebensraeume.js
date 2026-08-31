@@ -103,7 +103,7 @@ function baueLebensraeume(daten) {
       axisLabel: { color: stil("--viz-text-2"), fontSize: S.serie, margin: 12,
                    ...kategorieLabel(feld, RAND_LINKS, gruppen.length) } },
     series: kategorien.map((name, k) => ({
-      name, type: "bar", stack: "zustand", barWidth: balkenBreite(feld, "56%"),
+      name, type: "bar", stack: "zustand", barWidth: balkenBreite(feld, "56%", gruppen.length),
       data: gruppen.map((g) => g.anteile[k]),
       itemStyle: {
         color: stil(FARBEN[k]),

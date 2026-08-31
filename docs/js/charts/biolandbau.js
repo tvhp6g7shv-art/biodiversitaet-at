@@ -110,7 +110,7 @@ function baueBiolandbau(daten) {
                    color: stil("--viz-text-2"),
                    ...kategorieLabel(feld, 118, liste.length) } },
     series: [{
-      type: "bar", name: "Bio-Anteil", barWidth: balkenBreite(feld, "62%"),
+      type: "bar", name: "Bio-Anteil", barWidth: balkenBreite(feld, "62%", liste.length),
       data: liste.map((e) => ({
         value: e.wert,
         itemStyle: { color: farbe(e), borderRadius: [0, 4, 4, 0] },

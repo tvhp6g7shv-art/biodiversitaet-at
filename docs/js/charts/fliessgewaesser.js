@@ -111,7 +111,7 @@ function baueFliessgewaesser(daten) {
                    ...kategorieLabel(feld, 168, zeilen.length) } },
     series: faecher.map((name, k) => ({
       name, type: "bar", stack: "zustand",
-      barWidth: balkenBreite(feld, "48%"),
+      barWidth: balkenBreite(feld, "48%", zeilen.length),
       data: zeilen.map((z) => z.werte[k]),
       itemStyle: {
         color: stil(FARBEN[k]),

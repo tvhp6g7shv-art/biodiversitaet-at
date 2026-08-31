@@ -88,7 +88,7 @@ function baueWald(daten) {
                    color: stil("--viz-text-2"),
                    ...kategorieLabel(feld, 128, eintraege.length) } },
     series: [{
-      type: "bar", name: "Veränderung", barWidth: balkenBreite(feld, "58%"),
+      type: "bar", name: "Veränderung", barWidth: balkenBreite(feld, "58%", eintraege.length),
       data: eintraege.map((e) => ({
         value: e.veraenderung,
         itemStyle: {

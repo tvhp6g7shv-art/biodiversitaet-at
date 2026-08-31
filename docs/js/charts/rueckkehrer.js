@@ -193,7 +193,12 @@ function baueRueckkehrer(daten) {
       data: perioden, splitLine: { show: false },
       axisLabel: { color: stil("--viz-text-2"),
                    fontSize: istSchmal(feld) ? S.eng : S.serie, margin: 12,
-                   ...kategorieLabel(feld, 96, perioden.length) } },
+                   /* Viertes Argument: dieses Modul setzt seine Balkenhoehe eng selbst
+       (`spannenBreite` = 8 px), holt sie also nicht von `balkenBreite()`.
+       Die 14 halten den gemessenen Abstand von 2,6 px zwischen Name und
+       Balken — siehe den Block ueber `spannenBreite`. Ohne das Argument
+       zoege die Staffelung nach Zeilenzahl den Namen 7 px hoeher. */
+    ...kategorieLabel(feld, 96, perioden.length, 14) } },
     series: reihen,
   }, { replaceMerge: ["series", "xAxis", "yAxis", "legend"] });
 

@@ -95,7 +95,7 @@ function baueBaumarten(daten) {
                    ...kategorieLabel(feld, 96, perioden.length) } },
     series: reihen.map((r, k) => ({
       name: r.name, type: "bar", stack: "wald",
-      barWidth: balkenBreite(feld, "56%"),
+      barWidth: balkenBreite(feld, "56%", perioden.length),
       data: zeilen.map((z) => z.anteile[k]),
       itemStyle: {
         color: stil(FARBEN[k]),

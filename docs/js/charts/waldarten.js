@@ -104,7 +104,7 @@ function baueWaldarten(daten) {
                    ...kategorieLabel(feld, 96, zeilen.length) } },
     series: stufen.map((name, k) => ({
       name, type: "bar", stack: "stufen",
-      barWidth: balkenBreite(feld, "56%"),
+      barWidth: balkenBreite(feld, "56%", zeilen.length),
       data: zeilen.map((z) => z.stufen[name]),
       itemStyle: {
         color: stil(FARBEN[k]),

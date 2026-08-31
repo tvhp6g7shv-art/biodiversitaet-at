@@ -117,7 +117,7 @@ function baueBiotoptypen(daten) {
       axisLabel: { color: stil("--viz-text-2"), fontSize: S.serie, margin: 12,
                    ...BIO.kategorieLabel(feld, 190, stufen.length) } },
     series: [{
-      type: "bar", name: "Biotoptypen", barWidth: BIO.balkenBreite(feld, "58%"),
+      type: "bar", name: "Biotoptypen", barWidth: BIO.balkenBreite(feld, "58%", stufen.length),
       data: stufen.map((s) => ({
         value: s.anzahl,
         itemStyle: { color: stil(FARBEN[s.kuerzel] || "--viz-series-4"),
