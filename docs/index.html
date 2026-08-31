@@ -665,6 +665,23 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
     <p class="viz-unterzeile" style="margin-top:12px" id="h-biotoptypen">Von 488 Biotoptypen wurden 383 als schutzwürdig eingestuft und bewertet; alle Anteile beziehen sich auf diese 383. Die Teilbände erschienen zwischen 2002 und 2008 — eine Neuauflage steht aus.</p>
   </section>
 
+  <!-- 7b — FLIESSGEWÄSSER: ZWEI MASSSTÄBE -->
+  <section class="viz-karte" id="s-fliessgewaesser" data-chart="fliessgewaesser" data-nav="Fließgewässer" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Fast die Hälfte der Wasserkörper ist in gutem Zustand — aber nicht die Hälfte der Flusskilometer</h2>
+        <p class="viz-unterzeile" id="u-fliessgewaesser"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-fliessgewaesser">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-fliessgewaesser"></div>
+    <div class="viz-verborgen" id="t-fliessgewaesser"></div>
+    <p class="viz-notiz" id="n-fliessgewaesser"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-fliessgewaesser"></p>
+  </section>
+
   <!-- 8 — WALDFLÄCHE IM NACHBARSCHAFTSVERGLEICH -->
   <section class="viz-karte" id="s-wald" data-chart="wald" style="display:none">
     <header class="viz-kopfzeile">
@@ -833,16 +850,17 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Cacheziffer `?v=NN` hochzaehlen, wenn eine Datei geaendert wurde —
      sie fuehrt eine EIGENE Zaehlung, unabhaengig von der Ausgabenummer
      in kern.js (VERSION.nummer). -->
-<script defer src="js/kern.js?v=11"></script>
-<script defer src="js/charts/kpi.js?v=11"></script>
-<script defer src="js/charts/schutzgebiete.js?v=11"></script>
-<script defer src="js/charts/vogel.js?v=11"></script>
-<script defer src="js/charts/boden.js?v=11"></script>
-<script defer src="js/charts/rotelisten.js?v=11"></script>
-<script defer src="js/charts/erhaltung.js?v=11"></script>
-<script defer src="js/charts/lebensraeume.js?v=11"></script>
-<script defer src="js/charts/biotoptypen.js?v=11"></script>
-<script defer src="js/charts/wald.js?v=11"></script>
+<script defer src="js/kern.js?v=12"></script>
+<script defer src="js/charts/kpi.js?v=12"></script>
+<script defer src="js/charts/schutzgebiete.js?v=12"></script>
+<script defer src="js/charts/vogel.js?v=12"></script>
+<script defer src="js/charts/boden.js?v=12"></script>
+<script defer src="js/charts/rotelisten.js?v=12"></script>
+<script defer src="js/charts/erhaltung.js?v=12"></script>
+<script defer src="js/charts/lebensraeume.js?v=12"></script>
+<script defer src="js/charts/biotoptypen.js?v=12"></script>
+<script defer src="js/charts/fliessgewaesser.js?v=12"></script>
+<script defer src="js/charts/wald.js?v=12"></script>
 <!-- Die fuenf Wald-Abschnitte (totholz, fichte, baumarten, waldarten,
      natura2000) sind am 29.08.2026 ausgeklinkt: gebaut und im Ordner, aber
      ihre Modul- und Datendateien nicht im Repo. Ausgeliefert haetten sie elf
@@ -852,13 +870,13 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Sektionen liegen wortgleich in docs/.ausgeklinkt-wald.html. Wieder
      einhaengen: Sektionen von dort zurueck, Skript-Zeilen hier, dazu
      js/kern.js, embed.html und die beiden Pruefskripte. -->
-<script defer src="js/charts/baumarten.js?v=11"></script>
-<script defer src="js/charts/waldarten.js?v=11"></script>
-<script defer src="js/charts/natura2000.js?v=11"></script>
-<script defer src="js/charts/biolandbau.js?v=11"></script>
-<script defer src="js/charts/falter.js?v=11"></script>
-<script defer src="js/charts/rueckkehrer.js?v=11"></script>
-<script defer src="js/charts/vogelarten.js?v=11"></script>
+<script defer src="js/charts/baumarten.js?v=12"></script>
+<script defer src="js/charts/waldarten.js?v=12"></script>
+<script defer src="js/charts/natura2000.js?v=12"></script>
+<script defer src="js/charts/biolandbau.js?v=12"></script>
+<script defer src="js/charts/falter.js?v=12"></script>
+<script defer src="js/charts/rueckkehrer.js?v=12"></script>
+<script defer src="js/charts/vogelarten.js?v=12"></script>
 <script defer>
   document.addEventListener("DOMContentLoaded", () => {
     BIO.setzeWurzel(document.getElementById("dashboard"));

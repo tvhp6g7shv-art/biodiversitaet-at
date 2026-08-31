@@ -615,7 +615,7 @@ async function start() {
      Tabelle, statt ganz zu verschwinden. */
   const DATEIEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden",
                    "rotelisten", "erhaltung", "lebensraeume",
-                   "biotoptypen", "wald",
+                   "biotoptypen", "fliessgewaesser", "wald",
                    "baumarten", "waldarten", "natura2000",
                    "biolandbau", "falter", "rueckkehrer", "vogelarten"];
   /* STAND 30.08.2026 — drei der fünf Wald-Abschnitte hängen wieder drin.
@@ -701,6 +701,7 @@ async function start() {
        aber der erste allein laesst die Spanne verschwinden. */
     sicher("Lebensraumgruppen", () => BIO.baueLebensraeume(geladen.lebensraeume));
     sicher("Biotoptypen",    () => BIO.baueBiotoptypen(geladen.biotoptypen));
+    sicher("Fließgewässer",  () => BIO.baueFliessgewaesser(geladen.fliessgewaesser));
     sicher("Waldfläche",     () => BIO.baueWald(geladen.wald));
     /* Bereich Wald — die Reihenfolge ist die Aussage: erst wie viel Wald es
        gibt, dann was in ihm steht. Die Waldfläche wächst; Totholz und

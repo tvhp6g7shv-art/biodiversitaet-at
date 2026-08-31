@@ -10,22 +10,23 @@
      die Kennzahlenkacheln gehoeren zum Dashboard, nicht zu einer einzelnen
      Grafik. Cacheziffer wird aus index.html uebernommen — beide Auslieferungen
      tragen dieselbe, sonst mischt der Browser Staende. -->
-<script src="js/kern.js?v=11" defer></script>
-<script src="js/charts/schutzgebiete.js?v=11" defer></script>
-<script src="js/charts/vogel.js?v=11" defer></script>
-<script src="js/charts/boden.js?v=11" defer></script>
-<script src="js/charts/rotelisten.js?v=11" defer></script>
-<script src="js/charts/erhaltung.js?v=11" defer></script>
-<script src="js/charts/lebensraeume.js?v=11" defer></script>
-<script src="js/charts/biotoptypen.js?v=11" defer></script>
-<script src="js/charts/wald.js?v=11" defer></script>
-<script src="js/charts/baumarten.js?v=11" defer></script>
-<script src="js/charts/waldarten.js?v=11" defer></script>
-<script src="js/charts/natura2000.js?v=11" defer></script>
-<script src="js/charts/biolandbau.js?v=11" defer></script>
-<script src="js/charts/falter.js?v=11" defer></script>
-<script src="js/charts/rueckkehrer.js?v=11" defer></script>
-<script src="js/charts/vogelarten.js?v=11" defer></script>
+<script src="js/kern.js?v=12" defer></script>
+<script src="js/charts/schutzgebiete.js?v=12" defer></script>
+<script src="js/charts/vogel.js?v=12" defer></script>
+<script src="js/charts/boden.js?v=12" defer></script>
+<script src="js/charts/rotelisten.js?v=12" defer></script>
+<script src="js/charts/erhaltung.js?v=12" defer></script>
+<script src="js/charts/lebensraeume.js?v=12" defer></script>
+<script src="js/charts/biotoptypen.js?v=12" defer></script>
+<script src="js/charts/fliessgewaesser.js?v=12" defer></script>
+<script src="js/charts/wald.js?v=12" defer></script>
+<script src="js/charts/baumarten.js?v=12" defer></script>
+<script src="js/charts/waldarten.js?v=12" defer></script>
+<script src="js/charts/natura2000.js?v=12" defer></script>
+<script src="js/charts/biolandbau.js?v=12" defer></script>
+<script src="js/charts/falter.js?v=12" defer></script>
+<script src="js/charts/rueckkehrer.js?v=12" defer></script>
+<script src="js/charts/vogelarten.js?v=12" defer></script>
 <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* ===================================================================
@@ -304,6 +305,7 @@ const CHARTS = {
   erhaltung: { titel: "Erhaltungszustand der Lebensraumtypen", dateien: ["erhaltung"], bau: (B, d) => B.baueErhaltung(d.erhaltung) },
   lebensraeume: { titel: "Erhaltungszustand nach Lebensraumgruppen", dateien: ["lebensraeume"], bau: (B, d) => B.baueLebensraeume(d.lebensraeume), hoch: true },
   biotoptypen: { titel: "Gefährdete Biotoptypen", dateien: ["biotoptypen"], bau: (B, d) => B.baueBiotoptypen(d.biotoptypen) },
+  fliessgewaesser: { titel: "Ökologischer Zustand der Fließgewässer", dateien: ["fliessgewaesser"], bau: (B, d) => B.baueFliessgewaesser(d.fliessgewaesser) },
   wald: { titel: "Waldfläche im Vergleich", dateien: ["wald"], bau: (B, d) => B.baueWald(d.wald) },
   baumarten: { titel: "Nadel- und Laubholz im Wald", dateien: ["baumarten"], bau: (B, d) => B.baueBaumarten(d.baumarten) },
   waldarten: { titel: "Gefährdete Waldpflanzen", dateien: ["waldarten"], bau: (B, d) => B.baueWaldarten(d.waldarten) },

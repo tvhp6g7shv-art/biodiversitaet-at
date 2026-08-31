@@ -69,18 +69,26 @@ from biolandbau import baue_biolandbau
 from falter import baue_falter
 from rueckkehrer import baue_rueckkehrer
 from vogelarten import baue_vogelarten
-# AUSGEKLINKT 29.08.2026 — sieben Module liegen im Ordner, sind aber NICHT
-# im Repo. Die Pipeline läuft in GitHub Actions bei jeder Änderung an
-# `etl/**`; ein Import einer fehlenden Datei bricht sie mit ImportError ab,
-# bevor eine einzige Zahl gerechnet wird. Wieder aufnehmen, sobald die
-# Dateien committet sind — zusammen mit den zugehörigen Aufrufen und
-# Gegenproben weiter unten, die alle mit demselben Vermerk markiert sind.
+from baumarten import baue_baumarten
+from waldarten import baue_waldarten
+from natura2000 import baue_natura2000
+from fliessgewaesser import baue_fliessgewaesser
+
+# WIEDER AUFGENOMMEN 31.08.2026 — `baumarten`, `waldarten` und `natura2000`
+# sind am 30.08. committet und live gegangen, ihre Importe und Aufrufe waren
+# aber ausgeklinkt geblieben. Folge, am selben Tag an der ausgelieferten
+# `data/meta.json` nachgemessen: Die Pipeline hat die drei Abschnitte nicht
+# mehr gebaut, ihre Datendateien lagen eingefroren im Repo — und weil
+# `quelle_vermerken()` nie lief, führte der Quellenblock im Fuß der Seite
+# 13 Quellen statt 16. Für den Waldbiodiversitätsbericht ist die
+# Quellenangabe die BEDINGUNG, unter der der Abdruck erlaubt ist.
 #
-# from totholz import baue_totholz
-# from fichte import baue_fichte
-# from baumarten import baue_baumarten
-# from waldarten import baue_waldarten
-# from natura2000 import baue_natura2000
+# AUSGEKLINKT BLEIBEN vier Module, die tatsächlich nicht im Repo liegen —
+# ein Import einer fehlenden Datei bricht die Pipeline in GitHub Actions mit
+# ImportError ab, bevor eine einzige Zahl gerechnet wird:
+#
+# from totholz import baue_totholz            # wartet auf BFW-Freigabe
+# from fichte import baue_fichte              # wartet auf BFW-Freigabe
 # from baulandreserven import baue_baulandreserven
 # from gemeindegrenzen import baue_gemeindegrenzen
 
@@ -160,28 +168,42 @@ def main() -> None:
     # `erhaltung` zählt die Lebensraumtypen als Ganzes, `lebensraeume`
     # gliedert dieselbe Meldung nach Gruppen. Wird einer nachgezogen und der
     # andere nicht, stehen zwei Berichtsstände nebeneinander.
+    # Die drei Wald-Abschnitte, seit 31.08.2026 wieder in der Pipeline.
+    # Reihenfolge wie im Frontend: Baumarten, Waldarten, Waldzustand.
+    ausgaben["baumarten"] = baue_baumarten()
+    ausgaben["waldarten"] = baue_waldarten()
+    ausgaben["natura2000"] = baue_natura2000()
+
+    fliessgewaesser = baue_fliessgewaesser()
+    if fliessgewaesser:
+        ausgaben["fliessgewaesser"] = fliessgewaesser
+
     perioden = {name: ausgaben[name]["periode"]
-                for name in ("erhaltung", "lebensraeume")}
+                for name in ("erhaltung", "lebensraeume", "natura2000")}
     if len(set(perioden.values())) > 1:
         warnen(
             "Artikel-17-Abschnitte uneins: "
             + ", ".join(f"`{n}` auf {p}" for n, p in perioden.items())
         )
 
+    # Dieselbe Meldung, zwei Module: `lebensraeume` gliedert die Artikel-17-
+    # Bewertungen nach Gruppen, `natura2000` zählt die Gruppe Forests noch
+    # einmal für sich aus. Beide müssen auf dieselben 32 Bewertungen kommen.
+    # Der Vergleich stand am 28.08.2026 auf 28,1 gegen 28,1.
+    wald_lr = ausgaben["lebensraeume"]["wald_guenstig"]
+    wald_n2k = ausgaben["natura2000"]["nach_bewertung"]["guenstig_prozent"]
+    if abs(wald_lr - wald_n2k) > 0.05:
+        warnen(
+            f"Waldwerte uneins: `lebensraeume` nennt {wald_lr} % günstig, "
+            f"`natura2000` {wald_n2k} % — beide zählen dieselbe Gruppe "
+            f"Forests aus, einer der beiden zählt anders als gedacht."
+        )
+
     # AUSGEKLINKT 29.08.2026 — alles Folgende hängt an Modulen, die im Ordner
     # liegen, aber nicht im Repo sind; in GitHub Actions bräche die Pipeline
     # daran ab. Wieder aufnehmen, sobald `totholz.py`, `fichte.py`,
-    # `baumarten.py`, `waldarten.py`, `natura2000.py`, `baulandreserven.py`
-    # und `gemeindegrenzen.py` committet sind — zusammen mit ihren Importen
-    # oben. Die dritte Artikel-17-Gegenprobe gehört dann wieder dazu:
-    # `natura2000` in die `perioden` oben, und der Waldwert-Vergleich
-    #
-    #     wald_lr  = ausgaben["lebensraeume"]["wald_guenstig"]
-    #     wald_n2k = ausgaben["natura2000"]["nach_bewertung"]["guenstig_prozent"]
-    #     if abs(wald_lr - wald_n2k) > 0.05: warnen(…)
-    #
-    # der belegt, dass beide Module dieselben 32 Bewertungen der Gruppe
-    # Forests zählen. Er stand am 28.08. auf 28,1 gegen 28,1.
+    # `baulandreserven.py` und `gemeindegrenzen.py` committet sind —
+    # zusammen mit ihren Importen oben.
     #
     #   bezirke_geo = None
     #   bezirke_pfad = (Path(__file__).resolve().parent.parent.parent
@@ -197,9 +219,9 @@ def main() -> None:
     #   if totholz:     ausgaben["totholz"] = totholz
     #   if totholz_geo: ausgaben["totholz_geo"] = totholz_geo
     #   ausgaben["fichte"]     = baue_fichte()
-    #   ausgaben["baumarten"]  = baue_baumarten()
-    #   ausgaben["waldarten"]  = baue_waldarten()
-    #   ausgaben["natura2000"] = baue_natura2000()
+    #
+    # `baumarten`, `waldarten` und `natura2000` standen bis 31.08.2026 hier
+    # und laufen jetzt oben mit den übrigen Abschnitten.
     #
     #   wald_staende = {name: ausgaben[name]["stand"]
     #                   for name in ("totholz", "fichte", "baumarten")

@@ -95,15 +95,45 @@ const HOEHEN = {
   "c-falter": 340,
   "c-rueckkehrer": 300,
   "c-vogelarten": 644,
+  /* Die drei Wald-Abschnitte vom 30.08.2026 haben KEINE eigene `#c-…`-Regel
+     in index.html — sie stehen auf dem Standard `.viz-chart { height: 340px }`.
+     Sie hier trotzdem einzutragen ist keine Doppelung: ohne Eintrag greift
+     der Fallback `?? 340`, und der stimmt dann rein zufällig. Bekommt einer
+     der drei später eine eigene Regel, misst die Prüfung stumm weiter 340.
+     Nachgerechnet am 31.08.2026: baumarten 4 gestapelte Balken, waldarten 3,
+     natura2000 2 — bei allen dreien bleibt genug Zeilenhöhe. */
+  "c-baumarten": 340,
+  "c-waldarten": 340,
+  "c-natura2000": 340,
+  /* KEINE Einträge für `totholz` und `fichte`, solange beide ausgeklinkt
+     sind: Die Prüfung verlangt zu jedem Schlüssel ein Feld im Markup und
+     meldet sonst „Feld c-fichte fehlt im Markup" — am 31.08.2026 beim
+     ersten Anlauf genau so erlebt. Die Höhen sind trotzdem schon geprüft,
+     damit das Wiedereinhängen nicht daran hängenbleibt:
+       c-fichte  → 340. Neun Bundesländer als liegende Balken,
+                   (340 − 44 Gitterrand) / 9 = 32,9 px je Zeile, über der
+                   30-px-Marke, an der `vogelarten` am 26.08.2026 jeden
+                   zweiten Namen verschluckt hat.
+       c-totholz → kein Eintrag nötig, auch später nicht: Das Modul setzt
+                   `style.height = "auto"`, und die gesetzte Höhe gewinnt
+                   (siehe clientHeight weiter unten). */
+  /* Zwei Zeilen auf der Standardfläche, wie `natura2000`. Die sechs
+     Legendeneinträge stehen über der Zeichenfläche und kosten sie keine
+     Höhe — `top: 46` im Modul hält den Platz frei. */
+  "c-fliessgewaesser": 340,
 };
 
-/* Die fünf Wald-Abschnitte sind am 29.08.2026 ausgeklinkt worden — ihre
-   Dateien liegen im Ordner, aber nicht im Repo. Wieder aufnehmen, sobald
-   sie committet sind; die Listen leiten Sollzahlen aus ihrer Länge ab. */
+/* Stand 31.08.2026: `baumarten`, `waldarten` und `natura2000` sind am
+   30.08. committet und live gegangen und stehen darum wieder in den Listen.
+   Ausgeklinkt sind nur noch `totholz` und `fichte` — ihre Sektionen liegen
+   in `docs/.ausgeklinkt-wald.html`, ihre Datendateien sind gefüllt, beide
+   warten auf die BFW-Freigabe. Die Listen leiten Sollzahlen aus ihrer
+   Länge ab. */
 const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/vogel.js", "charts/boden.js", "charts/rotelisten.js",
                 "charts/erhaltung.js", "charts/lebensraeume.js",
                 "charts/biotoptypen.js",
+                "charts/fliessgewaesser.js",
                 "charts/wald.js",
                 "charts/baumarten.js", "charts/waldarten.js",
                 "charts/natura2000.js",
@@ -112,12 +142,14 @@ const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/vogelarten.js"];
 
 const DATEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden", "rotelisten",
-               "erhaltung", "lebensraeume", "biotoptypen", "wald",
+               "erhaltung", "lebensraeume", "biotoptypen",
+               "fliessgewaesser", "wald",
                "baumarten", "waldarten", "natura2000", "biolandbau",
                "falter", "rueckkehrer", "vogelarten"];
 
 const ABSCHNITTE = ["schutzgebiete", "vogel", "boden", "rotelisten",
-                    "erhaltung", "lebensraeume", "biotoptypen", "wald",
+                    "erhaltung", "lebensraeume", "biotoptypen",
+                    "fliessgewaesser", "wald",
                     "baumarten", "waldarten", "natura2000",
                     "biolandbau",
                     "falter", "rueckkehrer", "vogelarten"];

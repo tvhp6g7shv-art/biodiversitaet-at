@@ -251,6 +251,70 @@ GRENZEN_MIN_GEMEINDEN = 2_000
 GRENZEN_MAX_KB = 900
 
 # ---------------------------------------------------------------------------
+# Quelle Fließgewässer — EEA Discodata (SQL auf die WISE-WFD-Datenbank)
+# ---------------------------------------------------------------------------
+#
+# Die dritte echte API dieser Pipeline neben Eurostat und dem ArcGIS-Dienst
+# des Umweltbundesamts. Discodata legt die Meldungen der Mitgliedstaaten nach
+# Wasserrahmenrichtlinie als abfragbare Tabellen offen; CC BY 4.0 (EEA Legal
+# Notice). Eine Abfrage je Auswertung, Antwort ist JSON unter `results`.
+#
+# VIER FALLEN, alle am 30./31.08.2026 erlebt und nicht aus der Doku:
+#
+#   1. Die ERSTE Spalte braucht zwingend einen Alias (`AS v`), sonst
+#      Fehlercode 10004. Die übrigen dürfen ohne.
+#   2. `GROUP BY` zusammen mit `ORDER BY` wird abgewiesen. Ohne ORDER BY
+#      abfragen und im Modul sortieren.
+#   3. `INFORMATION_SCHEMA` ist gesperrt ("Your query is not allowed
+#      execution"). Der Spaltenkatalog steht unter `…/md`, 24 MB JSON.
+#   4. Aus dem Browser geht die Abfrage nur von der Discodata-Herkunft aus
+#      (CORS), und ein Abruf über ein URL-Werkzeug kippt ab einer gewissen
+#      Länge mit HTTP 403 "URL exceeds maximum length". In Python über
+#      `requests` ist beides gleichgültig — deshalb läuft dieses Modul
+#      ausschließlich in der CI und nicht im Sandkasten, der ohnehin kein
+#      Netz hat.
+#
+# WARUM `cLength` UND NICHT DIE ANZAHL ALLEIN: siehe fliessgewaesser.py.
+
+FG_ABFRAGE_URL = "https://discodata.eea.europa.eu/sql"
+
+# Eigener, großzügiger Zeitablauf statt der allgemeinen TIMEOUT_SEKUNDEN (60).
+# Discodata antwortet messbar langsam: am 31.08.2026 lief ein Abruf über ein
+# URL-Werkzeug selbst bei kurzer Abfrage in einen 180-Sekunden-Zeitablauf.
+# Vier Abfragen à 180 s sind im schlimmsten Fall zwölf Minuten — deshalb
+# bricht ein Fehlschlag hier auch NICHT die Pipeline ab, siehe die
+# Begründung an `_abfrage()` in fliessgewaesser.py.
+FG_TIMEOUT_SEKUNDEN = 180
+
+# Der Bewertungszyklus, den der Abschnitt zeigt. 2010, 2016 und 2022 liegen
+# in derselben Tabelle; verglichen wird aber NICHT über die Zyklen — die
+# Wasserkörper-Abgrenzung und die Bewertungsmethodik haben zwischen ihnen
+# gewechselt. Die beiden älteren Zyklen holt das Modul trotzdem, als
+# Zeitkontext für Tabelle und Notiz.
+FG_ZYKLUS = 2022
+FG_ZYKLEN = [2010, 2016, 2022]
+
+# `RW` = river water body. Seen (`LW`), Übergangs- und Küstengewässer sind
+# ausgeschlossen — Österreich meldet ohnehin keine Küste.
+FG_KATEGORIE = "RW"
+
+# Gegenprobe gegen den Nationalen Gewässerbewirtschaftungsplan 2021: Der NGP
+# berichtet über Fließgewässer mit einem Einzugsgebiet über 10 km², teilt sie
+# in 8.116 Oberflächenwasserkörper und beziffert das Netz mit 32.101 km
+# (NGP 2021, Abschnitt 1.2.1.1). Discodata liefert exakt dieselben 8.116
+# Wasserkörper und 32.135 km. Das ist KEIN zweiter, engerer Nenner — es ist
+# dieselbe Meldung, einmal national und einmal an die EU berichtet.
+FG_ERWARTET_WASSERKOERPER = 8_116
+FG_ERWARTET_LAENGE_KM = 32_101      # NGP-Wert
+FG_TOLERANZ_LAENGE_KM = 100         # Rundung und Meldestand
+
+# Zweite Gegenprobe, unabhängig von der ersten: Der NGP nennt 12,3 % erheblich
+# veränderte und 1,8 % künstliche Fließgewässer, jeweils längenbezogen.
+FG_ERWARTET_HMWB_PROZENT = 12.3
+FG_ERWARTET_AWB_PROZENT = 1.8
+FG_TOLERANZ_PUNKTE = 0.5
+
+# ---------------------------------------------------------------------------
 # Ausgabe
 # ---------------------------------------------------------------------------
 
