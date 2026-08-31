@@ -7,7 +7,7 @@
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
         diagramme, schrift, istSchmal, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe,
-        legende, hoverDunkler } = BIO;
+        legende, legendeLinks, hoverDunkler } = BIO;
 
 /* --- 05 — Erhaltungszustand nach Artikel 17 ---------------------------
    Zwei gestapelte Balken, auf 100 % normiert: Lebensraumtypen und Arten.
@@ -76,7 +76,7 @@ function baueErhaltung(daten) {
     ...basis(),
     grid: { ...balkenGitter(feld, { left: 130, right: 60 }), top: 46 },
     legend: legende(feld, {
-      top: 0, left: istSchmal(feld) ? 0 : 130,
+      top: 0, left: legendeLinks(feld, 130),
       itemWidth: 11, itemHeight: 11, itemGap: 14, data: kategorien,
       textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },
     }),

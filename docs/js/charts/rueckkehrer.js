@@ -7,7 +7,7 @@
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
         diagramme, schrift, istSchmal, istEng, balkenGitter, kategorieLabel,
-        balkenHoehe, legende, hoverDunkler } = BIO;
+        balkenHoehe, legende, legendeLinks, hoverDunkler } = BIO;
 
 /* --- 10 — Biber und Fischotter, der Erholungspol ----------------------
    Liegende Balken, vier Berichtsperioden, zwei Arten.
@@ -159,7 +159,7 @@ function baueRueckkehrer(daten) {
     ...basis(),
     grid: { ...balkenGitter(feld, { left: 96, right: 112 }), top: 34 },
     legend: legende(feld, {
-      top: 0, left: istSchmal(feld) ? 0 : 96,
+      top: 0, left: legendeLinks(feld, 96),
       itemWidth: 11, itemHeight: 11, itemGap: 16,
       data: arten.map((a) => a.name),
       textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },

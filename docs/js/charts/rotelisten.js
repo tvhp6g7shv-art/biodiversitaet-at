@@ -7,7 +7,7 @@
 "use strict";
 const { stil, zahl, basis, achse, tabelle, setzeText, setzeHtml,
         diagramme, schrift, istSchmal, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe,
-        legende, hoverDunkler } = BIO;
+        legende, legendeLinks, hoverDunkler } = BIO;
 
 /* --- 04 — Wie alt das Wissen über gefährdete Arten ist ----------------
    Liegende Balken, eine Zeile je Tiergruppe, sortiert nach Alter.
@@ -88,7 +88,7 @@ function baueRoteListen(daten) {
        Legende am obersten Balken. */
     grid: { ...balkenGitter(feld, { left: 150, right: 76 }), top: 46 },
     legend: legende(feld, {
-      top: 0, left: istSchmal(feld) ? 0 : 150,
+      top: 0, left: legendeLinks(feld, 150),
       itemWidth: 11, itemHeight: 11, itemGap: 14,
       data: ["im Soll-Zeitraum", "darüber hinaus"],
       textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },

@@ -7,7 +7,7 @@
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
         diagramme, schrift, istSchmal, balkenGitter, kategorieLabel,
-        balkenBreite, balkenHoehe, legende, hoverDunkler } = BIO;
+        balkenBreite, balkenHoehe, legende, legendeLinks, hoverDunkler } = BIO;
 
 /* --- Waldlebensraumtypen: Fläche gegen Bewertung ----------------------
    Zwei gestapelte Balken, auf 100 % normiert. Beide zeigen denselben
@@ -66,7 +66,7 @@ function baueNatura2000(daten) {
     ...basis(),
     grid: { ...balkenGitter(feld, { left: 150, right: 60 }), top: 46 },
     legend: legende(feld, {
-      top: 0, left: istSchmal(feld) ? 0 : 150,
+      top: 0, left: legendeLinks(feld, 150),
       itemWidth: 11, itemHeight: 11, itemGap: 14, data: faecher,
       textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },
     }),

@@ -7,7 +7,7 @@
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
         diagramme, schrift, istSchmal, balkenGitter, kategorieLabel,
-        balkenBreite, balkenHoehe, legende, hoverDunkler } = BIO;
+        balkenBreite, balkenHoehe, legende, legendeLinks, hoverDunkler } = BIO;
 
 /* --- Fließgewässer: Wasserkörper gegen Flusskilometer -----------------
    Zwei gestapelte Balken, auf 100 % normiert. Beide zeigen denselben
@@ -83,7 +83,7 @@ function baueFliessgewaesser(daten) {
     ...basis(),
     grid: { ...balkenGitter(feld, { left: 168, right: 60 }), top: 46 },
     legend: legende(feld, {
-      top: 0, left: istSchmal(feld) ? 0 : 168,
+      top: 0, left: legendeLinks(feld, 168),
       itemWidth: 11, itemHeight: 11, itemGap: 14, data: faecher,
       textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },
     }),

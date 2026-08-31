@@ -44,6 +44,13 @@
 .viz-root {
   color-scheme: light;
 
+  /* Polsterstufen — wortgleich mit variables.css der Website, damit
+     Pages und WordPress dasselbe Mass zeigen. Auf WordPress kommen sie
+     aus dem Theme; hier muessen sie stehen, sonst faellt die ganze
+     Deklaration still aus. */
+  --r: clamp(1.00rem, 0.50rem + 1.00vw, 1.25rem);
+  --l: clamp(1.56rem, 1.00rem + 1.00vw, 1.90rem);
+
   --viz-surface:        #ffffff;
   --viz-plane:          #fafafa;
   --viz-text:           #0a0a0a;
@@ -223,9 +230,11 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
   background: var(--viz-surface);
   border: 1px solid var(--viz-border);
   border-radius: var(--viz-radius);
-  padding: 20px;
+  padding: var(--r, 1.25rem);
   margin-bottom: var(--viz-gap);
 }
+/* Ab 1025 px die groessere Stufe — dieselbe Schwelle wie auf der Website. */
+@media (min-width: 1025px) { .viz-karte { padding: var(--l, 1.90rem); } }
 .viz-karte > header { margin-bottom: 14px; }
 .viz-unterzeile { color: var(--viz-muted); font-size: .8rem; margin: 0; }
 
@@ -310,6 +319,9 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
 /* Unter 768 px liegt die Notiz IM Aufklapper. Dort traegt der Behaelter
    die Trennlinie — die Notiz braechte sonst eine zweite mit. */
 .viz-root .viz-mehr > .viz-notiz { border-top: 0; padding-top: 0; margin-top: 12px; }
+/* Gilt fuer JEDES Kind nach dem ersten: in Abschnitten ohne Notiz steht
+   sonst die Hinweiszeile ohne Abstand direkt unter dem Knopf. */
+.viz-root .viz-mehr > * + * { margin-top: 12px; }
 /* Der Behaelter selbst ist unsichtbar. Er existiert nur, damit die
    Sektion auf der Website drei Rasterkinder behaelt (siehe kern.js und
    Abschnitt 59 der idl.css). `display: contents` waere hier falsch —

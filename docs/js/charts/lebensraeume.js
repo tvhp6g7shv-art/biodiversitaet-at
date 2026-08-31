@@ -7,7 +7,7 @@
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
         diagramme, schrift, istSchmal, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe,
-        legende, hoverDunkler } = BIO;
+        legende, legendeLinks, hoverDunkler } = BIO;
 
 /* --- Erhaltungszustand nach Lebensraumgruppen -------------------------
    Sechs gestapelte Balken, auf 100 % normiert — die Auflösung des
@@ -76,7 +76,7 @@ function baueLebensraeume(daten) {
     ...basis(),
     grid: { ...balkenGitter(feld, { left: RAND_LINKS, right: 60 }), top: 46 },
     legend: legende(feld, {
-      top: 0, left: istSchmal(feld) ? 0 : RAND_LINKS,
+      top: 0, left: legendeLinks(feld, RAND_LINKS),
       itemWidth: 11, itemHeight: 11, itemGap: 14, data: kategorien,
       textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },
     }),

@@ -7,7 +7,7 @@
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
         diagramme, schrift, istSchmal, balkenGitter, kategorieLabel,
-        balkenBreite, balkenHoehe, legende, hoverDunkler } = BIO;
+        balkenBreite, balkenHoehe, legende, legendeLinks, hoverDunkler } = BIO;
 
 /* --- Nadel- und Laubholz im bewirtschafteten Wald ----------------------
    Vier gestapelte Balken, einer je Erhebungsperiode, auf 100 % normiert.
@@ -67,7 +67,7 @@ function baueBaumarten(daten) {
     ...basis(),
     grid: { ...balkenGitter(feld, { left: 96, right: 60 }), top: 46 },
     legend: legende(feld, {
-      top: 0, left: istSchmal(feld) ? 0 : 96,
+      top: 0, left: legendeLinks(feld, 96),
       itemWidth: 11, itemHeight: 11, itemGap: 14,
       data: reihen.map((r) => r.name),
       textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },

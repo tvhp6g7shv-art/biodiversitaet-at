@@ -400,6 +400,23 @@ const legende = (el, werte) => istSchmal(el)
   ? { ...werte, type: "scroll", itemGap: 10 }
   : werte;
 
+/* Linke Kante der Legende — dieselbe wie die des Gitters.
+
+   Die Module hatten den Desktop-Wert ihres Gitters fest eingetragen
+   (96, 130, 150, 168 …) und nur schmal auf 0 geschaltet. Dazwischen,
+   also zwischen 560 und 768 px, stimmte es nicht mehr: eng faellt
+   `grid.left` auf 14 (die Kategorienamen stehen dann UEBER dem Balken),
+   die Legende blieb aber auf ihrem Desktop-Wert stehen und schwebte
+   weit rechts neben den Balken. Befund des Users am 31.08.2026 bei
+   1024 px Fensterbreite, Zeichenflaeche 659 px.
+
+   Deshalb rechnet die Kante jetzt aus derselben Quelle wie das Gitter:
+   eng die 14 px aus `balkenGitter`, sonst `randLinks` — also inklusive
+   der Deckelung, die bei mittleren Breiten greift. Wer `balkenGitter`
+   aendert, muss hier mit. */
+const legendeLinks = (el, desktopLinks) =>
+  istEng(el) ? 14 : randLinks(el, desktopLinks);
+
 /* Endpunktbeschriftung rechts kostet Breite, die schmal nicht da ist. */
 const endLabelZeigen = (el) => !istSchmal(el);
 
@@ -904,7 +921,7 @@ const BIO = {
   VERSION, signaturHtml,
   /* Breitenabhaengiges Layout — siehe „Schmale Fenster" oben */
   istSchmal, istEng, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe,
-  legende, endLabelZeigen,
+  legende, legendeLinks, endLabelZeigen,
   /* Hover an Balken: dunkler statt heller */
   dunkler, hoverDunkler,
   setzeBasis: (pfad) => { DATEN_BASIS = pfad; },
