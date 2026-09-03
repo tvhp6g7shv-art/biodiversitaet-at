@@ -38,9 +38,9 @@ let DATEN_BASIS = "./data";   // In Oxygen: "https://DEIN-GITHUB-NAME.github.io/
    dafür ist die `?v=NN`-Cacheziffer in index.html zuständig, die eine
    andere Zählung führt. */
 const VERSION = {
-  nummer:     "09",                   // 07 Baumarten, 08 Waldarten, 09 Natura 2000 (06 Lebensraumgruppen)
-  datum:      "2026-08-30",           // maschinenlesbar, für <time datetime>
-  datum_text: "30. August 2026",      // sichtbar
+  nummer:     "10",                   // 08 Waldarten, 09 Natura 2000, 10 Fließgewässer (07 Baumarten)
+  datum:      "2026-09-03",           // maschinenlesbar, für <time datetime>
+  datum_text: "3. September 2026",    // sichtbar
   changelog:  "https://biodiversitaet-monitor.at/changelog/",
 };
 
@@ -661,7 +661,7 @@ async function start() {
      Tabelle, statt ganz zu verschwinden. */
   const DATEIEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden",
                    "rotelisten", "erhaltung", "lebensraeume",
-                   "biotoptypen", "fliessgewaesser", "wald",
+                   "biotoptypen", "fliessgewaesser", "querbauwerke", "wald",
                    "baumarten", "waldarten", "natura2000",
                    "biolandbau", "falter", "rueckkehrer", "vogelarten"];
   /* STAND 30.08.2026 — drei der fünf Wald-Abschnitte hängen wieder drin.
@@ -748,6 +748,11 @@ async function start() {
     sicher("Lebensraumgruppen", () => BIO.baueLebensraeume(geladen.lebensraeume));
     sicher("Biotoptypen",    () => BIO.baueBiotoptypen(geladen.biotoptypen));
     sicher("Fließgewässer",  () => BIO.baueFliessgewaesser(geladen.fliessgewaesser));
+    /* Muss direkt hinter Fließgewässer stehen: Der Abschnitt darüber nennt
+       die Zahl der Wasserkörper, die das Ziel verfehlen, dieser die Gründe.
+       Getrennt gelesen wirkt der zweite wie eine beliebige Belastungsstatistik
+       — sein Nenner steht im ersten. */
+    sicher("Belastungen",    () => BIO.baueQuerbauwerke(geladen.querbauwerke));
     sicher("Waldfläche",     () => BIO.baueWald(geladen.wald));
     /* Bereich Wald — die Reihenfolge ist die Aussage: erst wie viel Wald es
        gibt, dann was in ihm steht. Die Waldfläche wächst; Totholz und

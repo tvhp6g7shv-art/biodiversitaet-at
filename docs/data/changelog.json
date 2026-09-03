@@ -1,10 +1,32 @@
 {
   "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "09",
+  "aktuell": "10",
   "basis_url": "https://biodiversitaet-monitor.at",
   "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
   "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
   "ausgaben": [
+    {
+      "nummer": "10",
+      "datum": "2026-09-03",
+      "datum_text": "3. September 2026",
+      "titel": "Fließgewässer — 49 Prozent der Wasserkörper sind gut, aber nur 42 Prozent der Kilometer",
+      "veroeffentlicht": true,
+      "cacheziffer": 13,
+      "charts": [
+        "fliessgewaesser"
+      ],
+      "social": "Österreichs Flüsse sind in 8.116 Abschnitte geteilt. 49,1 Prozent davon sind in gutem Zustand — nach Flusskilometern gerechnet nur 42,5.\n\nDenn die schlechten Abschnitte sind die längeren: im Mittel 6,1 km gegen 3,0.\nhttps://biodiversitaet-monitor.at/#s-fliessgewaesser",
+      "abschnitte": [
+        {
+          "chart": "fliessgewaesser",
+          "alt": "Zwei gestapelte Balken für denselben Bestand an Fließgewässern. Nach Wasserkörpern gezählt sind 18,9 Prozent in sehr gutem und 30,2 Prozent in gutem Zustand, zusammen 49,1 Prozent. Nach Flusskilometern gemessen sind es 14,2 und 28,3 Prozent, zusammen 42,5 Prozent. Der Rest verteilt sich auf mäßig, unbefriedigend und schlecht."
+        }
+      ],
+      "seite": [
+        "Zwei gestapelte Balken zeigen denselben Bestand auf zwei Arten: einmal nach der Zahl der Wasserkörper, einmal nach ihrer Länge. Grundlage sind 8.116 Oberflächenwasserkörper mit zusammen 32.135 Flusskilometern aus dem Meldezyklus 2022.",
+        "Gezählt sind 49,1 Prozent in gutem Zustand oder besser, gemessen nur 42,5 Prozent. Die 6,6 Punkte Abstand kommen aus der Größenverteilung: Ein Wasserkörper der schlechtesten Klasse ist im Mittel 6,10 Kilometer lang, einer der besten nur 2,97."
+      ]
+    },
     {
       "nummer": "09",
       "datum": "2026-08-30",
