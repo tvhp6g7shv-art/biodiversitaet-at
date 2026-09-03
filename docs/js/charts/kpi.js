@@ -38,6 +38,29 @@ const { pz, zahl, setzeHtml } = BIO;
    aktuellem Stand"), steht damit VOR seinem Subjekt und liest sich
    rueckwaerts. Wer hier einen Titel aendert: er muss allein stehen
    koennen, ohne die Zahl davor. */
+/* TITEL UND FUSSNOTE BLEIBEN EINZEILIG (03.09.2026)
+
+   Bei vier Spalten ist der Textbereich einer Kachel 261 px breit
+   (Container 1336 px, gemessen an der WordPress-Auslieferung). Titel und
+   Fussnote muessen darunter bleiben, sonst bricht eine Kachel um und ihre
+   Zahl sitzt tiefer als die der Nachbarn — die Reihe fluchtet nicht mehr.
+
+   Gemessene Breiten des aktuellen Satzes (Titel / Fussnote, in px):
+     schutzgebiete 216 / 210   vogel       231 / 149
+     boden         193 / 107   rotelisten  160 / 208
+     erhaltung     239 / 211   biotoptypen 188 / 198
+     wald          163 / 147   biolandbau  212 / 185
+
+   Wer hier Text aendert, misst nach — nicht nach Zeichenzahl schaetzen:
+   die Titel stehen in Versalien mit `letter-spacing`, ein Zeichen kostet
+   je nach Buchstabe zwischen 5 und 9 px. Messung: Testspan mit
+   `white-space: nowrap` und dem `font`/`letter-spacing`/`text-transform`
+   der echten `.viz-kpi-titel` gegen deren `getBoundingClientRect().width`.
+
+   Unterhalb von 1025 px Breite stellt `idl.css` auf zwei Spalten um; dort
+   ist die Kachel breiter und die Regel unkritisch. Zwischen 1025 px und
+   rund 1700 px sind die vier Spalten schmaler als 261 px und die Titel
+   brechen wieder — das ist hingenommen, nicht uebersehen. */
 function kachel(wert, einheit, titel, fussnote, kennung) {
   return (
     `<div class="viz-kpi" data-kpi="${kennung}">` +
@@ -55,8 +78,10 @@ function baueKpis(kpi) {
   if (kpi.schutzgebiete_prozent !== undefined) {
     teile.push(kachel(
       pz(kpi.schutzgebiete_prozent), " %",
-      "Anteil der Landesfläche unter Schutz",
-      `${kpi.schutzgebiete_jahr} · ${pz(kpi.schutzgebiete_luecke)} Punkte fehlen auf das Ziel von 30 %`,
+      /* 03.09.2026 — „Anteil der“ gestrichen: die Einheit hinter der Zahl
+         ist „%“, damit ist der Anteil schon gesagt. */
+      "Landesfläche unter Schutz",
+      `${kpi.schutzgebiete_jahr} · Ziel 30 %, ${pz(kpi.schutzgebiete_luecke)} Punkte fehlen`,
       "schutzgebiete"
     ));
   }
@@ -76,7 +101,12 @@ function baueKpis(kpi) {
     const beginn = kpi.vogel_beginn ?? 1998;
     teile.push(kachel(
       "−" + pz(verlust, 0), " %",
-      `Vogelbestand auf Feldern und Wiesen seit ${beginn}`,
+      /* 03.09.2026 — „Vogelbestand“ und „seit 1998“ raus: das Minus vor
+         der Zahl sagt, dass es ein Rueckgang ist, und die Fussnote
+         darunter traegt den Zeitraum ohnehin („1998 bis 2025“). Beide
+         Habitate bleiben stehen — „Feldvoegel“ allein waere ein
+         Fachbegriff. */
+      "Vögel auf Feldern und Wiesen",
       (kpi.vogel_arten ? `${zahl(kpi.vogel_arten)} Arten · ` : "") +
         `${beginn} bis ${kpi.vogel_jahr}`,
       "vogel"
@@ -105,11 +135,16 @@ function baueKpis(kpi) {
      Zahl nicht einzuordnen: 3 von 27 klingt nach einem Versäumnis, sagt
      aber nicht, wie weit die übrigen zurückliegen. */
   if (kpi.rotelisten_aktuell !== undefined) {
-    const spanne = (kpi.rotelisten_rest_min && kpi.rotelisten_rest_max)
-      ? `übrige ${zahl(kpi.rotelisten_rest_min)} bis ` +
-        `${zahl(kpi.rotelisten_rest_max)} Jahre alt` +
-        (kpi.rotelisten_ohne ? `, ${zahl(kpi.rotelisten_ohne)} fehlen ganz` : "") + " · "
-      : "Rote Listen · ";
+    /* 03.09.2026 — Die Fussnote trug bisher Altersspanne, Fehlbestand UND
+       Stichmonat und lief damit ueber zwei Zeilen. Von den dreien traegt
+       der Nenner am meisten: „27“ steht in der Zahl, aber ohne die
+       Fussnote weiss niemand, dass 27 Tiergruppen gemeint sind und nicht
+       27 Listen. Zweitwichtigstes ist der Fehlbestand — vier Gruppen
+       haben ueberhaupt keine Liste, das ist etwas anderes als eine alte.
+       Die Altersspanne der uebrigen steht im Abschnitt darunter. */
+    const spanne = kpi.rotelisten_ohne
+      ? `${zahl(kpi.rotelisten_ohne)} ganz ohne Liste`
+      : "Oktober 2025";
     teile.push(kachel(
       `${zahl(kpi.rotelisten_aktuell)}<span class="viz-kpi-von"> von ${zahl(kpi.rotelisten_gesamt)}</span>`, "",
       /* Titel 25.08.2026: „Tiergruppen mit aktuellem Wissensstand" war
@@ -118,8 +153,12 @@ function baueKpis(kpi) {
          hängt. Gemessen wird, ob die Rote Liste einer Tiergruppe noch
          innerhalb ihres vorgesehenen Neuauflage-Zeitraums liegt — also
          ob es eine aktuelle Rote Liste gibt. Genau das steht jetzt da. */
-      "Tiergruppen mit aktueller Roter Liste",
-      `${spanne}Oktober 2025`,
+      /* 03.09.2026 — „Tiergruppen mit aktueller Roter Liste“ brauchte
+         zwei Zeilen (295 px bei 261 px Platz). „Tiergruppen“ wandert in
+         die Fussnote, wo es den Nenner erklaert; der Titel behaelt das,
+         was gemessen wird. */
+      "Aktuelle Rote Listen",
+      `${zahl(kpi.rotelisten_gesamt)} Tiergruppen · ${spanne}`,
       "rotelisten"
     ));
   }
@@ -127,7 +166,9 @@ function baueKpis(kpi) {
   if (kpi.erhaltung_guenstig !== undefined) {
     teile.push(kachel(
       pz(kpi.erhaltung_guenstig, 0), " %",
-      "Lebensraumtypen in gutem Zustand",
+      /* 03.09.2026 — „-typen“ gestrichen (276 px bei 261 px Platz). Die
+         Fussnote nennt Artikel 17 FFH, dort sind Typen gemeint. */
+      "Lebensräume in gutem Zustand",
       `Artikel 17 FFH · Periode ${kpi.erhaltung_periode}`,
       "erhaltung"
     ));
@@ -154,7 +195,9 @@ function baueKpis(kpi) {
   if (kpi.bio_anteil !== undefined) {
     teile.push(kachel(
       pz(kpi.bio_anteil), " %",
-      "Agrarfläche in Bio-Bewirtschaftung",
+      /* 03.09.2026 — „in Bio-Bewirtschaftung“ war 288 px bei 261 px
+         Platz. Gleiche Aussage, kuerzer. */
+      "Bio-Anteil der Agrarfläche",
       `${kpi.bio_jahr} · Platz ${kpi.bio_rang} von ${kpi.bio_anzahl} in Europa`,
       "biolandbau"
     ));
