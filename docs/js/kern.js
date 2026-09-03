@@ -661,7 +661,7 @@ async function start() {
      Tabelle, statt ganz zu verschwinden. */
   const DATEIEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden",
                    "rotelisten", "erhaltung", "lebensraeume",
-                   "biotoptypen", "fliessgewaesser", "querbauwerke", "wald",
+                   "biotoptypen", "fliessgewaesser", "wald",
                    "baumarten", "waldarten", "natura2000",
                    "biolandbau", "falter", "rueckkehrer", "vogelarten"];
   /* STAND 30.08.2026 — drei der fünf Wald-Abschnitte hängen wieder drin.
@@ -752,7 +752,14 @@ async function start() {
        die Zahl der Wasserkörper, die das Ziel verfehlen, dieser die Gründe.
        Getrennt gelesen wirkt der zweite wie eine beliebige Belastungsstatistik
        — sein Nenner steht im ersten. */
-    sicher("Belastungen",    () => BIO.baueQuerbauwerke(geladen.querbauwerke));
+    /* AUSGEKLINKT 03.09.2026 — mit V 10 versehentlich mitgegangen: Diese
+       Zeile und der Eintrag "querbauwerke" in DATEIEN standen schon in der
+       kern.js, als sie für die Versionsnummer gepusht wurde. Modul und
+       Datendatei liegen aber nicht im Repo (beide 404 auf Pages), und
+       index.html hat weder Sektionsblock noch Skript-Tag. Folge war die
+       rote Störmeldung im Fuß beider Auslieferungen. Es gilt weiter:
+       erst committen, dann einhängen.
+    sicher("Belastungen",    () => BIO.baueQuerbauwerke(geladen.querbauwerke)); */
     sicher("Waldfläche",     () => BIO.baueWald(geladen.wald));
     /* Bereich Wald — die Reihenfolge ist die Aussage: erst wie viel Wald es
        gibt, dann was in ihm steht. Die Waldfläche wächst; Totholz und
