@@ -83,11 +83,12 @@ function baueSchutzgebiete(daten) {
       lineStyle: { color: stil("--viz-series-1"), width: 2.5 },
       itemStyle: { color: stil("--viz-series-1") },
       symbol: "circle", symbolSize: 6,
-      /* Endbeschriftung nur, wenn rechts Platz dafür freigehalten wurde. */
-      endLabel: BIO.endLabelZeigen(feld)
-        ? { show: true, distance: 8, color: stil("--viz-text-2"),
-            fontSize: S.label, formatter: (p) => pz(p.value) + " %" }
-        : { show: false },
+      /* Endbeschriftung nur, wenn rechts Platz dafür freigehalten wurde.
+         Über `endEtikett` statt über `endLabel` — siehe kern.js, der
+         `endLabel` stand hier bis 04.09.2026 links am ersten Punkt und
+         zeigte 27,5 % statt 29,3 %. */
+      markPoint: BIO.endEtikett(punkte.map((p) => p.prozent), feld,
+        (r) => pz(r.value) + " %"),
       markLine: {
         silent: true, symbol: "none",
         lineStyle: { color: stil("--viz-muted"), width: 1, type: "dashed" },

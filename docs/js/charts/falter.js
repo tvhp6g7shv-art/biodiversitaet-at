@@ -101,10 +101,12 @@ function baueFalter(daten) {
          Perlenkette, die die Kurvenform überdeckt. Der Tooltip trifft
          auch ohne sichtbares Symbol. */
       symbol: "circle", symbolSize: 0, showSymbol: false,
-      endLabel: BIO.endLabelZeigen(feld)
-        ? { show: true, distance: 8, color: stil("--viz-text-2"),
-            fontSize: S.label, formatter: (p) => pz(p.value) }
-        : { show: false },
+      /* `endEtikett` statt `endLabel`: Diese Linie zeichnet keine Symbole
+         (`showSymbol: false`), ein Datenetikett hätte keinen Anker. Der
+         `endLabel` stand hier bis 04.09.2026 links auf dem Indexsockel
+         100 statt rechts auf dem Endwert. */
+      markPoint: BIO.endEtikett(punkte.map((p) => p.index), feld,
+        (r) => pz(r.value)),
       markLine: {
         silent: true, symbol: "none",
         lineStyle: { color: stil("--viz-muted"), width: 1, type: "dashed" },

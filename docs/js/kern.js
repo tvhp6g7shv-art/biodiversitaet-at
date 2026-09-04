@@ -420,6 +420,48 @@ const legendeLinks = (el, desktopLinks) =>
 /* Endpunktbeschriftung rechts kostet Breite, die schmal nicht da ist. */
 const endLabelZeigen = (el) => !istSchmal(el);
 
+/* --- Etikett am Ende einer Linie -------------------------------------
+   ERSATZ FÜR `endLabel`, eingeführt 04.09.2026. ECharts hat den `endLabel`
+   dieser Dashboards an den ERSTEN Punkt gesetzt und dessen Wert gezeigt —
+   am ausgelieferten Stand gemessen (Zeichenfläche 984 px, Textknoten mit
+   Position): `schutzgebiete` „27,5 %" bei x = 49 statt 29,3 % rechts,
+   `falter` „100,0" bei x = 42, `vogel` „111,8" bei x = 42 und ein zweites
+   Etikett mit **y = NaN**. Reproduzierbar in jsdom, also kein
+   Browser-Zufall; vermutlich läuft der Aufklapp-Clip der Einblendung
+   nicht, wenn der Abschnitt beim Bau noch `display:none` trägt.
+
+   Aufgefallen ist es jahrelang nicht, weil die Zahl plausibel wirkt: bei
+   `falter` und `vogel` steht dort der Indexsockel 100.
+
+   Diese Fassung hängt das Etikett als `markPoint` an feste Koordinaten.
+   Das ist an das Datum gebunden, nicht an eine Animation, und funktioniert
+   AUCH bei Linien ohne Symbole (`vogel` EU-Reihe, `falter`) — ein
+   Datenetikett bräuchte dort ein Symbol, an dem es hängen kann.
+
+   `werte` darf hinten Lücken haben: gesucht wird der letzte Wert, der
+   keine ist. Die AT-Reihe in `vogel` endet vor der EU-Reihe, ein
+   stumpfes `werte.length - 1` träfe dort ein `null`. */
+function endEtikett(werte, el, formatter, farbe) {
+  if (!endLabelZeigen(el)) return undefined;
+  let i = werte.length - 1;
+  while (i >= 0 && (werte[i] === null || werte[i] === undefined)) i -= 1;
+  if (i < 0) return undefined;
+  return {
+    /* `symbol: "none"` wäre naheliegend, nimmt aber das Etikett gleich mit:
+       ohne Symbolgrafik zeichnet ECharts auch ihre Beschriftung nicht. Am
+       04.09.2026 in jsdom gemessen — null Textknoten. Deshalb ein Symbol
+       mit Deckung 0: unsichtbar, aber vorhanden. */
+    silent: true, symbol: "circle", symbolSize: 1, animation: false,
+    itemStyle: { opacity: 0 },
+    data: [{ coord: [i, werte[i]], value: werte[i] }],
+    label: {
+      show: true, position: "right", distance: 8,
+      color: farbe || stil("--viz-text-2"), fontSize: schrift().label,
+      formatter,
+    },
+  };
+}
+
 /* Ruft `neuBauen` auf, sobald die Seite die Schwelle wechselt — nicht bei
    jedem Pixel. Entprellt, weil ein Fensterzug Dutzende Ereignisse wirft.
    Verglichen wird eine grobe Stufe von 160 px; das loest beim Umschlagen
@@ -944,7 +986,7 @@ const BIO = {
   VERSION, signaturHtml,
   /* Breitenabhaengiges Layout — siehe „Schmale Fenster" oben */
   istSchmal, istEng, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe,
-  legende, legendeLinks, endLabelZeigen,
+  legende, legendeLinks, endLabelZeigen, endEtikett,
   /* Hover an Balken: dunkler statt heller */
   dunkler, hoverDunkler,
   setzeBasis: (pfad) => { DATEN_BASIS = pfad; },

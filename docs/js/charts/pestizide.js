@@ -127,14 +127,9 @@ function bauePestizide(daten) {
            Stattdessen trägt der letzte Datenpunkt sein Etikett selbst. Das
            ist an das Datum gebunden und nicht an eine Animation — es kann
            gar nicht an der falschen Stelle landen. */
-        data: punkte.map((p, i) => (
-          i === punkte.length - 1 && BIO.endLabelZeigen(feld)
-            ? { value: p.gesamt,
-                label: { show: true, position: "right", distance: 8,
-                         color: stil("--viz-text-2"), fontSize: S.label,
-                         formatter: (r) => zahl(r.value) + " t" } }
-            : p.gesamt
-        )),
+        data: punkte.map((p) => p.gesamt),
+        markPoint: BIO.endEtikett(punkte.map((p) => p.gesamt), feld,
+          (r) => zahl(r.value) + " t"),
         lineStyle: { color: stil("--viz-text-2"), width: 2 },
         itemStyle: { color: stil("--viz-text-2") },
         symbol: "circle", symbolSize: 5,

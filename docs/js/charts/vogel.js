@@ -101,10 +101,11 @@ function baueVogel(daten) {
       lineStyle: { color: stil("--viz-series-1"), width: 2.5 },
       itemStyle: { color: stil("--viz-series-1") },
       symbol: "circle", symbolSize: 5,
-      endLabel: BIO.endLabelZeigen(feld)
-        ? { show: true, distance: 8, color: stil("--viz-text-2"),
-            fontSize: S.label, formatter: (p) => pz(p.value) }
-        : { show: false },
+      /* `endEtikett` statt `endLabel` — siehe kern.js. Wichtig hier: Die
+         AT-Reihe endet VOR der EU-Reihe, die letzten Einträge sind `null`.
+         `endEtikett` sucht deshalb den letzten Wert, der keiner ist. */
+      markPoint: BIO.endEtikett(punkte.map((p) => p.index), feld,
+        (r) => pz(r.value)),
       markLine: {
         silent: true, symbol: "none",
         lineStyle: { color: stil("--viz-muted"), width: 1, type: "dashed" },
@@ -136,10 +137,10 @@ function baueVogel(daten) {
       lineStyle: { color: stil("--viz-series-2"), width: 1.5, type: "dashed" },
       itemStyle: { color: stil("--viz-series-2") },
       symbol: "none",
-      endLabel: BIO.endLabelZeigen(feld)
-        ? { show: true, distance: 8, color: stil("--viz-muted"),
-            fontSize: S.label, formatter: (p) => pz(p.value) }
-        : { show: false },
+      /* Diese Linie zeichnet keine Symbole (`symbol: "none"`), ein
+         Datenetikett hätte keinen Anker — deshalb `markPoint`. */
+      markPoint: BIO.endEtikett(punkte.map((p) => p.eu), feld,
+        (r) => pz(r.value), stil("--viz-muted")),
     }] : []),
     ],
   }, { replaceMerge: ["series", "xAxis", "yAxis", "legend"] });
