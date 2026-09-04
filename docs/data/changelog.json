@@ -1,17 +1,39 @@
 {
   "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "10",
+  "aktuell": "11",
   "basis_url": "https://biodiversitaet-monitor.at",
   "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
   "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
   "ausgaben": [
+    {
+      "nummer": "11",
+      "datum": "2026-09-04",
+      "datum_text": "4. September 2026",
+      "titel": "Belastungen — bei vier von fünf Wasserkörpern, die das Ziel verfehlen, ist die Verbauung der genannte Grund",
+      "veroeffentlicht": true,
+      "cacheziffer": 15,
+      "charts": [
+        "querbauwerke"
+      ],
+      "social": "Von den 4.031 österreichischen Wasserkörpern, die den guten Zustand verfehlen, nennt die Meldung bei 3.234 die Verbauung des Gewässers — bei 1.690 als einzigen Grund.\n\nDas sind mehr, als die Einträge aus der Fläche überhaupt betreffen: 1.327.\nhttps://biodiversitaet-monitor.at/#s-querbauwerke",
+      "abschnitte": [
+        {
+          "chart": "querbauwerke",
+          "alt": "Drei liegende Balken für die genannten Belastungen der 4.031 Wasserkörper, die den guten Zustand verfehlen. Jeder Balken ist zweigeteilt: dunkel der Anteil, bei dem die Belastung der einzige genannte Grund ist, hell der Anteil zusammen mit anderen. Verbauung des Gewässers 3.234 Wasserkörper, davon 1.690 als einziger Grund. Einträge aus der Fläche 1.327, davon 451. Wasserentnahme 981, davon 162. Die Achse endet beim Nenner 4.031."
+        }
+      ],
+      "seite": [
+        "Drei liegende Balken zeigen, welche Belastungen Österreich für die 4.031 Wasserkörper meldet, die den guten Zustand verfehlen. Jeder Balken ist zweigeteilt — einmal die Wasserkörper, bei denen die Belastung der einzige genannte Grund ist, einmal die, bei denen sie zusammen mit anderen steht. Grundlage ist der Meldezyklus 2022.",
+        "Bei 3.234 der 4.031 nennt die Meldung die Verbauung des Gewässers, das sind 80,2 Prozent; bei 1.690 steht sie allein da und damit häufiger, als die Einträge aus der Fläche überhaupt betreffen (1.327). Die Zahl ist keine Wirkungsmessung: Eine Belastung gilt per Richtlinie als signifikant, wenn sie das Ziel gefährdet, und wird deshalb so gut wie nur dort gemeldet, wo das Ziel verfehlt wird."
+      ]
+    },
     {
       "nummer": "10",
       "datum": "2026-09-03",
       "datum_text": "3. September 2026",
       "titel": "Fließgewässer — 49 Prozent der Wasserkörper sind gut, aber nur 42 Prozent der Kilometer",
       "veroeffentlicht": true,
-      "cacheziffer": 13,
+      "cacheziffer": 12,
       "charts": [
         "fliessgewaesser"
       ],
