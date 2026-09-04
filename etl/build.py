@@ -73,6 +73,7 @@ from baumarten import baue_baumarten
 from waldarten import baue_waldarten
 from natura2000 import baue_natura2000
 from fliessgewaesser import baue_fliessgewaesser
+from querbauwerke import baue_querbauwerke
 
 # WIEDER AUFGENOMMEN 31.08.2026 — `baumarten`, `waldarten` und `natura2000`
 # sind am 30.08. committet und live gegangen, ihre Importe und Aufrufe waren
@@ -177,6 +178,33 @@ def main() -> None:
     fliessgewaesser = baue_fliessgewaesser()
     if fliessgewaesser:
         ausgaben["fliessgewaesser"] = fliessgewaesser
+
+    # `querbauwerke` teilt den Nenner mit `fliessgewaesser`: dort die 4.031
+    # Wasserkörper, die das Ziel verfehlen, hier die Gründe dafür. Fällt der
+    # eine aus, ist der andere nicht falsch, aber unbelegt — beide holen ihn
+    # deshalb selbst aus derselben Tabelle, statt ihn sich zu reichen.
+    querbauwerke = baue_querbauwerke()
+    if querbauwerke:
+        ausgaben["querbauwerke"] = querbauwerke
+
+        # Gegenprobe über zwei Module hinweg: `fliessgewaesser` zählt die
+        # Wasserkörper, die das Ziel ERREICHEN, `querbauwerke` die, die es
+        # verfehlen. Zusammen mit den unbewerteten müssen sie den Bestand
+        # ergeben. Beide zählen unabhängig aus — das ist mehr wert als ein
+        # fester Sollwert, der nur die Abschrift prüft.
+        if fliessgewaesser:
+            gut = fliessgewaesser["nach_anzahl"]["zahlen"]
+            unbekannt = gut[-1]          # letzte Kategorie ist „unbekannt"
+            erreichend = gut[0] + gut[1]
+            summe = erreichend + querbauwerke["verfehlend"] + unbekannt
+            if summe != fliessgewaesser["nach_anzahl"]["gesamt"]:
+                warnen(
+                    f"Fließgewässer und Querbauwerke uneins: "
+                    f"{erreichend} erreichend + "
+                    f"{querbauwerke['verfehlend']} verfehlend + "
+                    f"{unbekannt} unbewertet = {summe}, der Bestand ist "
+                    f"{fliessgewaesser['nach_anzahl']['gesamt']}."
+                )
 
     perioden = {name: ausgaben[name]["periode"]
                 for name in ("erhaltung", "lebensraeume", "natura2000")}

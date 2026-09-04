@@ -121,6 +121,10 @@ const HOEHEN = {
      Legendeneinträge stehen über der Zeichenfläche und kosten sie keine
      Höhe — `top: 46` im Modul hält den Platz frei. */
   "c-fliessgewaesser": 340,
+  /* Drei Balken statt zwei, aber dieselbe Bauform und dieselbe Legende
+     über der Fläche — die Zeilenzahl kostet hier keine zusätzliche Höhe,
+     weil `balkenHoehe` sie aus der Standardfläche bedient. */
+  "c-querbauwerke": 340,
 };
 
 /* Stand 31.08.2026: `baumarten`, `waldarten` und `natura2000` sind am
@@ -133,7 +137,7 @@ const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/vogel.js", "charts/boden.js", "charts/rotelisten.js",
                 "charts/erhaltung.js", "charts/lebensraeume.js",
                 "charts/biotoptypen.js",
-                "charts/fliessgewaesser.js",
+                "charts/fliessgewaesser.js", "charts/querbauwerke.js",
                 "charts/wald.js",
                 "charts/baumarten.js", "charts/waldarten.js",
                 "charts/natura2000.js",
@@ -143,13 +147,13 @@ const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
 
 const DATEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden", "rotelisten",
                "erhaltung", "lebensraeume", "biotoptypen",
-               "fliessgewaesser", "wald",
+               "fliessgewaesser", "querbauwerke", "wald",
                "baumarten", "waldarten", "natura2000", "biolandbau",
                "falter", "rueckkehrer", "vogelarten"];
 
 const ABSCHNITTE = ["schutzgebiete", "vogel", "boden", "rotelisten",
                     "erhaltung", "lebensraeume", "biotoptypen",
-                    "fliessgewaesser", "wald",
+                    "fliessgewaesser", "querbauwerke", "wald",
                     "baumarten", "waldarten", "natura2000",
                     "biolandbau",
                     "falter", "rueckkehrer", "vogelarten"];
@@ -435,6 +439,30 @@ pruefe(zeilenhoehe >= 16,
    Weit gilt das Gegenteil: der Name steht links vom Gitter. */
 const BALKENFELDER = ["c-rotelisten", "c-erhaltung", "c-biotoptypen",
                       "c-wald", "c-biolandbau"];
+
+/* --- Querbauwerke: die Achse muss beim Nenner enden --------------------
+   Der Balken „Verbauung" misst 3.234 von 4.031 verfehlenden Wasserkörpern.
+   Endet die Achse beim Balkenmaximum statt beim Nenner, füllt er die
+   Zeichenfläche und liest sich als 100 % statt als 80 — die Grafik sagt
+   dann etwas anderes als ihre Überschrift, ohne dass irgendetwas kaputt
+   aussieht. Genau diese Sabotage hat am 01.09.2026 keine der beiden
+   Suiten gemeldet; deshalb steht sie jetzt hier.
+
+   Gegen die DATEN geprüft, nicht gegen eine feste Zahl: 4.031 verschiebt
+   sich beim nächsten Meldezyklus. */
+{
+  const feld = doc.getElementById("c-querbauwerke");
+  const instanz = feld && echarts.getInstanceByDom(feld);
+  if (instanz) {
+    const soll = JSON.parse(
+      readFileSync(join(HIER, "data", "querbauwerke.json"), "utf8")).verfehlend;
+    const ist = instanz.getOption().xAxis?.[0]?.max;
+    pruefe(soll != null && ist === soll,
+      `[${name}] c-querbauwerke: Achsenmaximum ${ist} statt ${soll} — die `
+      + `Balkenlänge ist dann nicht mehr als Anteil der verfehlenden `
+      + `Wasserkörper lesbar`);
+  }
+}
 for (const feldId of BALKENFELDER) {
   const instanz = echarts.getInstanceByDom(doc.getElementById(feldId));
   if (!instanz) continue;

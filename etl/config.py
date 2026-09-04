@@ -315,6 +315,46 @@ FG_ERWARTET_AWB_PROZENT = 1.8
 FG_TOLERANZ_PUNKTE = 0.5
 
 # ---------------------------------------------------------------------------
+# Quelle Querbauwerke — dieselbe Datenbank, andere Tabelle
+# ---------------------------------------------------------------------------
+#
+# `querbauwerke.py` benutzt `_abfrage()` aus `fliessgewaesser.py` mit und erbt
+# damit dessen Zeitablauf, dessen Fehlerverhalten und die vier Fallen oben.
+# Bestand, Zyklus und Kategorie kommen ebenfalls von dort (FG_*) — die beiden
+# Abschnitte MÜSSEN denselben Nenner haben, sonst rechnen sie gegeneinander.
+#
+# DER TABELLENNAME IST NICHT DER, DER IN DER PLANUNGSAKTE STAND. Dort hieß es
+# `…_swSignificantPressureType` als eigenständige Tabelle; sie heißt
+# `SWB_SurfaceWaterBody_swSignificantPressureType`, also mit dem Namen der
+# Elterntabelle als Präfix. Der Katalog ist über `…/md` erreichbar (24 MB
+# JSON, im Browser filtern) — `INFORMATION_SCHEMA` ist gesperrt.
+
+# Österreich hat diesen Code pauschal auf ALLE 8.116 Wasserkörper gesetzt,
+# auch auf die in gutem Zustand. Er ist der einzige, der das tut, und er
+# dominiert ohne Ausschluss jede Auszählung. Kein Tippfehler: der Präfix
+# endet ohne Trennstrich, weil das Feld „P2-7 - Diffuse - …" liefert.
+QB_PAUSCHALCODE = "P2-7"
+
+# Querbauwerke im engeren Sinn: „P4-2 - Dams, barriers and locks", mit den
+# vier Zweckcodes P4-2-1, -2, -8, -9 darunter. Die Zwecke ÜBERLAPPEN und
+# summieren sich auf mehr als die Zahl der Wasserkörper — siehe die vierte
+# Gegenprobe in querbauwerke.py, die genau das nachweist.
+QB_QUERBAUWERK_CODE = "P4-2"
+
+# Unter dieser Zahl fällt eine Belastungsgruppe aus dem Bild und steht nur
+# noch in der Tabelle. Bei 18 Wasserkörpern (Punktquellen, 0,4 % der
+# verfehlenden) ist ein Balken keine Information, sondern ein Strich.
+QB_MINDESTZAHL = 100
+
+# Der Abschnitt behauptet, eine Belastung werde „so gut wie ausschließlich"
+# für zielverfehlende Wasserkörper gemeldet. Am 01.09.2026 gemessen: drei von
+# 3.879, also 0,08 %. Übersteigt der Anteil diese Schwelle, trägt die
+# Formulierung nicht mehr und die Gegenprobe schlägt an. Bewusst nicht auf
+# null geprüft — die erste Fassung des Moduls behauptete „kein einziger" und
+# lag damit falsch.
+QB_AUSNAHME_SCHWELLE_PROZENT = 1.0
+
+# ---------------------------------------------------------------------------
 # Ausgabe
 # ---------------------------------------------------------------------------
 

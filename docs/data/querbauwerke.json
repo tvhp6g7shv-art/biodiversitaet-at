@@ -1,0 +1,104 @@
+{
+ "stand": "Meldezyklus 2022",
+ "zyklus": 2022,
+ "abgerufen": "2026-09-01",
+ "verfehlend": 4031,
+ "verfehlend_km": 18061.6,
+ "bestand": 8116,
+ "ohne_belastung": 155,
+ "belastet_gesamt": 3879,
+ "belastet_und_zielerreichend": 3,
+ "balken": [
+  {
+   "gruppe": "Verbauung des Gewässers",
+   "code": "P4",
+   "wasserkoerper": 3234,
+   "nur_dieser_grund": 1690,
+   "auch_andere": 1544,
+   "anteil": 80.2,
+   "anteil_nur": 41.9
+  },
+  {
+   "gruppe": "Einträge aus der Fläche",
+   "code": "P2",
+   "wasserkoerper": 1327,
+   "nur_dieser_grund": 451,
+   "auch_andere": 876,
+   "anteil": 32.9,
+   "anteil_nur": 11.2
+  },
+  {
+   "gruppe": "Wasserentnahme",
+   "code": "P3",
+   "wasserkoerper": 981,
+   "nur_dieser_grund": 162,
+   "auch_andere": 819,
+   "anteil": 24.3,
+   "anteil_nur": 4.0
+  }
+ ],
+ "kleine_gruppen": [
+  {
+   "gruppe": "Einleitungen",
+   "code": "P1",
+   "wasserkoerper": 18,
+   "nur_dieser_grund": 3
+  },
+  {
+   "gruppe": "Altlasten",
+   "code": "P9",
+   "wasserkoerper": 14,
+   "nur_dieser_grund": 9
+  },
+  {
+   "gruppe": "unbekannte Ursache",
+   "code": "P8",
+   "wasserkoerper": 9,
+   "nur_dieser_grund": 0
+  }
+ ],
+ "fuehrend": {
+  "gruppe": "Verbauung des Gewässers",
+  "wasserkoerper": 3234,
+  "anteil": 80.2,
+  "nur_dieser_grund": 1690,
+  "anteil_nur": 41.9
+ },
+ "querbauwerke": 2669,
+ "querbauwerke_anteil_bestand": 32.9,
+ "zwecke": [
+  {
+   "zweck": "Hochwasserschutz",
+   "wasserkoerper": 1971
+  },
+  {
+   "zweck": "unbekannt oder veraltet",
+   "wasserkoerper": 991
+  },
+  {
+   "zweck": "Wasserkraft",
+   "wasserkoerper": 949
+  },
+  {
+   "zweck": "sonstige",
+   "wasserkoerper": 699
+  }
+ ],
+ "zwecke_nennungen": 4610,
+ "zyklen": [
+  {
+   "jahr": 2010,
+   "wasserkoerper": 4317
+  },
+  {
+   "jahr": 2016,
+   "wasserkoerper": 3461
+  },
+  {
+   "jahr": 2022,
+   "wasserkoerper": 3234
+  }
+ ],
+ "kachel_wert": 80.2,
+ "hinweis": "Eine Belastung wird so gut wie nur dort gemeldet, wo sie das Ziel gefährdet. Der Balken zeigt deshalb, welche Ursache Österreich dem Verfehlen zuschreibt — nicht, wie stark eine Verbauung für sich wirkt."
+}

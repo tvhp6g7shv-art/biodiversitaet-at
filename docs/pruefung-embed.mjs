@@ -54,7 +54,7 @@ const HIER = dirname(fileURLToPath(import.meta.url));
    Fehler vom 29.08.2026. */
 const GRAFIKEN = ["schutzgebiete", "vogel", "boden", "rotelisten",
                   "erhaltung", "lebensraeume", "biotoptypen",
-                  "fliessgewaesser", "wald",
+                  "fliessgewaesser", "querbauwerke", "wald",
                   "baumarten", "waldarten", "natura2000",
                   "biolandbau",
                   "falter", "rueckkehrer", "vogelarten"];

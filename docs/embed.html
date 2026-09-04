@@ -10,23 +10,24 @@
      die Kennzahlenkacheln gehoeren zum Dashboard, nicht zu einer einzelnen
      Grafik. Cacheziffer wird aus index.html uebernommen — beide Auslieferungen
      tragen dieselbe, sonst mischt der Browser Staende. -->
-<script src="js/kern.js?v=12" defer></script>
-<script src="js/charts/schutzgebiete.js?v=12" defer></script>
-<script src="js/charts/vogel.js?v=12" defer></script>
-<script src="js/charts/boden.js?v=12" defer></script>
-<script src="js/charts/rotelisten.js?v=12" defer></script>
-<script src="js/charts/erhaltung.js?v=12" defer></script>
-<script src="js/charts/lebensraeume.js?v=12" defer></script>
-<script src="js/charts/biotoptypen.js?v=12" defer></script>
-<script src="js/charts/fliessgewaesser.js?v=12" defer></script>
-<script src="js/charts/wald.js?v=12" defer></script>
-<script src="js/charts/baumarten.js?v=12" defer></script>
-<script src="js/charts/waldarten.js?v=12" defer></script>
-<script src="js/charts/natura2000.js?v=12" defer></script>
-<script src="js/charts/biolandbau.js?v=12" defer></script>
-<script src="js/charts/falter.js?v=12" defer></script>
-<script src="js/charts/rueckkehrer.js?v=12" defer></script>
-<script src="js/charts/vogelarten.js?v=12" defer></script>
+<script src="js/kern.js?v=15" defer></script>
+<script src="js/charts/schutzgebiete.js?v=15" defer></script>
+<script src="js/charts/vogel.js?v=15" defer></script>
+<script src="js/charts/boden.js?v=15" defer></script>
+<script src="js/charts/rotelisten.js?v=15" defer></script>
+<script src="js/charts/erhaltung.js?v=15" defer></script>
+<script src="js/charts/lebensraeume.js?v=15" defer></script>
+<script src="js/charts/biotoptypen.js?v=15" defer></script>
+<script src="js/charts/fliessgewaesser.js?v=15" defer></script>
+<script src="js/charts/querbauwerke.js?v=15" defer></script>
+<script src="js/charts/wald.js?v=15" defer></script>
+<script src="js/charts/baumarten.js?v=15" defer></script>
+<script src="js/charts/waldarten.js?v=15" defer></script>
+<script src="js/charts/natura2000.js?v=15" defer></script>
+<script src="js/charts/biolandbau.js?v=15" defer></script>
+<script src="js/charts/falter.js?v=15" defer></script>
+<script src="js/charts/rueckkehrer.js?v=15" defer></script>
+<script src="js/charts/vogelarten.js?v=15" defer></script>
 <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* ===================================================================
@@ -77,6 +78,13 @@
    =================================================================== */
 .viz-root {
   color-scheme: light;
+
+  /* Polsterstufen — wortgleich mit variables.css der Website, damit
+     Pages und WordPress dasselbe Mass zeigen. Auf WordPress kommen sie
+     aus dem Theme; hier muessen sie stehen, sonst faellt die ganze
+     Deklaration still aus. */
+  --r: clamp(1.00rem, 0.50rem + 1.00vw, 1.25rem);
+  --xxxxl: clamp(4.80rem, 2.50rem + 2.00vw, 6.00rem);
 
   --viz-surface:        #ffffff;
   --viz-plane:          #fafafa;
@@ -306,6 +314,7 @@ const CHARTS = {
   lebensraeume: { titel: "Erhaltungszustand nach Lebensraumgruppen", dateien: ["lebensraeume"], bau: (B, d) => B.baueLebensraeume(d.lebensraeume), hoch: true },
   biotoptypen: { titel: "Gefährdete Biotoptypen", dateien: ["biotoptypen"], bau: (B, d) => B.baueBiotoptypen(d.biotoptypen) },
   fliessgewaesser: { titel: "Ökologischer Zustand der Fließgewässer", dateien: ["fliessgewaesser"], bau: (B, d) => B.baueFliessgewaesser(d.fliessgewaesser) },
+  querbauwerke: { titel: "Belastungen der Fließgewässer", dateien: ["querbauwerke"], bau: (B, d) => B.baueQuerbauwerke(d.querbauwerke) },
   wald: { titel: "Waldfläche im Vergleich", dateien: ["wald"], bau: (B, d) => B.baueWald(d.wald) },
   baumarten: { titel: "Nadel- und Laubholz im Wald", dateien: ["baumarten"], bau: (B, d) => B.baueBaumarten(d.baumarten) },
   waldarten: { titel: "Gefährdete Waldpflanzen", dateien: ["waldarten"], bau: (B, d) => B.baueWaldarten(d.waldarten) },
