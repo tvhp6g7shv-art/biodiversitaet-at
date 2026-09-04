@@ -10,6 +10,12 @@ const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
 
 /* --- 01 — Schutzgebiete: die Kurve steht still ------------------------
    Eine Linie, 2011–2023, plus eine waagrechte Marke beim Ziel von 30 %.
+   DIE MARKE HEISST „EU-weites Ziel", und das ist keine Kosmetik: Die
+   30 % der EU-Biodiversitätsstrategie gelten der EU ALS GANZES, nicht
+   jedem Mitgliedstaat. Ohne das Wort las sich die Grafik als „Österreich
+   verfehlt sein Ziel" — eine Aussage, die die Daten nicht hergeben.
+   Angeglichen am 04.09.2026 an den Abschnitt `schutzherkunft` darunter,
+   der denselben Vorbehalt in seiner Hinweiszeile trägt.
 
    ZUR ACHSE, weil die Frage kommen wird: Sie beginnt NICHT bei null.
    Das ist hier nicht Schönfärberei, sondern das Gegenteil — die Aussage
@@ -88,7 +94,7 @@ function baueSchutzgebiete(daten) {
         label: {
           position: istSchmal(feld) ? "insideEndTop" : "insideStartTop",
           color: stil("--viz-muted"), fontSize: S.achse,
-          formatter: `Ziel ${daten.zieljahr}: ${pz(daten.ziel, 0)} %`,
+          formatter: `EU-weites Ziel ${daten.zieljahr}: ${pz(daten.ziel, 0)} %`,
         },
         data: [{ yAxis: daten.ziel }],
       },
@@ -99,7 +105,7 @@ function baueSchutzgebiete(daten) {
     [{ titel: "Jahr", wert: (z) => z.jahr },
      { titel: "Anteil", num: true, wert: (z) => pz(z.prozent) + " %" },
      { titel: "Fläche", num: true, wert: (z) => z.km2 ? zahl(z.km2) + " km²" : "–" },
-     { titel: "auf 30 % fehlen", num: true,
+     { titel: "Abstand zum EU-Ziel", num: true,
        wert: (z) => pz(Math.round((30 - z.prozent) * 10) / 10) + " Punkte" }],
     punkte
   ));

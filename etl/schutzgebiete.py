@@ -94,8 +94,8 @@ def baue_schutzgebiete() -> dict | None:
         "luecke_km2": luecke_km2,
         "hinweis": (
             "Nationale Schutzgebiete und Natura-2000-Gebiete zusammen, "
-            "Überschneidungen herausgerechnet. Die Zahl misst Fläche, nicht "
-            "Schutzintensität: ein Landschaftsschutzgebiet zählt gleich wie "
-            "eine Nationalpark-Kernzone."
+            "Überschneidungen herausgerechnet. Gemessen wird Fläche, nicht "
+            "Schutzintensität. Das Ziel von 30 Prozent gilt der EU als Ganzes, "
+            "nicht jedem Mitgliedstaat."
         ),
     }

@@ -93,6 +93,7 @@ const HOEHEN = {
   "c-biotoptypen": 300,
   "c-wald": 340,
   "c-biolandbau": 760,
+  "c-pestizide": 340,
   "c-falter": 340,
   "c-rueckkehrer": 300,
   "c-vogelarten": 644,
@@ -143,7 +144,7 @@ const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/wald.js",
                 "charts/baumarten.js", "charts/waldarten.js",
                 "charts/natura2000.js",
-                "charts/biolandbau.js",
+                "charts/biolandbau.js", "charts/pestizide.js",
                 "charts/falter.js", "charts/rueckkehrer.js",
                 "charts/vogelarten.js"];
 
@@ -151,7 +152,7 @@ const DATEN = ["meta", "kpi", "schutzgebiete", "schutzherkunft",
                "vogel", "boden", "rotelisten",
                "erhaltung", "lebensraeume", "biotoptypen",
                "fliessgewaesser", "querbauwerke", "wald",
-               "baumarten", "waldarten", "natura2000", "biolandbau",
+               "baumarten", "waldarten", "natura2000", "biolandbau", "pestizide",
                "falter", "rueckkehrer", "vogelarten"];
 
 const ABSCHNITTE = ["schutzgebiete", "schutzherkunft",
@@ -159,7 +160,7 @@ const ABSCHNITTE = ["schutzgebiete", "schutzherkunft",
                     "erhaltung", "lebensraeume", "biotoptypen",
                     "fliessgewaesser", "querbauwerke", "wald",
                     "baumarten", "waldarten", "natura2000",
-                    "biolandbau",
+                    "biolandbau", "pestizide",
                     "falter", "rueckkehrer", "vogelarten"];
 
 const fehler = [];

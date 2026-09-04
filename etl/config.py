@@ -402,6 +402,46 @@ SH_MITGLIEDSTAATEN = [
 ]
 
 # ---------------------------------------------------------------------------
+# Quelle Pestizidabsatz — Eurostat aei_fm_salpest09
+# ---------------------------------------------------------------------------
+#
+# In Verkehr gebrachte Menge Wirkstoff in Kilogramm. 14 lückenlose Jahre
+# 2011–2024 für Österreich, am 04.09.2026 geprüft.
+#
+# EIN EU-AGGREGAT GIBT ES IN DIESER REIHE NICHT: `geo=EU27_2020` liefert eine
+# leere Antwort. Ein Ländervergleich fällt damit aus, solange er nicht über
+# eigene Indexreihen je Land gerechnet wird.
+PESTIZID_CODE = "aei_fm_salpest09"
+PESTIZID_PARAMS = {
+    "format": "JSON",
+    "lang": "DE",
+    "geo": "AT",
+}
+
+PESTIZID_GESAMT = "TOTAL"
+
+# `F01` ist die Gruppe, die Eurostat selbst „anorganische Fungizide" nennt.
+# NICHT Kupfer plus Schwefel nehmen: Genau an dieser Definition hing der
+# Fehler der Planungsakte. Kupfer und Schwefel allein verlieren Anteil
+# (24,8 % → 19,5 %), die Gruppe als Ganzes gewinnt ihn (21,8 % → 26,0 %).
+# Der Unterschied ist F01_99, das sich von 28 auf 341 Tonnen verzwölffacht hat.
+PESTIZID_ANORGANISCH = "F01"
+
+# Nur für die dritte Gegenprobe: Die drei müssen F01 auf das Kilogramm
+# ergeben. Trifft das zu, ist F01 wirklich die Obergruppe.
+PESTIZID_TEILE = {
+    "Kupferverbindungen": "F01_01",
+    "anorganischer Schwefel": "F01_02",
+    "sonstige anorganische Fungizide": "F01_99",
+}
+
+# Bezugsperiode der EU-Ziele. Steht in den Daten, NICHT im Bild: Das Ziel
+# „−50 % bis 2030" der Farm-to-Fork-Strategie misst Einsatz und Risiko über
+# einen gewichteten Indikator, nicht den Absatz in Kilogramm — und die
+# Verordnung, die es verbindlich gemacht hätte, ist 2023 gescheitert.
+PESTIZID_BASISPERIODE = ["2015", "2016", "2017"]
+
+# ---------------------------------------------------------------------------
 # Ausgabe
 # ---------------------------------------------------------------------------
 

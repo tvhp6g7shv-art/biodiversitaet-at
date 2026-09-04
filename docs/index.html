@@ -572,7 +572,7 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
     </header>
     <div class="viz-chart" id="c-schutzgebiete"></div>
     <div class="viz-verborgen" id="t-schutzgebiete"></div>
-    <p class="viz-unterzeile" style="margin-top:12px" id="h-schutzgebiete">Nationale Schutzgebiete und Natura-2000-Gebiete zusammen, Überschneidungen herausgerechnet. Die Zahl misst Fläche, nicht Schutzintensität: ein Landschaftsschutzgebiet zählt gleich wie eine Nationalpark-Kernzone.</p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-schutzgebiete">Nationale Schutzgebiete und Natura-2000-Gebiete zusammen, Überschneidungen herausgerechnet. Gemessen wird Fläche, nicht Schutzintensität. Das Ziel von 30 Prozent gilt der EU als Ganzes, nicht jedem Mitgliedstaat.</p>
   </section>
 
   <section class="viz-karte" id="s-schutzherkunft" data-chart="schutzherkunft"
@@ -822,6 +822,23 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
     <p class="viz-unterzeile" style="margin-top:12px" id="h-biolandbau">Umgestellte Flächen und Flächen in Umstellung zusammen, Anteil an der landwirtschaftlich genutzten Fläche. Alle Länder im selben Jahr 2020 verglichen — der Datensatz reicht weiter, Österreich meldet zuletzt für dieses Jahr.</p>
   </section>
 
+  <section class="viz-karte" id="s-pestizide" data-chart="pestizide"
+           data-nav="Pestizidabsatz" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Seit 2011 ist der Pestizidabsatz um 52 Prozent gestiegen — die anorganischen Fungizide um 82</h2>
+        <p class="viz-unterzeile" id="u-pestizide"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-pestizide">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-pestizide"></div>
+    <div class="viz-verborgen" id="t-pestizide"></div>
+    <p class="viz-notiz" id="n-pestizide"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-pestizide"></p>
+  </section>
+
   <!-- ===================================================================
        TIERGRUPPEN — drei Abschnitte, als Gegensatz gebaut.
        Verlust (Falter), Erholung (Rückkehrer), Stillstand (Vogelarten).
@@ -895,19 +912,19 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Cacheziffer `?v=NN` hochzaehlen, wenn eine Datei geaendert wurde —
      sie fuehrt eine EIGENE Zaehlung, unabhaengig von der Ausgabenummer
      in kern.js (VERSION.nummer). -->
-<script defer src="js/kern.js?v=16"></script>
-<script defer src="js/charts/kpi.js?v=16"></script>
-<script defer src="js/charts/schutzgebiete.js?v=16"></script>
-<script defer src="js/charts/schutzherkunft.js?v=16"></script>
-<script defer src="js/charts/vogel.js?v=16"></script>
-<script defer src="js/charts/boden.js?v=16"></script>
-<script defer src="js/charts/rotelisten.js?v=16"></script>
-<script defer src="js/charts/erhaltung.js?v=16"></script>
-<script defer src="js/charts/lebensraeume.js?v=16"></script>
-<script defer src="js/charts/biotoptypen.js?v=16"></script>
-<script defer src="js/charts/fliessgewaesser.js?v=16"></script>
-<script defer src="js/charts/querbauwerke.js?v=16"></script>
-<script defer src="js/charts/wald.js?v=16"></script>
+<script defer src="js/kern.js?v=17"></script>
+<script defer src="js/charts/kpi.js?v=17"></script>
+<script defer src="js/charts/schutzgebiete.js?v=17"></script>
+<script defer src="js/charts/schutzherkunft.js?v=17"></script>
+<script defer src="js/charts/vogel.js?v=17"></script>
+<script defer src="js/charts/boden.js?v=17"></script>
+<script defer src="js/charts/rotelisten.js?v=17"></script>
+<script defer src="js/charts/erhaltung.js?v=17"></script>
+<script defer src="js/charts/lebensraeume.js?v=17"></script>
+<script defer src="js/charts/biotoptypen.js?v=17"></script>
+<script defer src="js/charts/fliessgewaesser.js?v=17"></script>
+<script defer src="js/charts/querbauwerke.js?v=17"></script>
+<script defer src="js/charts/wald.js?v=17"></script>
 <!-- Die fuenf Wald-Abschnitte (totholz, fichte, baumarten, waldarten,
      natura2000) sind am 29.08.2026 ausgeklinkt: gebaut und im Ordner, aber
      ihre Modul- und Datendateien nicht im Repo. Ausgeliefert haetten sie elf
@@ -917,13 +934,14 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Sektionen liegen wortgleich in docs/.ausgeklinkt-wald.html. Wieder
      einhaengen: Sektionen von dort zurueck, Skript-Zeilen hier, dazu
      js/kern.js, embed.html und die beiden Pruefskripte. -->
-<script defer src="js/charts/baumarten.js?v=16"></script>
-<script defer src="js/charts/waldarten.js?v=16"></script>
-<script defer src="js/charts/natura2000.js?v=16"></script>
-<script defer src="js/charts/biolandbau.js?v=16"></script>
-<script defer src="js/charts/falter.js?v=16"></script>
-<script defer src="js/charts/rueckkehrer.js?v=16"></script>
-<script defer src="js/charts/vogelarten.js?v=16"></script>
+<script defer src="js/charts/baumarten.js?v=17"></script>
+<script defer src="js/charts/waldarten.js?v=17"></script>
+<script defer src="js/charts/natura2000.js?v=17"></script>
+<script defer src="js/charts/biolandbau.js?v=17"></script>
+<script defer src="js/charts/pestizide.js?v=17"></script>
+<script defer src="js/charts/falter.js?v=17"></script>
+<script defer src="js/charts/rueckkehrer.js?v=17"></script>
+<script defer src="js/charts/vogelarten.js?v=17"></script>
 <script defer>
   document.addEventListener("DOMContentLoaded", () => {
     BIO.setzeWurzel(document.getElementById("dashboard"));

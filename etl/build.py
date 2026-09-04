@@ -21,6 +21,7 @@ Module:
     biotoptypen.py   Rote Liste der Biotoptypen (gepflegt)
     wald.py          Waldfläche AT und Nachbarn, Eurostat for_area (API)
     biolandbau.py    Bio-Anteil im Ländervergleich, Eurostat sdg_02_40 (API)
+    pestizide.py     Absatz und seine Aufteilung, Eurostat aei_fm_salpest09 (API)
     falter.py        Grünland-Schmetterlingsindex, Eurostat sdg_15_61 (API)
     rueckkehrer.py   Biber und Fischotter, Artikel-17-Spannen (gepflegt)
     vogelarten.py    Feld- und Wiesenvögel Art für Art (gepflegt)
@@ -68,6 +69,7 @@ from lebensraeume import baue_lebensraeume
 from biotoptypen import baue_biotoptypen
 from wald import baue_wald
 from biolandbau import baue_biolandbau
+from pestizide import baue_pestizide
 from falter import baue_falter
 from rueckkehrer import baue_rueckkehrer
 from vogelarten import baue_vogelarten
@@ -186,6 +188,15 @@ def main() -> None:
     bio = baue_biolandbau()
     if bio:
         ausgaben["biolandbau"] = bio
+
+    # `pestizide` gehört neben `biolandbau`: Der eine zeigt, wie viel Fläche
+    # ohne synthetische Mittel bewirtschaftet wird, der andere, wie viel
+    # Wirkstoff insgesamt in Verkehr geht. Beide zusammen sagen mehr als
+    # jeder für sich — ein wachsender Bio-Anteil bei wachsendem Absatz ist
+    # kein Widerspruch, aber eine Frage, die der Text beantworten muss.
+    pestizide = baue_pestizide()
+    if pestizide:
+        ausgaben["pestizide"] = pestizide
 
     # --- Gegenprobe über die Artikel-17-Abschnitte -------------------------
     # `erhaltung` zählt die Lebensraumtypen als Ganzes, `lebensraeume`

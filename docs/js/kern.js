@@ -663,7 +663,8 @@ async function start() {
                    "rotelisten", "erhaltung", "lebensraeume",
                    "biotoptypen", "fliessgewaesser", "querbauwerke", "wald",
                    "baumarten", "waldarten", "natura2000",
-                   "biolandbau", "falter", "rueckkehrer", "vogelarten"];
+                   "biolandbau", "pestizide",
+                   "falter", "rueckkehrer", "vogelarten"];
   /* STAND 30.08.2026 — drei der fünf Wald-Abschnitte hängen wieder drin.
    Am 29.08. waren alle fünf ausgeklinkt, weil ihre Modul- und Datendateien
    nicht im Repo lagen: ausgeliefert hätten sie 404 erzeugt und die rote
@@ -786,6 +787,11 @@ async function start() {
     sicher("Waldarten",      () => BIO.baueWaldarten(geladen.waldarten));
     sicher("Natura 2000",    () => BIO.baueNatura2000(geladen.natura2000));
     sicher("Biolandbau",     () => BIO.baueBiolandbau(geladen.biolandbau));
+    /* Gehoert neben Biolandbau: Der eine zeigt die Flaeche ohne synthetische
+       Mittel, der andere die Menge Wirkstoff insgesamt. Nebeneinander gelesen
+       ist ein wachsender Bio-Anteil bei wachsendem Absatz kein Widerspruch,
+       sondern die Frage, die die Notiz beantwortet. */
+    sicher("Pestizide",      () => BIO.bauePestizide(geladen.pestizide));
     /* Bereich Tiergruppen — als Gegensatz gebaut: Verlust, Erholung,
        Stillstand. Die Reihenfolge ist die Aussage und darf nicht nach
        Bequemlichkeit umgestellt werden. */
