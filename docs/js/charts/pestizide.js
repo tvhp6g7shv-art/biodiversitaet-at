@@ -117,14 +117,27 @@ function bauePestizide(daten) {
          Jahres — 3.778 t — gar nicht abzulesen. */
       {
         name: "Absatz insgesamt", type: "line", smooth: false, z: 3,
-        data: punkte.map((p) => p.gesamt),
+        /* KEIN `endLabel`. Am 04.09.2026 am ausgelieferten Stand gemessen:
+           ECharts setzt ihn hier an den ERSTEN Punkt und zeigt dessen Wert —
+           auf Pages bei `schutzgebiete` (27,5 statt 29,3), `vogel` und
+           `falter` genauso. Vermutlich hängt er am Aufklapp-Clip der
+           Einblendung, der nicht läuft, wenn der Abschnitt beim Bau noch
+           `display:none` trägt.
+
+           Stattdessen trägt der letzte Datenpunkt sein Etikett selbst. Das
+           ist an das Datum gebunden und nicht an eine Animation — es kann
+           gar nicht an der falschen Stelle landen. */
+        data: punkte.map((p, i) => (
+          i === punkte.length - 1 && BIO.endLabelZeigen(feld)
+            ? { value: p.gesamt,
+                label: { show: true, position: "right", distance: 8,
+                         color: stil("--viz-text-2"), fontSize: S.label,
+                         formatter: (r) => zahl(r.value) + " t" } }
+            : p.gesamt
+        )),
         lineStyle: { color: stil("--viz-text-2"), width: 2 },
         itemStyle: { color: stil("--viz-text-2") },
         symbol: "circle", symbolSize: 5,
-        endLabel: BIO.endLabelZeigen(feld)
-          ? { show: true, distance: 8, color: stil("--viz-text-2"),
-              fontSize: S.label, formatter: (p) => zahl(p.value) + " t" }
-          : { show: false },
       },
     ],
   }, { replaceMerge: ["series", "xAxis", "yAxis", "legend"] });
