@@ -3,7 +3,7 @@
 Datenpipeline für das Biodiversitäts-Dashboard Österreich — Orchestrator.
 
 Was die Pipeline tut:
-  1. Holt fünf Reihen frisch von der Eurostat-API
+  1. Holt die laufenden Reihen frisch aus dem Netz (Eurostat, EEA)
   2. Legt die gepflegten Reihen bei und prüft ihren Pflegestand
   3. Schreibt alles als kleine JSON-Dateien nach docs/data/
 
@@ -18,8 +18,14 @@ Module:
     baulandreserven.py  Landnutzung der Baulandreserven je Gemeinde (API)
     rotelisten.py    Stand der Aktualisierung der Roten Listen (gepflegt)
     erhaltung.py     Erhaltungszustand nach Artikel 17 FFH (gepflegt)
+    lebensraeume.py  derselbe Zustand nach Lebensraumgruppen (gepflegt)
     biotoptypen.py   Rote Liste der Biotoptypen (gepflegt)
+    fliessgewaesser.py ökologischer Zustand, EEA Discodata WISE_WFD (API)
+    querbauwerke.py  gemeldete Belastungen derselben Wasserkörper (API)
     wald.py          Waldfläche AT und Nachbarn, Eurostat for_area (API)
+    baumarten.py     Nadel- und Laubholz im Ertragswald, ÖWI (gepflegt)
+    waldarten.py     gefährdete Waldpflanzen, Rote Listen 1986–2022 (gepflegt)
+    natura2000.py    Waldlebensraumtypen nach Artikel 17 (gepflegt)
     biolandbau.py    Bio-Anteil im Ländervergleich, Eurostat sdg_02_40 (API)
     pestizide.py     Absatz und seine Aufteilung, Eurostat aei_fm_salpest09 (API)
     falter.py        Grünland-Schmetterlingsindex, Eurostat sdg_15_61 (API)
@@ -32,7 +38,8 @@ sollen zeigen, dass Rückgang kein Naturgesetz ist.
 
 Österreich ist keine Insel: Fünf Abschnitte stellen die nationalen Zahlen
 in einen europäischen Zusammenhang — die Vogelreihe gegen das EU-Aggregat,
-Waldfläche und Bio-Anteil gegen die acht Nachbarn, und der
+die Schutzherkunft gegen die EU-27, Waldfläche und Bio-Anteil gegen die
+acht Nachbarn, und der
 Erhaltungszustand ist ohnehin nach den grenzüberschreitenden
 biogeografischen Regionen gegliedert. Der Falterindex ist der einzige
 Abschnitt, der **gar keine** österreichische Zahl zeigt: Eurostat führt
@@ -58,6 +65,16 @@ from pathlib import Path
 
 import config
 from gemeinsam import QUELLEN, WARNUNGEN, log, schreibe, warnen
+
+# Zahlwörter für die Hinweiszeilen im Fuß. Über zwölf hinaus bleibt die
+# Ziffer stehen — dann liest sie sich im Fließtext ohnehin besser.
+_WORTE = ["null", "eine", "zwei", "drei", "vier", "fünf", "sechs", "sieben",
+          "acht", "neun", "zehn", "elf", "zwölf"]
+
+
+def _wort(n: int) -> str:
+    return _WORTE[n] if 0 <= n < len(_WORTE) else str(n)
+
 
 from schutzgebiete import baue_schutzgebiete
 from schutzherkunft import baue_schutzherkunft
@@ -370,30 +387,38 @@ def main() -> None:
     for name, inhalt in ausgaben.items():
         schreibe(name, inhalt)
 
+    # --- Zahlen für die Hinweiszeilen, hergeleitet statt abgetippt ---------
+    # Am 04.09.2026 standen hier "Fünf Reihen … von der Eurostat-API" und
+    # eine Aufzählung von zehn Abschnitten, während neun Reihen laufend
+    # abgerufen wurden und 19 Abschnitte live waren. Eine getippte Zahl
+    # altert still; diese hier kann es nicht mehr.
+    _api = [q for q in QUELLEN if q.get("art") == "api"]
+    _eurostat = [q for q in _api if "eurostat" in q.get("url", "")]
+    _gepflegt = [q for q in QUELLEN if q.get("art") != "api"]
+
     schreibe("meta", {
         "generiert_am": start.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "stand_daten": kpi["stand"],
         "quellen": QUELLEN,
         "hinweis_beschaffung": (
-            "Fünf Reihen kommen bei jedem Lauf frisch von der Eurostat-API "
-            "(Schutzgebiete, EU-Vogelindex, Waldfläche, Bio-Anteil, "
-            "Falterindex). Die übrigen sind aus Publikationen abgeschrieben "
-            "und tragen ihren Stand im Feld \"pflege\" — Österreich "
-            "veröffentlicht seine Biodiversitätsdaten überwiegend als PDF "
-            "ohne Datenanhang."
+            f"{_wort(len(_api)).capitalize()} Reihen kommen bei jedem Lauf "
+            f"frisch aus dem Netz, {_wort(len(_eurostat))} davon von der "
+            f"Eurostat-API. {_wort(len(_gepflegt)).capitalize()} Reihen sind "
+            "aus Publikationen abgeschrieben und tragen ihren Stand im Feld "
+            "\"pflege\" — Österreich veröffentlicht seine "
+            "Biodiversitätsdaten überwiegend als PDF ohne Datenanhang."
         ),
         "hinweis_definitionen": (
             "Die Abschnitte messen Verschiedenes und lassen sich nicht "
-            "gegeneinander aufrechnen: Fläche unter Schutz, Häufigkeit von "
-            "Vogelbeständen, neu beanspruchter Boden, das Alter des "
-            "Fachwissens, der Erhaltungszustand von Lebensräumen, die "
-            "Gefährdung von Biotoptypen, Waldfläche, Bio-Anteil, Falter auf "
-            "festen Strecken und hochgerechnete Bestände zweier Säugetiere."
+            "gegeneinander aufrechnen — von der Fläche unter Schutz über den "
+            "Zustand von Lebensräumen, Flüssen und Wäldern bis zum "
+            "Pestizidabsatz und den Beständen einzelner Tiergruppen. Ihre "
+            "Zahl steht im Vorspann des Dashboards, das sie selbst zählt."
         ),
         "hinweis_europa": (
-            "Österreich ist keine Insel: Vogelindex, Waldfläche und "
-            "Bio-Anteil stehen im europäischen Vergleich, und der "
-            "Erhaltungszustand ist nach den grenzüberschreitenden "
+            "Österreich ist keine Insel: Schutzherkunft, Vogelindex, "
+            "Waldfläche und Bio-Anteil stehen im europäischen Vergleich, und "
+            "der Erhaltungszustand ist nach den grenzüberschreitenden "
             "biogeografischen Regionen alpin und kontinental gegliedert. "
             "Der Falterindex zeigt als einziger Abschnitt ausschließlich "
             "europäische Zahlen — eine österreichische Reihe ab 1991 gibt "
