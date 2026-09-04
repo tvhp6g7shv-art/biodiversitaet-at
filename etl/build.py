@@ -12,6 +12,7 @@ Aufruf:  python etl/build.py
 Module:
     gemeinsam.py     Logging, Download, JSON-stat-Auswertung, Pflegeprüfung
     schutzgebiete.py Eurostat sdg_15_20 (API)
+    schutzherkunft.py EEA SEBI 007, Abbildung 2 — ZIP mit .xlsx (API)
     vogel.py         Farmland Bird Index 1998–2025 (gepflegt) + EU-Reihe (API)
     boden.py         ÖROK-Flächeninanspruchnahme und Versiegelung (gepflegt)
     baulandreserven.py  Landnutzung der Baulandreserven je Gemeinde (API)
@@ -58,6 +59,7 @@ import config
 from gemeinsam import QUELLEN, WARNUNGEN, log, schreibe, warnen
 
 from schutzgebiete import baue_schutzgebiete
+from schutzherkunft import baue_schutzherkunft
 from vogel import baue_vogel
 from boden import baue_boden
 from rotelisten import baue_rotelisten
@@ -141,6 +143,26 @@ def main() -> None:
     schutzgebiete = baue_schutzgebiete()
     if schutzgebiete:
         ausgaben["schutzgebiete"] = schutzgebiete
+
+    # `schutzherkunft` zerlegt genau die Zahl, die `schutzgebiete` als Summe
+    # zeigt. Die beiden kommen von verschiedenen Stellen — Eurostat sdg_15_20
+    # dort, das EEA-Datenpaket hier — und müssen trotzdem dasselbe sagen.
+    schutzherkunft = baue_schutzherkunft()
+    if schutzherkunft:
+        ausgaben["schutzherkunft"] = schutzherkunft
+
+        # Gegenprobe über zwei Module und zwei Herausgeber hinweg. Toleranz
+        # 0,2 Punkte: beide runden auf eine Nachkommastelle, und die Stichjahre
+        # können um einen Jahrgang auseinanderliegen. Weicht es weiter ab,
+        # widersprechen sich zwei Abschnitte, die direkt untereinander stehen.
+        if schutzgebiete:
+            at = schutzherkunft["balken"][0]["gesamt"]
+            if abs(at - schutzgebiete["aktuell"]) > 0.2:
+                warnen(
+                    f"Schutzgebiete und Schutzherkunft uneins: Eurostat meldet "
+                    f"{schutzgebiete['aktuell']:.1f} % für {schutzgebiete['stand']}, "
+                    f"die EEA {at:.1f} % für {schutzherkunft['stichjahr']}."
+                )
 
     ausgaben["vogel"] = baue_vogel()
     ausgaben["boden"] = baue_boden()

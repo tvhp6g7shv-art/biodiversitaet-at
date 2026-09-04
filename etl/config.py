@@ -355,6 +355,53 @@ QB_MINDESTZAHL = 100
 QB_AUSNAHME_SCHWELLE_PROZENT = 1.0
 
 # ---------------------------------------------------------------------------
+# Quelle Schutzherkunft — EEA, Abbildung 2 des Indikators SEBI 007
+# ---------------------------------------------------------------------------
+#
+# Nicht die alte Adresse unter /data-and-maps/figures/ nehmen: sie antwortet
+# mit HTTP 410 (Gone). Der Indikator ist 2024 nach /en/analysis/indicators/
+# umgezogen, und die Abbildung hängt als eigenes Objekt darunter.
+#
+# Was zurückkommt, ist ein ZIP mit sechs Dateien — Data.xlsx, Metadata.xlsx,
+# EPS, PNG, SVG und rights.txt. Gebraucht wird die Data.xlsx; das Modul sucht
+# sie über die Endung, nicht über den vollen Namen, weil in ihm die
+# Fassungsnummer steckt (…-v3-…) und die mit jedem Jahrgang steigt.
+SH_PAKET_URL = (
+    "https://www.eea.europa.eu/en/analysis/indicators/"
+    "terrestrial-protected-areas-in-europe/"
+    "terrestrial-protected-area-coverage/@@download/file"
+)
+
+# Die Arbeitsmappe hat drei Blätter: „Original Data" (die Werte),
+# „DATA AND CHART" (dieselben Werte plus Diagramm) und „Draft". Nur das
+# erste ist als Datenblatt gemeint.
+SH_BLATT = "Original Data"
+
+SH_TIMEOUT_SEKUNDEN = 120     # das Paket ist rund 1,1 MB
+SH_STICHJAHR = 2023           # „by the end of 2023", so auch im Bildtitel
+
+# Zeilenbeschriftungen im Blatt. Die Zeile „EU-27" steht MITTEN in der nach
+# Anteil sortierten Liste, nicht am Ende — wer die letzte Zeile für das
+# Aggregat hält, bekommt Finnland.
+SH_OESTERREICH = "Austria"
+SH_EU = "EU-27"
+
+# Ziel der EU-Biodiversitätsstrategie 2030: mindestens 30 % der Landfläche
+# DER EU. Kein Ziel je Mitgliedstaat — der Abschnitt zeichnet deshalb keine
+# Zielmarke, er zählt nur, wie viele Staaten darüber liegen.
+SH_EU_ZIEL = 30.0
+
+# Gegen diese Liste wird geprüft, ob das Blatt vollständig ist. Namen in der
+# Schreibweise der Quelle (englisch, „Czechia", nicht „Czech Republic").
+SH_MITGLIEDSTAATEN = [
+    "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czechia",
+    "Denmark", "Estonia", "Finland", "France", "Germany", "Greece",
+    "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg",
+    "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovakia",
+    "Slovenia", "Spain", "Sweden",
+]
+
+# ---------------------------------------------------------------------------
 # Ausgabe
 # ---------------------------------------------------------------------------
 

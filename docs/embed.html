@@ -10,24 +10,25 @@
      die Kennzahlenkacheln gehoeren zum Dashboard, nicht zu einer einzelnen
      Grafik. Cacheziffer wird aus index.html uebernommen — beide Auslieferungen
      tragen dieselbe, sonst mischt der Browser Staende. -->
-<script src="js/kern.js?v=15" defer></script>
-<script src="js/charts/schutzgebiete.js?v=15" defer></script>
-<script src="js/charts/vogel.js?v=15" defer></script>
-<script src="js/charts/boden.js?v=15" defer></script>
-<script src="js/charts/rotelisten.js?v=15" defer></script>
-<script src="js/charts/erhaltung.js?v=15" defer></script>
-<script src="js/charts/lebensraeume.js?v=15" defer></script>
-<script src="js/charts/biotoptypen.js?v=15" defer></script>
-<script src="js/charts/fliessgewaesser.js?v=15" defer></script>
-<script src="js/charts/querbauwerke.js?v=15" defer></script>
-<script src="js/charts/wald.js?v=15" defer></script>
-<script src="js/charts/baumarten.js?v=15" defer></script>
-<script src="js/charts/waldarten.js?v=15" defer></script>
-<script src="js/charts/natura2000.js?v=15" defer></script>
-<script src="js/charts/biolandbau.js?v=15" defer></script>
-<script src="js/charts/falter.js?v=15" defer></script>
-<script src="js/charts/rueckkehrer.js?v=15" defer></script>
-<script src="js/charts/vogelarten.js?v=15" defer></script>
+<script src="js/kern.js?v=16" defer></script>
+<script src="js/charts/schutzgebiete.js?v=16" defer></script>
+<script src="js/charts/schutzherkunft.js?v=16" defer></script>
+<script src="js/charts/vogel.js?v=16" defer></script>
+<script src="js/charts/boden.js?v=16" defer></script>
+<script src="js/charts/rotelisten.js?v=16" defer></script>
+<script src="js/charts/erhaltung.js?v=16" defer></script>
+<script src="js/charts/lebensraeume.js?v=16" defer></script>
+<script src="js/charts/biotoptypen.js?v=16" defer></script>
+<script src="js/charts/fliessgewaesser.js?v=16" defer></script>
+<script src="js/charts/querbauwerke.js?v=16" defer></script>
+<script src="js/charts/wald.js?v=16" defer></script>
+<script src="js/charts/baumarten.js?v=16" defer></script>
+<script src="js/charts/waldarten.js?v=16" defer></script>
+<script src="js/charts/natura2000.js?v=16" defer></script>
+<script src="js/charts/biolandbau.js?v=16" defer></script>
+<script src="js/charts/falter.js?v=16" defer></script>
+<script src="js/charts/rueckkehrer.js?v=16" defer></script>
+<script src="js/charts/vogelarten.js?v=16" defer></script>
 <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* ===================================================================
@@ -307,6 +308,7 @@ h2 { font-family: var(--viz-font-display); font-size: 1rem; margin: 0 0 2px; fon
    =========================================================================== */
 const CHARTS = {
   schutzgebiete: { titel: "Fläche unter Schutz", dateien: ["schutzgebiete"], bau: (B, d) => B.baueSchutzgebiete(d.schutzgebiete) },
+  schutzherkunft: { titel: "Herkunft des Schutzes", dateien: ["schutzherkunft"], bau: (B, d) => B.baueSchutzherkunft(d.schutzherkunft) },
   vogel: { titel: "Feld- und Wiesenvögel", dateien: ["vogel"], bau: (B, d) => B.baueVogel(d.vogel), hoch: true },
   boden: { titel: "Bodenverbrauch", dateien: ["boden"], bau: (B, d) => B.baueBoden(d.boden), extra: ["t-boden-kategorien"] },
   rotelisten: { titel: "Alter der Roten Listen", dateien: ["rotelisten"], bau: (B, d) => B.baueRoteListen(d.rotelisten) },

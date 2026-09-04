@@ -84,6 +84,7 @@ const name = (process.argv.find((a) => a.startsWith("--name=")) || "=?").split("
    sie dort ändert, muss hier mit. */
 const HOEHEN = {
   "c-schutzgebiete": 340,
+  "c-schutzherkunft": 340,
   "c-vogel": 420,
   "c-boden": 340,
   "c-rotelisten": 690,
@@ -134,6 +135,7 @@ const HOEHEN = {
    warten auf die BFW-Freigabe. Die Listen leiten Sollzahlen aus ihrer
    Länge ab. */
 const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
+                "charts/schutzherkunft.js",
                 "charts/vogel.js", "charts/boden.js", "charts/rotelisten.js",
                 "charts/erhaltung.js", "charts/lebensraeume.js",
                 "charts/biotoptypen.js",
@@ -145,13 +147,15 @@ const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/falter.js", "charts/rueckkehrer.js",
                 "charts/vogelarten.js"];
 
-const DATEN = ["meta", "kpi", "schutzgebiete", "vogel", "boden", "rotelisten",
+const DATEN = ["meta", "kpi", "schutzgebiete", "schutzherkunft",
+               "vogel", "boden", "rotelisten",
                "erhaltung", "lebensraeume", "biotoptypen",
                "fliessgewaesser", "querbauwerke", "wald",
                "baumarten", "waldarten", "natura2000", "biolandbau",
                "falter", "rueckkehrer", "vogelarten"];
 
-const ABSCHNITTE = ["schutzgebiete", "vogel", "boden", "rotelisten",
+const ABSCHNITTE = ["schutzgebiete", "schutzherkunft",
+                    "vogel", "boden", "rotelisten",
                     "erhaltung", "lebensraeume", "biotoptypen",
                     "fliessgewaesser", "querbauwerke", "wald",
                     "baumarten", "waldarten", "natura2000",
