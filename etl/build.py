@@ -13,6 +13,7 @@ Module:
     gemeinsam.py     Logging, Download, JSON-stat-Auswertung, Pflegeprüfung
     schutzgebiete.py Eurostat sdg_15_20 (API)
     schutzherkunft.py EEA SEBI 007, Abbildung 2 — ZIP mit .xlsx (API)
+    schutzstufen.py  Umweltbundesamt, kumulative Summe nach IUCN-Stufen (API)
     vogel.py         Farmland Bird Index 1998–2025 (gepflegt) + EU-Reihe (API)
     boden.py         ÖROK-Flächeninanspruchnahme und Versiegelung (gepflegt)
     baulandreserven.py  Landnutzung der Baulandreserven je Gemeinde (API)
@@ -78,6 +79,7 @@ def _wort(n: int) -> str:
 
 from schutzgebiete import baue_schutzgebiete
 from schutzherkunft import baue_schutzherkunft
+from schutzstufen import baue_schutzstufen
 from vogel import baue_vogel
 from boden import baue_boden
 from rotelisten import baue_rotelisten
@@ -181,6 +183,29 @@ def main() -> None:
                     f"Schutzgebiete und Schutzherkunft uneins: Eurostat meldet "
                     f"{schutzgebiete['aktuell']:.1f} % für {schutzgebiete['stand']}, "
                     f"die EEA {at:.1f} % für {schutzherkunft['stichjahr']}."
+                )
+
+    # `schutzstufen` zerlegt dieselbe Zahl ein drittes Mal — nicht nach dem,
+    # WER ausgewiesen hat, sondern nach dem, WIE STRENG geschützt wird.
+    # Muss direkt hinter `schutzherkunft` stehen: Erst wenn klar ist, woher
+    # der Schutz kommt, ist die Frage nach seiner Tiefe die nächste.
+    schutzstufen = baue_schutzstufen()
+    if schutzstufen:
+        ausgaben["schutzstufen"] = schutzstufen
+
+        # Gegenprobe über drei Herausgeber hinweg. Die Toleranz ist hier
+        # WEITER als bei schutzherkunft (0,2): Das UBA zählt zum Stichtag
+        # Jänner 2025 und rechnet gegen die Staatsfläche, Eurostat meldet
+        # Ende 2023 und bereinigt anders. 29,6 gegen 29,3 ist erwartbar —
+        # ein Punkt Abstand wäre es nicht.
+        if schutzgebiete:
+            abstand = abs(schutzstufen["gesamt_anteil"] - schutzgebiete["aktuell"])
+            if abstand > 1.0:
+                warnen(
+                    f"Schutzgebiete und Schutzstufen uneins: Eurostat meldet "
+                    f"{schutzgebiete['aktuell']:.1f} % für {schutzgebiete['stand']}, "
+                    f"das UBA {schutzstufen['gesamt_anteil']:.1f} % für "
+                    f"{schutzstufen['stand']}."
                 )
 
     ausgaben["vogel"] = baue_vogel()
@@ -341,7 +366,23 @@ def main() -> None:
     # Gesamtnote: es gibt keinen sinnvollen Index, der Schutzgebietsfläche,
     # Vogelbestand, Bodenverbrauch und Datenlage zu einer Zahl verrechnet.
     kpi: dict = {"stand": start.strftime("%Y-%m-%d")}
-    if schutzgebiete:
+
+    # 07.09.2026 — die erste Kachel zeigt den STRENGEN Schutz, nicht mehr die
+    # Gesamtfläche. Vorher stand dort „29,3 % · Landesfläche unter Schutz ·
+    # EU-Ziel 30 %, 0,7 Punkte fehlen". Das liest sich als *fast am Ziel* und
+    # ist genau die Fehllesung, die der Abschnitt `schutzstufen` auflöst:
+    # streng geschützt sind 2,9 %, ein Zehntel des Schutzes.
+    #
+    # Die Gesamtzahl verschwindet nicht — sie steht weiterhin im Abschnitt
+    # `schutzgebiete` samt Zeitreihe und 30-%-Marke. Die Kachel ist der
+    # Einstieg, nicht die Zusammenfassung.
+    if schutzstufen:
+        kpi["schutzstufen_streng"] = schutzstufen["streng_anteil"]
+        kpi["schutzstufen_stand"] = schutzstufen["stand"]
+        kpi["schutzstufen_am_schutz"] = schutzstufen["anteil_streng_am_schutz"]
+    elif schutzgebiete:
+        # Rückfall: Fällt die UBA-Seite aus, steht lieber die alte Kachel als
+        # eine Lücke in der Reihe — vier Kacheln in einer Viererreihe.
         kpi["schutzgebiete_prozent"] = schutzgebiete["aktuell"]
         kpi["schutzgebiete_jahr"] = schutzgebiete["stand"]
         kpi["schutzgebiete_luecke"] = schutzgebiete["luecke"]

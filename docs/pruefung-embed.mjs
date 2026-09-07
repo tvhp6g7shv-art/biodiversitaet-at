@@ -52,7 +52,7 @@ const HIER = dirname(fileURLToPath(import.meta.url));
    dort steht die Auswahl, hier wird sie geprüft. Läuft sie auseinander, bietet
    die Einbettung Grafiken an, deren Module nicht geladen sind — genau der
    Fehler vom 29.08.2026. */
-const GRAFIKEN = ["schutzgebiete", "schutzherkunft",
+const GRAFIKEN = ["schutzgebiete", "schutzherkunft", "schutzstufen",
                   "vogel", "boden", "rotelisten",
                   "erhaltung", "lebensraeume", "biotoptypen",
                   "fliessgewaesser", "querbauwerke", "wald",

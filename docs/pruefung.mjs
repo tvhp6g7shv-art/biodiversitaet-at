@@ -85,6 +85,7 @@ const name = (process.argv.find((a) => a.startsWith("--name=")) || "=?").split("
 const HOEHEN = {
   "c-schutzgebiete": 340,
   "c-schutzherkunft": 340,
+  "c-schutzstufen": 340,
   "c-vogel": 420,
   "c-boden": 340,
   "c-rotelisten": 690,
@@ -137,6 +138,7 @@ const HOEHEN = {
    Länge ab. */
 const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/schutzherkunft.js",
+                "charts/schutzstufen.js",
                 "charts/vogel.js", "charts/boden.js", "charts/rotelisten.js",
                 "charts/erhaltung.js", "charts/lebensraeume.js",
                 "charts/biotoptypen.js",
@@ -148,14 +150,14 @@ const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/falter.js", "charts/rueckkehrer.js",
                 "charts/vogelarten.js"];
 
-const DATEN = ["meta", "kpi", "schutzgebiete", "schutzherkunft",
+const DATEN = ["meta", "kpi", "schutzgebiete", "schutzherkunft", "schutzstufen",
                "vogel", "boden", "rotelisten",
                "erhaltung", "lebensraeume", "biotoptypen",
                "fliessgewaesser", "querbauwerke", "wald",
                "baumarten", "waldarten", "natura2000", "biolandbau", "pestizide",
                "falter", "rueckkehrer", "vogelarten"];
 
-const ABSCHNITTE = ["schutzgebiete", "schutzherkunft",
+const ABSCHNITTE = ["schutzgebiete", "schutzherkunft", "schutzstufen",
                     "vogel", "boden", "rotelisten",
                     "erhaltung", "lebensraeume", "biotoptypen",
                     "fliessgewaesser", "querbauwerke", "wald",

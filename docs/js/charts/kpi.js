@@ -75,7 +75,29 @@ function baueKpis(kpi) {
   if (!kpi) return;
   const teile = [];
 
-  if (kpi.schutzgebiete_prozent !== undefined) {
+  /* 07.09.2026 — die Kachel zeigt den STRENGEN Schutz, nicht mehr die
+     Gesamtfläche. Vorher stand hier „29,3 % · Landesfläche unter Schutz ·
+     2023 · EU-Ziel 30 %, 0,7 Punkte fehlen“. Drei Zahlen, die zusammen
+     *fast am Ziel* sagen — und das ist die Fehllesung, die der Abschnitt
+     `schutzstufen` auflöst: streng geschützt sind 2,9 %.
+
+     Die Gesamtzahl ist nicht verschwunden. Sie steht weiterhin im
+     Abschnitt `schutzgebiete` samt Zeitreihe und 30-%-Marke. Die Kachel
+     ist der Einstieg, nicht die Zusammenfassung.
+
+     `kennung` ist „schutzstufen“ und zeigt damit auf `s-schutzstufen`,
+     nicht mehr auf `s-schutzgebiete`. Die Wertung in idl.css 49 hängt an
+     dieser Kennung und wurde am selben Tag nachgezogen. */
+  if (kpi.schutzstufen_streng !== undefined) {
+    teile.push(kachel(
+      pz(kpi.schutzstufen_streng), " %",
+      "streng geschützte Fläche",
+      `${kpi.schutzstufen_stand} · ${pz(kpi.schutzstufen_am_schutz)} % des Schutzes`,
+      "schutzstufen"
+    ));
+  } else if (kpi.schutzgebiete_prozent !== undefined) {
+    /* Rückfall, falls die UBA-Seite ausfällt: lieber die alte Kachel als
+       eine Lücke in einer Reihe, die auf vier Spalten gebaut ist. */
     teile.push(kachel(
       pz(kpi.schutzgebiete_prozent), " %",
       /* 03.09.2026 — „Anteil der“ gestrichen: die Einheit hinter der Zahl

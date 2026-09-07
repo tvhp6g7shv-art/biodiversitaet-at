@@ -701,7 +701,8 @@ async function start() {
      Datei (rund 310 KB gegen 2 KB für die Werte). Sie steht bewusst als
      eigener Eintrag: Fällt sie aus, zeigt der Abschnitt weiterhin seine
      Tabelle, statt ganz zu verschwinden. */
-  const DATEIEN = ["meta", "kpi", "schutzgebiete", "schutzherkunft", "vogel", "boden",
+  const DATEIEN = ["meta", "kpi", "schutzgebiete", "schutzherkunft", "schutzstufen",
+                   "vogel", "boden",
                    "rotelisten", "erhaltung", "lebensraeume",
                    "biotoptypen", "fliessgewaesser", "querbauwerke", "wald",
                    "baumarten", "waldarten", "natura2000",
@@ -786,6 +787,12 @@ async function start() {
        ob hinter den 29,3 % eine EU-Richtlinie oder eine Landesentscheidung
        steht — und genau das ist der Befund des zweiten. */
     sicher("Schutzherkunft", () => BIO.baueSchutzherkunft(geladen.schutzherkunft));
+    /* Dritter Abschnitt über dieselbe Zahl, und der Grund, warum die
+       KPI-Kachel seit 07.09.2026 den strengen Schutz zeigt: Die beiden
+       Abschnitte darüber sagen, wie viel geschützt ist und wer es
+       ausgewiesen hat — dieser sagt, wie streng. Muss dahinter stehen,
+       weil die Kaskade dieselbe Gesamtzahl noch einmal aufmacht. */
+    sicher("Schutzstufen",   () => BIO.baueSchutzstufen(geladen.schutzstufen));
     sicher("Vögel",          () => BIO.baueVogel(geladen.vogel));
     sicher("Bodenverbrauch", () => BIO.baueBoden(geladen.boden));
     sicher("Rote Listen",    () => BIO.baueRoteListen(geladen.rotelisten));

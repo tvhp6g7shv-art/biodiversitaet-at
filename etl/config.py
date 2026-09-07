@@ -147,6 +147,7 @@ PFLEGE_RHYTHMUS = {
     "baumarten":    2,   # dieselbe Quelle, derselbe Rhythmus
     "waldarten":   25,   # Rote Liste Gefäßpflanzen: 1986, 1999, 2022
     "natura2000":   7,   # Artikel 17: Sechsjahreszyklus plus Berichtsverzug
+    "schutzstufen": 3,   # UBA-Seite, zuletzt Jänner 2025; loser Rhythmus
 }
 
 # ---------------------------------------------------------------------------
@@ -400,6 +401,71 @@ SH_MITGLIEDSTAATEN = [
     "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovakia",
     "Slovenia", "Spain", "Sweden",
 ]
+
+# ---------------------------------------------------------------------------
+# Quelle Schutzstufen — Umweltbundesamt, Seite „Schutzgebiete"
+# ---------------------------------------------------------------------------
+#
+# Die zweite Tabelle der Seite, „Kumulative Summe der geschützten Flächen in
+# Österreich (2025)". Keine Datei, keine Schnittstelle — reines HTML, deshalb
+# der Parser in schutzstufen.py.
+#
+# Zum Nachziehen: Die Seite trägt den Stand unter der ERSTEN Tabelle
+# („Stand: Jänner 2025"). Ändert sich die Tabelle, melden sich die Sollwerte
+# unten als Warnung, nicht als Fehler.
+SST_SEITE_URL = "https://www.umweltbundesamt.at/umweltthemen/naturschutz/schutzgebiete"
+
+SST_TIMEOUT_SEKUNDEN = 60
+
+# Ohne erkennbaren User-Agent antwortet der Server der UBA-Seite je nach
+# vorgelagertem Schutz mit 403. Ein sprechender Name ist höflicher als ein
+# geliehener Browser-String.
+SST_USER_AGENT = "biodiversitaet-monitor.at ETL (+https://biodiversitaet-monitor.at)"
+
+# Zeilenbeschriftungen der Quelle, in der Reihenfolge der Tabelle: von der
+# strengsten Stufe zur Gesamtsumme. Gesucht wird nach exakter Übereinstimmung
+# nach dem Entfernen von Fußnotenzeichen.
+SST_STUFEN = [
+    "IUCN I - II",
+    "IUCN III - IV",
+    "IUCN V - VI",
+    "keine IUCN-Kategorie",
+]
+
+# Was im Dashboard steht. Die Quelle beschriftet die Zeilen mit dem ZUWACHS,
+# die Werte sind aber KUMULATIV — „IUCN III - IV" meint dort die Summe aus
+# I bis IV. Wörtlich übernommen läse sich das im Bild falsch.
+SST_BESCHRIFTUNG = [
+    "Streng geschützt (IUCN I–II)",
+    "… plus geschützt (III–IV)",
+    "… plus gering geschützt (V–VI)",
+    "… plus ohne IUCN-Kategorie",
+]
+
+# Abgeschrieben am 07.09.2026 aus dem gerenderten DOM. Sie sind KEINE
+# Datenquelle, sondern die Gegenprobe: Weicht der Abruf ab, hat das UBA
+# fortgeschrieben — dann gehören Stand und Sollwerte hier nachgezogen.
+SST_SOLL_KM2 = [2_449.08, 14_724.39, 24_299.40, 24_814.50]
+
+# Toleranz der Gegenprobe. Kleiner als der kleinste Zuwachs der Tabelle
+# (515,10 km²), groß genug für eine Rundungsänderung.
+SST_TOLERANZ_KM2 = 1.0
+
+SST_STAND = "Jänner 2025"
+SST_STAND_JAHR = 2025
+
+# Nenner aller Prozentwerte dieses Abschnitts. Die UBA-Seite nennt
+# ausschließlich km² — jeder Anteil ist Eigenberechnung.
+#
+# Beleg: Eurostat `demo_r_d3area`, geo=AT, landuse=TOTAL, unit=KM2. Die Reihe
+# läuft 1990–2015 und steht ab 2008 konstant auf 83.879 (davor 83.858,6 →
+# 83.871 → 83.871,7). Am 07.09.2026 abgerufen.
+SST_FLAECHE_KM2 = 83_879.0
+
+# Ziel der EU-Biodiversitätsstrategie für STRENG geschützte Fläche. Gilt der
+# EU als Ganzes, nicht je Mitgliedstaat — deshalb zeichnet der Abschnitt
+# keine Zielmarke, die Zahl steht nur im Text. Vgl. SH_EU_ZIEL.
+SST_EU_ZIEL_STRENG = 10.0
 
 # ---------------------------------------------------------------------------
 # Quelle Pestizidabsatz — Eurostat aei_fm_salpest09
