@@ -23,21 +23,30 @@ const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
    Balken ist der Befund. Gedreht wird das im ETL, nicht hier: ein
    `reverse()` an dieser Stelle stünde ohne erkennbaren Grund im Code.
 
-   WARUM HIER EINE RAMPE UND BEI `schutzherkunft` SERIENTÖNE: Dort sind
-   die beiden Teile zwei Wege zur Ausweisung — nebeneinander, nicht
-   übereinander. Hier sind die vier Werte echte Stufen einer Skala, und
-   zwar einer geordneten: abnehmender Schutzgrad. Dafür ist eine
-   sequenzielle Rampe die richtige Form, dunkler = strenger.
+   WARUM HIER KEINE SERIENTÖNE WIE BEI `schutzherkunft`: Dort sind die
+   beiden Teile zwei Wege zur Ausweisung — nebeneinander, nicht
+   übereinander. Hier sind die vier Werte Stufen einer geordneten Skala.
+   Serientöne behaupteten vier gleichrangige Kategorien.
+
+   Warum es trotzdem KEINE Rampe mehr ist, sondern eine Betonung: siehe
+   den Block über `KONTEXT`/`BEFUND` weiter unten. Kurz — die Rampe
+   arbeitete gegen die Balkenlänge und ließ die Grafik wirken, als sei
+   alles in Ordnung.
 
    NICHT `--viz-seq-rot-*`: Rot wäre eine Wertung, die die Daten nicht
    hergeben. Ein gering geschütztes Gebiet ist kein Schaden, es ist ein
-   Landschaftsschutzgebiet.
+   Landschaftsschutzgebiet. Das galt für die Rampe und gilt für die
+   Betonung unverändert.
 
-   DIE RAMPE SIEHT IN DEN BEIDEN AUSLIEFERUNGEN VERSCHIEDEN AUS und das
+   DIE FARBEN SEHEN IN DEN BEIDEN AUSLIEFERUNGEN VERSCHIEDEN AUS und das
    ist gewollt: Auf WordPress ist `--viz-seq-*` grün (Palette „Lichtung",
    #d7ebc8 → #477707), auf Pages grau (#f2f2f2 → #262626). Pages ist
    monochrom, die Einbettungen sind bunt. Beide führen alle sechs Stufen —
    am 07.09.2026 an beiden Auslieferungen gemessen.
+
+   NICHT ZU VERWECHSELN mit `--viz-series-5/6`, die auf WordPress fehlen.
+   Das ist eine andere Tokenfamilie; `--viz-seq-*` ist in beiden
+   Auslieferungen vollständig.
 
    WARUM DIE ACHSE BEI 35 ENDET: dieselbe Grenze wie im Abschnitt darüber,
    damit die Balken beider Abschnitte auf denselben Maßstab fallen. Wer
@@ -57,16 +66,47 @@ const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
    development". Wer ihn vermisst, sucht nach einer Zahl, die niemand
    erhebt. */
 
-/* Vier Stufen aus einer sechsstufigen Rampe. Nicht 1–4, sondern 3–6: die
-   beiden hellsten Stufen tragen auf hellem Grund zu wenig Kontrast, und
-   die Kaskade braucht ihre Spanne im dunkleren Teil. Reihenfolge wie die
-   Daten — Index 0 ist der oberste, breiteste Balken. */
-const RAMPE = [
-  "--viz-seq-3",
-  "--viz-seq-4",
-  "--viz-seq-5",
-  "--viz-seq-6",
-];
+/* BIS 07.09.2026 STAND HIER EINE VIERSTUFIGE RAMPE (seq-3 bis seq-6) —
+   eine Stufe je Balken, dunkler = strenger. Der User hat sie verworfen:
+   „Diese Grafik ist grün, wirkt wie gut."
+
+   Er hat recht, und die Ursache ist nicht der Farbton allein:
+
+   DIE RAMPE ARBEITETE GEGEN DIE BALKENLÄNGE. Eine sequenzielle Rampe
+   liest sich als „dunkler = mehr". Hier ist der dunkelste Balken der
+   KÜRZESTE. Zwei Signale, die sich widersprechen — und das Auge glaubt
+   der Länge. Übrig blieb der Eindruck von vier langen grünen Balken.
+
+   VIER ABSTUFUNGEN BEHAUPTEN AUSSERDEM VIER GLEICHRANGIGE WERTE. Der
+   Abschnitt hat aber genau einen Befund: die 2,9 %. Die drei anderen
+   Balken sind Kontext, der zeigt, wovon die 2,9 ein Teil sind.
+
+   DESHALB JETZT BETONUNG STATT RAMPE: drei Balken tragen denselben
+   gedämpften Ton, der unterste — der Befund — den dunkelsten. Keine
+   Wertung, kein Rot; nur die Auskunft, welcher Balken die Überschrift
+   trägt.
+
+   WARUM seq-3 UND seq-6 und nicht andere Token: In allen VIER
+   Auslieferungen muss der Befundbalken sich vom Kontext absetzen, und
+   zwar immer in Richtung MEHR Kontrast zum Grund. Vorgerechnet
+   (WCAG-Kontrast, nicht geschätzt — `getComputedStyle` löst `var()` in
+   jsdom nicht auf):
+
+     Auslieferung   Grund     seq-3 : Grund   seq-6 : Grund   Sprung
+     WP hell        #f9fbf5      1,99            5,15          2,59
+     WP dunkel      #151a11      1,94            9,64          4,97
+     Pages hell     #ffffff      2,10           15,13          7,22
+     Pages dunkel   #1c1f21      2,47           12,68          5,14
+
+   `--viz-muted` wäre der naheliegende Kontextton und fällt aus: auf
+   WordPress hell steht er bei #6b7162 gegen #477707 — Sprung 1,06, also
+   praktisch dieselbe Helligkeit. Wer Farben schlecht unterscheidet, sähe
+   vier gleiche Balken. seq-2 fällt umgekehrt aus: Sprung gut, aber nur
+   1,28–1,65 gegen den Grund — die Kontextbalken verschwänden.
+
+   Index 0 ist der oberste, breiteste Balken; der Befund steht unten. */
+const KONTEXT = "--viz-seq-3";
+const BEFUND  = "--viz-seq-6";
 
 /* Obergrenze der Achse in Prozentpunkten — siehe Kopfkommentar. */
 const ACHSE_MAX = 35;
@@ -94,12 +134,19 @@ function baueSchutzstufen(daten) {
 
   d.setOption({
     ...basis(),
-    /* Der linke Rand trägt die längste Stufenbeschriftung („… plus gering
-       geschützt (V–VI)"). 210 px sind an der MONO-Auslieferung gemessen,
-       nicht geschätzt — ohne genug Platz schneidet ECharts hart ab.
+    /* Der linke Rand trägt die längste Stufenbeschriftung. 210 px sind an
+       der MONO-Auslieferung gemessen, nicht geschätzt — ohne genug Platz
+       schneidet ECharts hart ab.
+
+       Der Wert hat die Umbenennung vom 07.09.2026 überstanden: 210 lässt
+       `kategorieLabel` 194 px Text, MONO 12 px, zwei Zeilen. Die längste
+       Zeile nach Umbruch ist jetzt „Artenschutzgebiete" (18 Zeichen) —
+       kürzer als die frühere längste („… plus gering geschützt (V–VI)").
+       Wer die Namen wieder ändert, misst diesen Wert neu.
+
        Kein `top`-Wert wie bei `schutzherkunft`: Dieser Abschnitt hat
-       keine Legende, die vier Farben sind eine Skala und keine
-       Kategorien. Sie stehen in der Achse, nicht über dem Bild. */
+       keine Legende. Die Farben benennen keine Kategorien, sie heben
+       einen Balken hervor; die Namen stehen in der Achse. */
     grid: { ...balkenGitter(feld, { left: 210, right: 74 }), top: 8 },
     tooltip: {
       ...basis().tooltip, trigger: "axis",
@@ -125,15 +172,18 @@ function baueSchutzstufen(daten) {
     series: [{
       name: "Anteil", type: "bar",
       barWidth: balkenBreite(feld, "62%", zeilen.length),
+      /* Der letzte Balken ist der Befund, nicht der erste: die Kaskade
+         läuft von oben (alles Geschützte) nach unten (nur das streng
+         Geschützte). Gedreht wird im ETL — siehe Kopfkommentar. */
       data: zeilen.map((z, k) => ({
         value: z.anteil,
-        itemStyle: { color: stil(RAMPE[k]) },
+        itemStyle: { color: stil(k === zeilen.length - 1 ? BEFUND : KONTEXT) },
       })),
       itemStyle: { borderRadius: [0, 4, 4, 0] },
       emphasis: { itemStyle: { opacity: 0.85 } },
-      /* Die Zahl steht rechts neben dem Balken, nicht in ihm: Die vier
-         Töne der Rampe unterscheiden sich in der Helligkeit, eine feste
-         Schriftfarbe wäre auf dem hellsten oder dem dunkelsten Balken
+      /* Die Zahl steht rechts neben dem Balken, nicht in ihm: Kontext-
+         und Befundton unterscheiden sich deutlich in der Helligkeit (das
+         ist ihr Zweck), eine feste Schriftfarbe wäre auf einem der beiden
          zwangsläufig zu schwach. Außen liegt sie immer auf dem Grund der
          Karte und ist damit in beiden Farbmodi lesbar. */
       label: {

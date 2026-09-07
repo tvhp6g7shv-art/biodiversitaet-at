@@ -435,11 +435,40 @@ SST_STUFEN = [
 # Was im Dashboard steht. Die Quelle beschriftet die Zeilen mit dem ZUWACHS,
 # die Werte sind aber KUMULATIV — „IUCN III - IV" meint dort die Summe aus
 # I bis IV. Wörtlich übernommen läse sich das im Bild falsch.
+#
+# GEÄNDERT AM 07.09.2026 nach einem Befund des Users: Die erste Fassung
+# lautete „Streng geschützt (IUCN I–II)" / „… plus geschützt (III–IV)" /
+# „… plus gering geschützt (V–VI)" / „… plus ohne IUCN-Kategorie". Drei
+# Fehler auf einmal:
+#
+#   1. Die „… plus"-Kette setzt voraus, dass man von UNTEN liest. Gelesen
+#      wird aber von oben — dort steht dann ein „… plus" ohne Bezug.
+#   2. „IUCN" und römische Ziffern sind Fachbegriffe. Das Bild trägt die
+#      Zahl, nicht die Systematik; der Fachbegriff gehört in die
+#      Hinweiszeile, wo er eingeordnet wird — und dort steht er auch.
+#   3. „ohne IUCN-Kategorie" beschreibt eine Verwaltungslücke, keinen
+#      Schutzgrad. In einer Stufengrafik liest sich das wie ein Fehler.
+#
+# Die neuen Namen sind die Gebietstypen der UBA-Definitionen (§ 1 der Akte
+# `doku/schutzstufen-kaskade-2026-09-07.md`, dort wörtlich zitiert):
+# I–II Naturreservat/Wildnisgebiet/Nationalpark, III Naturdenkmal,
+# IV Biotop-/Artenschutzgebiet mit Management, V Geschützte Landschaft,
+# VI Kulturlandschaft mit nachhaltiger Nutzung.
+#
+# Der erste Eintrag behält das Wort „Streng", weil die Überschrift es
+# führt („… ist streng geschützt"). Ohne diese Brücke findet der Leser den
+# Balken nicht, von dem die Überschrift spricht. Die drei übrigen tragen
+# ein „+", weil sie Zuwächse sind — kürzer und eindeutiger als „… plus".
+#
+# LÄNGE: Der Achsenrand gibt 210 px, davon 194 px Text (`kategorieLabel`
+# zieht 16 ab), MONO 12 px, zwei Zeilen à ~26 Zeichen. Die längste Zeile
+# nach Umbruch ist „Artenschutzgebiete" (18) — unter der bisher längsten
+# („… plus gering geschützt (V–VI)"). `grid.left` bleibt deshalb bei 210.
 SST_BESCHRIFTUNG = [
-    "Streng geschützt (IUCN I–II)",
-    "… plus geschützt (III–IV)",
-    "… plus gering geschützt (V–VI)",
-    "… plus ohne IUCN-Kategorie",
+    "Streng: Nationalparks, Wildnis",
+    "+ Naturdenkmäler, Artenschutzgebiete",
+    "+ geschützte Landschaften",
+    "+ ohne festgelegte Stufe",
 ]
 
 # Abgeschrieben am 07.09.2026 aus dem gerenderten DOM. Sie sind KEINE
