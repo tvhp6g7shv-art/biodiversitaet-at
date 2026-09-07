@@ -200,6 +200,54 @@ def baue_schutzstufen() -> dict | None:
     # streng geschützt?
     anteil_streng_am_schutz = round(km2[0] / km2[-1] * 100, 1)
 
+    # --- Die Segmente: dieselbe Tabelle, anderer Nenner --------------------
+    #
+    # UMBAU AM 07.09.2026, einen Tag nach dem Live-Gang. Der User hat die
+    # Kaskade zweimal verworfen — erst die Farbe, dann, nach der Korrektur,
+    # das Bild als Ganzes: „Ich sehe weiterhin das hier."
+    #
+    # Er hatte recht, und der Fehler saß tiefer als in den Farbtönen. Die
+    # Kaskade zeigte VIER ANTEILE AN DER LANDESFLÄCHE (29,6 / 29,0 / 17,6 /
+    # 2,9). Die Überschrift behauptet aber ein VERHÄLTNIS ZWISCHEN ZWEIEN
+    # davon: 2,9 zu 29,6, also die 9,9 %. Dieses Verhältnis stand nirgends im
+    # Bild — es musste im Kopf gerechnet werden. Solange die Achse an der
+    # Landesfläche hängt, gewinnt optisch „viel geschützt", in jeder Farbe.
+    #
+    # Deshalb hier der Nennerwechsel: nicht mehr die Zuwächse gegen die
+    # Staatsfläche, sondern gegen das GESCHÜTZTE GEBIET (km2[-1]). Dann ist
+    # das erste Segment sichtbar ein Zehntel des Balkens, und die Überschrift
+    # ist ablesbar statt behauptet. Vgl. den festgehaltenen Grundsatz, dass
+    # der Nennerwechsel die Aussage trägt.
+    #
+    # NICHT KUMULATIV, sondern die Zuwächse: Ein gestapelter Balken zeigt
+    # Teile eines Ganzen. Kumulierte Werte ergäben 9,9 + 59,3 + 97,9 + 100
+    # und damit Unsinn.
+    #
+    # Der Bezug zur Landesfläche verschwindet nicht, er wandert in die
+    # Fußzeile — und der Nachbarabschnitt `schutzgebiete` beantwortet „wie
+    # viel ist geschützt" ohnehin schon. Zwei Fragen, zwei Bilder, jeweils
+    # der passende Nenner.
+    zuwaechse = [km2[0]] + [b - a for a, b in zip(km2, km2[1:])]
+
+    # RUNDUNG NACH GRÖSSTEN RESTEN, nicht kaufmännisch je Wert. Einzeln
+    # gerundet ergeben die vier Anteile 9,9 + 49,5 + 38,6 + 2,1 = 100,1 —
+    # eine Summe über 100 in einem Bild, das ein Ganzes zeigt. Das Verfahren
+    # rundet erst alle ab und verteilt die fehlenden Zehntel an die größten
+    # Reste; die Summe ist danach exakt 100,0.
+    roh = [w / km2[-1] * 1000 for w in zuwaechse]
+    unten = [int(x) for x in roh]
+    fehlend = 1000 - sum(unten)
+    reste = sorted(range(len(roh)), key=lambda i: roh[i] - unten[i], reverse=True)
+    for i in reste[:fehlend]:
+        unten[i] += 1
+    segment_anteile = [x / 10 for x in unten]
+
+    if abs(sum(segment_anteile) - 100.0) > 0.001:
+        warnen(
+            f"Schutzstufen: Segmente summieren auf {sum(segment_anteile):.1f} % "
+            "statt 100,0 — Rundung prüfen"
+        )
+
     # Was auf 10 % streng geschützter Staatsfläche fehlt — als Fläche und als
     # Vielfaches. Die Zahl steht in der Notiz, nicht als Marke im Bild.
     luecke_km2 = round(config.SST_EU_ZIEL_STRENG / 100 * config.SST_FLAECHE_KM2 - km2[0], 1)
@@ -224,16 +272,30 @@ def baue_schutzstufen() -> dict | None:
     # Die Balken laufen im Bild von oben (alles) nach unten (streng), die
     # Quelle listet umgekehrt. Gedreht wird hier, nicht im Chart-Modul —
     # dort stünde sonst ein `reverse()` ohne erkennbaren Grund.
+    #
+    # SEIT DEM UMBAU VOM 07.09.2026 zeichnet das Modul `segmente`, nicht
+    # mehr `balken`. Die kumulative Reihe bleibt trotzdem hier: Sie trägt
+    # die Tabelle unter der Grafik, die Gegenprobe in `build.py` liest
+    # `gesamt_anteil` aus ihr, und die KPI-Kachel hängt an `streng_anteil`.
     balken = [
         {"stufe": b, "km2": round(w, 2), "anteil": a}
         for b, w, a in zip(config.SST_BESCHRIFTUNG, km2, anteile)
     ][::-1]
+
+    # Was das Modul zeichnet: die Zuwächse als Teile des Schutzes. Reihenfolge
+    # von STRENG nach schwach — der gestapelte Balken läuft von links, und
+    # links steht der Befund. Kein `[::-1]` wie bei `balken`.
+    segmente = [
+        {"stufe": b, "km2": round(w, 2), "anteil": a}
+        for b, w, a in zip(config.SST_BESCHRIFTUNG, zuwaechse, segment_anteile)
+    ]
 
     return {
         "stand": config.SST_STAND,
         "stand_jahr": config.SST_STAND_JAHR,
         "flaeche_km2": config.SST_FLAECHE_KM2,
         "balken": balken,
+        "segmente": segmente,
         "streng_anteil": anteile[0],
         "streng_km2": round(km2[0], 2),
         "gesamt_anteil": anteile[-1],
@@ -244,13 +306,22 @@ def baue_schutzstufen() -> dict | None:
         "faktor": faktor,
         # Die Notiz baut das Chart-Modul aus diesen Zahlen — dort steht der
         # Formatierer, der 2,9 schreibt und nicht 2.9.
-        # Die Prüfung misst Hinweiszeilen gegen 150–234 Zeichen. Diese liegt
-        # bei 231 und damit knapp darunter — die Mittelstufen III und IV
-        # stehen deshalb nicht hier, sondern in der Achsenbeschriftung.
+        #
+        # NEU GEFASST AM 07.09.2026 mit dem Nennerwechsel. Die alte Fassung
+        # erklärte die IUCN-Stufen, weil die Achse sie in römischen Ziffern
+        # führte. Seit der Umbenennung stehen die Gebietstypen im Bild; hier
+        # gehört jetzt der Satz hin, den das Bild NICHT mehr zeigt — dass der
+        # ganze Balken nur nicht einmal ein Drittel des Landes ist.
+        # Die Prüfung misst Hinweiszeilen gegen 150–234 Zeichen.
+        # DEZIMALKOMMA, nicht Punkt: Diese Zeichenkette geht fertig ins
+        # Dashboard, der Formatierer des Chart-Moduls sieht sie nicht mehr.
+        # Ein `f"{x:.1f}"` schreibt hier „29.6" und fällt erst am
+        # ausgelieferten Stand auf.
         "hinweis": (
-            "Die Stufen folgen den Schutzkategorien der Weltnaturschutzunion (IUCN): "
-            "I und II sind Nationalparks und Wildnisgebiete, V und VI geschützte "
-            f"Landschaften. Das EU-Ziel von {config.SST_EU_ZIEL_STRENG:.0f} Prozent "
-            "gilt der Union als Ganzes, nicht je Mitgliedstaat."
+            "Der ganze Balken ist die geschützte Fläche Österreichs — "
+            f"{anteile[-1]:.1f}".replace(".", ",") + " Prozent des Landes. "
+            "Die Stufen folgen der Weltnaturschutzunion (IUCN). Das EU-Ziel "
+            f"von {config.SST_EU_ZIEL_STRENG:.0f} Prozent gilt der Union als "
+            "Ganzes, nicht je Mitgliedstaat."
         ),
     }
