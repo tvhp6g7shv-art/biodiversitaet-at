@@ -230,7 +230,18 @@ function baueSchutzstufen(daten) {
        das geschützte Gebiet, das sagt die Unterzeile. Die Stufennamen
        tragen jetzt die Legende und die Direktetiketten.
        `top: 34` hält die Legende frei. */
-    grid: { ...balkenGitter(feld, { left: 4, right: 4 }), top: LEG_HOEHE, bottom: 34 },
+    /* Ränder tragen die halbe Breite des äussersten Achsenlabels, nicht die
+       Kategorienamen — die stehen seit dem Umbau in der Legende.
+
+       `left: 4` STAND HIER UND WAR ZU KNAPP: Am ausgelieferten Stand
+       gemessen (07.09.2026, WordPress, SVG 1178 px) ragte „0 %" um 5,9 px
+       über die linke Kante und wurde zu „%" abgeschnitten. ECharts setzt
+       Achsenlabels mittig über den Tick; bei 0 liegt die halbe Labelbreite
+       also im Nichts. „0 %" ist rund 20 px breit, „100 %" rund 33 —
+       daher 16 links und 22 rechts, je die halbe Breite plus etwas Luft.
+       Die Prüfsuite hat das NICHT gemeldet: Sie misst Text gegen die
+       Zeichenfläche, und der Überstand blieb knapp darunter. */
+    grid: { ...balkenGitter(feld, { left: 16, right: 22 }), top: LEG_HOEHE, bottom: 34 },
     /* HIER BEWUSST NICHT `legende()`. Der Helfer schaltet schmal auf
        `type: "scroll"` — eine Zeile zum Blättern statt drei Zeilen ins
        Diagramm hinein. Für die meisten Abschnitte ist das richtig; für
