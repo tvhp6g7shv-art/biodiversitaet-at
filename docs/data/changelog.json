@@ -1,267 +1,289 @@
 {
-  "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "12",
-  "basis_url": "https://biodiversitaet-monitor.at",
-  "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
-  "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
-  "ausgaben": [
+ "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
+ "aktuell": "13",
+ "basis_url": "https://biodiversitaet-monitor.at",
+ "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
+ "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
+ "ausgaben": [
+  {
+   "nummer": "13",
+   "datum": "2026-09-07",
+   "datum_text": "7. September 2026",
+   "titel": "Nicht einmal jeder zehnte geschützte Quadratkilometer ist streng geschützt",
+   "veroeffentlicht": true,
+   "cacheziffer": 19,
+   "charts": [
+    "schutzstufen"
+   ],
+   "social": "29,6 % der Landesfläche stehen unter Schutz. Streng geschützt sind 2,9 % — Nationalparks und Wildnisgebiete.\n\nDas ist nicht einmal jeder zehnte geschützte Quadratkilometer.\nhttps://biodiversitaet-monitor.at/#s-schutzstufen",
+   "abschnitte": [
     {
-      "nummer": "12",
-      "datum": "2026-09-07",
-      "datum_text": "7. September 2026",
-      "titel": "Fast die Hälfte der geschützten Fläche Österreichs ist national ausgewiesen — im EU-Schnitt nicht einmal ein Drittel",
-      "veroeffentlicht": true,
-      "cacheziffer": 18,
-      "charts": [
-        "schutzherkunft"
-      ],
-      "social": "Österreich schützt 29,3 % seiner Landesfläche. 15,4 Punkte davon gehen auf Natura 2000 zurück, 13,9 auf nationale Ausweisung.\n\n47,6 % des Schutzes stammen also nicht aus einer EU-Richtlinie — im EU-Schnitt 29,4 %.\nhttps://biodiversitaet-monitor.at/#s-schutzherkunft",
-      "abschnitte": [
-        {
-          "chart": "schutzherkunft",
-          "alt": "Zwei liegende Balken, Österreich und die EU-27, jeder zweigeteilt nach der Herkunft des Schutzes. Österreich 29,3 Prozent der Landesfläche insgesamt: 15,4 Punkte Natura 2000, 13,9 Punkte national ausgewiesen. EU-27 26,4 Prozent insgesamt: 18,6 Punkte Natura 2000, 7,8 Punkte national. Die Achse endet bei 35 Prozent und trägt keine Zielmarke. Stichjahr ist Ende 2023."
-        }
-      ],
-      "seite": [
-        "Zwei liegende Balken zerlegen die Zahl, die der Abschnitt darüber als eine nennt: Von den 29,3 Prozent geschützter Landesfläche gehen in Österreich 15,4 Punkte auf Natura 2000 zurück und 13,9 Punkte auf eine nationale Ausweisung. In der EU-27 stehen 18,6 Punkten aus Natura 2000 nur 7,8 Punkte nationale Ausweisung gegenüber. Überschneidungen sind herausgerechnet — Fläche, die beides zugleich ist, zählt einmal.",
-        "Damit stammen 47,6 Prozent von Österreichs Schutzfläche nicht aus einer EU-Richtlinie, im EU-Schnitt sind es 29,4 Prozent. Mit seinem Gesamtanteil liegt Österreich auf Platz 10 von 27; neun Mitgliedstaaten kommen über 30 Prozent. Das Bild trägt bewusst keine Zielmarke: Die 30 Prozent der EU-Biodiversitätsstrategie 2030 gelten der EU als Ganzes, nicht jedem Mitgliedstaat. Grundlage ist der EEA-Indikator SEBI 007, Stichjahr Ende 2023."
-      ]
-    },
-    {
-      "nummer": "11",
-      "datum": "2026-09-04",
-      "datum_text": "4. September 2026",
-      "titel": "Belastungen — bei vier von fünf Wasserkörpern, die den guten Zustand verfehlen, nennt Österreich die Verbauung, bei gut vier von zehn als einzige",
-      "veroeffentlicht": true,
-      "cacheziffer": 15,
-      "charts": [
-        "querbauwerke"
-      ],
-      "social": "Von den 4.031 Wasserkörpern, die den guten Zustand verfehlen, nennt Österreichs Meldung bei 3.234 die Verbauung des Gewässers — bei 1.690 als einzigen Grund.\n\nMehr, als die Einträge aus der Fläche überhaupt betreffen: 1.327.\nhttps://biodiversitaet-monitor.at/#s-querbauwerke",
-      "abschnitte": [
-        {
-          "chart": "querbauwerke",
-          "alt": "Drei liegende Balken für die genannten Belastungen der 4.031 Wasserkörper, die den guten Zustand verfehlen. Jeder Balken ist zweigeteilt: dunkel der Anteil, bei dem die Belastung der einzige genannte Grund ist, hell der Anteil zusammen mit anderen. Verbauung des Gewässers 3.234 Wasserkörper, davon 1.690 als einziger Grund. Einträge aus der Fläche 1.327, davon 451. Wasserentnahme 981, davon 162. Die Achse endet beim Nenner 4.031."
-        }
-      ],
-      "seite": [
-        "Drei liegende Balken zeigen, welche Belastungen Österreich für die 4.031 Wasserkörper meldet, die den guten Zustand verfehlen. Jeder Balken ist zweigeteilt — einmal die Wasserkörper, bei denen die Belastung der einzige genannte Grund ist, einmal die, bei denen sie zusammen mit anderen steht. Grundlage ist der Meldezyklus 2022.",
-        "Bei 3.234 der 4.031 nennt die Meldung die Verbauung des Gewässers, das sind 80,2 Prozent; bei 1.690 steht sie allein da und damit häufiger, als die Einträge aus der Fläche überhaupt betreffen (1.327). Die Zahl ist keine Wirkungsmessung: Eine Belastung gilt per Richtlinie als signifikant, wenn sie das Ziel gefährdet, und wird deshalb so gut wie nur dort gemeldet, wo das Ziel verfehlt wird."
-      ]
-    },
-    {
-      "nummer": "10",
-      "datum": "2026-09-03",
-      "datum_text": "3. September 2026",
-      "titel": "Fließgewässer — 49 Prozent der Wasserkörper sind gut, aber nur 42 Prozent der Kilometer",
-      "veroeffentlicht": true,
-      "cacheziffer": 12,
-      "charts": [
-        "fliessgewaesser"
-      ],
-      "social": "Österreichs Flüsse sind in 8.116 Abschnitte geteilt. 49,1 Prozent davon sind in gutem Zustand — nach Flusskilometern gerechnet nur 42,5.\n\nDenn die schlechten Abschnitte sind die längeren: im Mittel 6,1 km gegen 3,0.\nhttps://biodiversitaet-monitor.at/#s-fliessgewaesser",
-      "abschnitte": [
-        {
-          "chart": "fliessgewaesser",
-          "alt": "Zwei gestapelte Balken für denselben Bestand an Fließgewässern. Nach Wasserkörpern gezählt sind 18,9 Prozent in sehr gutem und 30,2 Prozent in gutem Zustand, zusammen 49,1 Prozent. Nach Flusskilometern gemessen sind es 14,2 und 28,3 Prozent, zusammen 42,5 Prozent. Der Rest verteilt sich auf mäßig, unbefriedigend und schlecht."
-        }
-      ],
-      "seite": [
-        "Zwei gestapelte Balken zeigen denselben Bestand auf zwei Arten: einmal nach der Zahl der Wasserkörper, einmal nach ihrer Länge. Grundlage sind 8.116 Oberflächenwasserkörper mit zusammen 32.135 Flusskilometern aus dem Meldezyklus 2022.",
-        "Gezählt sind 49,1 Prozent in gutem Zustand oder besser, gemessen nur 42,5 Prozent. Die 6,6 Punkte Abstand kommen aus der Größenverteilung: Ein Wasserkörper der schlechtesten Klasse ist im Mittel 6,10 Kilometer lang, einer der besten nur 2,97."
-      ]
-    },
-    {
-      "nummer": "09",
-      "datum": "2026-08-30",
-      "datum_text": "30. August 2026",
-      "titel": "Waldzustand nach zwei Messweisen — 93 Prozent gut oder 28 Prozent günstig",
-      "veroeffentlicht": true,
-      "cacheziffer": 11,
-      "charts": [
-        "natura2000"
-      ],
-      "social": "Wie gut geht es Österreichs geschützten Wäldern? Dieselbe EU-Meldung belegt zwei Antworten: 93 Prozent oder 28.\n\nNach Fläche ist fast alles gut. In der Gesamtbewertung kippt ein schlechter Teilwert von vier den ganzen Typ.\nhttps://biodiversitaet-monitor.at/#s-natura2000",
-      "abschnitte": [
-        {
-          "chart": "natura2000",
-          "alt": "Zwei gestapelte Balken für dieselbe EU-Meldung. Nach Fläche gemessen sind 92,8 Prozent der Waldlebensraumtypen in gutem Zustand, 7,1 Prozent nicht gut. Nach der Gesamtbewertung sind nur 28,1 Prozent günstig und 71,9 Prozent ungünstig."
-        }
-      ],
-      "seite": [
-        "Zwei gestapelte Balken stellen dieselbe Meldung Österreichs an die EU auf zwei Arten dar: einmal flächenbezogen nach dem Zustand von Struktur und Funktion, einmal nach der zusammenfassenden Gesamtbewertung. Grundlage sind 32 Bewertungen über 20 Waldlebensraumtypen der Berichtsperiode 2019–2024.",
-        "Nach Fläche sind 92,8 Prozent in gutem Zustand, nach Gesamtbewertung nur 28,1 Prozent günstig. Der Abstand entsteht durch die Zusammenfassungsregel: Ein Waldtyp gilt als ungünstig, sobald einer von vier Teilwerten ungünstig ist — auch wenn seine Fläche zum größten Teil in gutem Zustand ist."
-      ]
-    },
-    {
-      "nummer": "08",
-      "datum": "2026-08-30",
-      "datum_text": "30. August 2026",
-      "titel": "Gefährdete Waldpflanzen — die Summe wächst, die Schwere schneller",
-      "veroeffentlicht": true,
-      "cacheziffer": 11,
-      "charts": [
-        "waldarten"
-      ],
-      "social": "Bei Österreichs Waldpflanzen hat sich die Zahl der Arten kurz vor dem Verschwinden vervierfacht: von 11 auf 43.\n\nDie Zahl aller gefährdeten stieg nur von 200 auf 286. Die bereits gefährdeten rutschen weiter ab.\nhttps://biodiversitaet-monitor.at/#s-waldarten",
-      "abschnitte": [
-        {
-          "chart": "waldarten",
-          "alt": "Drei gestapelte Balken für die Roten Listen 1986, 1999 und 2022. Die Zahl gefährdeter waldgebundener Gefäßpflanzen steigt von 200 über 253 auf 286. Die Stufe „vom Aussterben bedroht\" wächst von 11 über 13 auf 43 Arten, „stark gefährdet\" von 67 auf 83, während „gefährdet\" seit 1999 von 170 auf 157 zurückgeht."
-        }
-      ],
-      "seite": [
-        "Drei gestapelte Balken, einer je Roter Liste, zeigen die gefährdeten waldgebundenen Gefäßpflanzen nach Gefährdungsstufe. Alle drei Listen bewerten denselben Bestand von 1.341 Arten, die Balken sind deshalb ohne Umrechnung vergleichbar.",
-        "Die Zahl steigt von 200 im Jahr 1986 über 253 auf 286 im Jahr 2022. Die Verschiebung wiegt schwerer als die Summe: „vom Aussterben bedroht\" vervierfacht sich von 11 auf 43 Arten, während die unterste Stufe seit 1999 zurückgeht. Moose und Farne liegen unverändert bei 96 gefährdeten Arten."
-      ]
-    },
-    {
-      "nummer": "07",
-      "datum": "2026-08-30",
-      "datum_text": "30. August 2026",
-      "titel": "Nadel- und Laubholz im Wald — die Hälfte des Rückgangs steckt im Nenner",
-      "veroeffentlicht": true,
-      "cacheziffer": 11,
-      "charts": [
-        "baumarten"
-      ],
-      "social": "Nadelholz fällt seit den 1990ern von 69 auf 60 Prozent des bewirtschafteten Waldes.\n\nDie Waldinventur weist zuletzt 50 Prozent aus — sie wechselt die Bezugsgröße. Gut die Hälfte des Einbruchs ist Rechenweg, nicht Wald.\nhttps://biodiversitaet-monitor.at/#s-baumarten",
-      "abschnitte": [
-        {
-          "chart": "baumarten",
-          "alt": "Vier gestapelte Balken für die Erhebungsperioden 1992/96, 2000/02, 2007/09 und 2018/23. Nadelholz sinkt von 69,2 auf 59,8 Prozent, Laubholz steigt von 22,3 auf 25,8 Prozent, Blößen, Lücken und Sträucher wachsen von 8,5 auf 14,3 Prozent."
-        }
-      ],
-      "seite": [
-        "Vier gestapelte Balken, einer je Erhebungsperiode der Österreichischen Waldinventur, zeigen die Anteile von Nadelholz, Laubholz und unbestockten Flächen am bewirtschafteten Wald zwischen 1992/96 und 2018/23.",
-        "Nadelholz fällt von 69,2 auf 59,8 Prozent, Laubholz steigt von 22,3 auf 25,8. Die Waldinventur weist für die letzte Erhebung 50,0 Prozent aus — sie rechnet dort gegen die gesamte Waldfläche statt gegen den bewirtschafteten Wald und macht den Rückgang damit doppelt so groß, wie er ist."
-      ]
-    },
-    {
-      "nummer": "06",
-      "datum": "2026-08-29",
-      "datum_text": "29. August 2026",
-      "titel": "Erhaltungszustand nach Lebensraumgruppen — die Rangfolge folgt der Nutzung",
-      "veroeffentlicht": true,
-      "cacheziffer": 9,
-      "charts": [
-        "lebensraeume"
-      ],
-      "social": "Von Österreichs vier bewirtschafteten Wiesentypen ist keine einzige Bewertung gut — in beiden Naturräumen nicht.\n\nSortiert nach Zustand entsteht eine Rangfolge der Nutzung: Fels 75 % günstig, Wald 28 %, Grünland 8 %, Moore 0 %.\nhttps://biodiversitaet-monitor.at/#s-lebensraeume",
-      "abschnitte": [
-        {
-          "chart": "lebensraeume",
-          "alt": "Sechs gestapelte Balken für Lebensraumgruppen, sortiert nach dem Anteil günstiger Bewertungen: Fels und Höhlen 75 Prozent günstig, Heide und Gebüsch 50, Wald 28, Grünland 8, Gewässer 0 Prozent günstig bei 44 Prozent unbekannt, Moore und Sümpfe 0 Prozent günstig und 69 Prozent schlecht."
-        }
-      ],
-      "seite": [
-        "Sechs gestapelte Balken zeigen den Erhaltungszustand der geschützten Lebensraumtypen, aufgeschlüsselt nach Gruppen und sortiert nach dem Anteil günstiger Bewertungen. Grundlage sind 114 Bewertungen aus 71 Lebensraumtypen, Berichtsperiode 2019–2024.",
-        "Die Rangfolge folgt der Nutzung: Fels und Höhlen stehen bei 75 Prozent günstig, Wald bei 28, Grünland bei 8, Moore bei 0. Von den vier bewirtschafteten Wiesentypen ist keine der acht Bewertungen günstig — die zwei guten Grünlandwerte liegen im Hochgebirge."
-      ]
-    },
-    {
-      "nummer": "05",
-      "datum": "2026-08-26",
-      "datum_text": "26. August 2026",
-      "titel": "Feld- und Wiesenvögel Art für Art — der Rückgang trifft sehr ungleich",
-      "veroeffentlicht": true,
-      "cacheziffer": 8,
-      "charts": [
-        "vogelarten"
-      ],
-      "social": "Die Grauammer hat seit 1998 97 % ihres Bestands verloren. Der Stieglitz hat im selben Zeitraum um 122 % zugelegt.\n\nDer Index zeigt nur das Mittel. Diese Grafik zeigt, wie ungleich der Rückgang verteilt ist:\nhttps://biodiversitaet-monitor.at/#s-vogelarten",
-      "abschnitte": [
-        {
-          "chart": "vogelarten",
-          "alt": "Liegende Balken für 20 Feld- und Wiesenvogelarten, sortiert von der stärksten Abnahme zur stärksten Zunahme: Grauammer minus 97 Prozent, Girlitz minus 90, Turteltaube minus 75, bis Turmfalke plus 33 und Stieglitz plus 122 Prozent. Vierzehn Arten sind zurückgegangen, vier zeigen keine gesicherte Richtung, zwei haben zugenommen."
-        }
-      ],
-      "seite": [
-        "Zwanzig liegende Balken zeigen, wie sich die Bestände der einzelnen Indikatorarten seit 1998 verändert haben. Die Spannweite reicht von der Grauammer mit minus 97 Prozent bis zum Stieglitz mit plus 122 Prozent.",
-        "Der Farmland Bird Index daneben ist ein Mittelwert — und ein Mittelwert verdeckt genau diese Ungleichheit. Vierzehn der zwanzig Arten sind gesichert zurückgegangen, vier zeigen keine gesicherte Richtung, zwei haben zugenommen."
-      ]
-    },
-    {
-      "nummer": "04",
-      "datum": "2026-08-26",
-      "datum_text": "26. August 2026",
-      "titel": "Biber und Fischotter — zurück aus dem Nichts",
-      "veroeffentlicht": true,
-      "cacheziffer": 8,
-      "charts": [
-        "rueckkehrer"
-      ],
-      "social": "1869 war der Biber in Österreich ausgerottet. Heute leben hier wieder 13.833 bis 16.654 Tiere, beim Fischotter 3.100 bis 4.700.\n\nRückgang ist kein Naturgesetz:\nhttps://biodiversitaet-monitor.at/#s-rueckkehrer",
-      "abschnitte": [
-        {
-          "chart": "rueckkehrer",
-          "alt": "Balkendiagramm mit Spannen für Biber und Fischotter über vier Berichtsperioden. Der Biber wächst von 2.575 bis 2.890 Tieren in 2001 bis 2006 auf 13.833 bis 16.654 in 2019 bis 2024, der Fischotter von 430 bis 800 auf 3.100 bis 4.700. Beim Fischotter fehlt die Periode 2013 bis 2018, weil Österreich damals Rasterzellen statt Tieren meldete."
-        }
-      ],
-      "seite": [
-        "Spannenbalken über vier Berichtsperioden zeigen die Bestände, die Österreich nach Artikel 17 der FFH-Richtlinie gemeldet hat. 1869 war der Biber im Land ausgerottet; heute leben hier wieder 13.833 bis 16.654 Tiere.",
-        "Gezeigt wird die gemeldete Spanne und kein Mittelwert: Beide Arten werden über Reviere erhoben und auf Individuen hochgerechnet. Im Alpenraum meldet Österreich für beide eine echte Erholung, nicht bloß besseres Wissen."
-      ]
-    },
-    {
-      "nummer": "03",
-      "datum": "2026-08-26",
-      "datum_text": "26. August 2026",
-      "titel": "Wiesenfalter in Europa — fast die Hälfte ist verschwunden",
-      "veroeffentlicht": true,
-      "cacheziffer": 8,
-      "charts": [
-        "falter"
-      ],
-      "social": "Fast die Hälfte der Wiesenfalter in Europa ist seit 1991 verschwunden. Der Grünland-Schmetterlingsindex steht 2024 bei 52,7 von 100.\n\nNeue Grafik im Biodiversitäts-Monitor:\nhttps://biodiversitaet-monitor.at/#s-falter",
-      "abschnitte": [
-        {
-          "chart": "falter",
-          "alt": "Liniendiagramm des Grünland-Schmetterlingsindex von 1991 bis 2024. Die Linie fällt fast durchgehend von 100 im Basisjahr 1991 auf 52,7 im Jahr 2024. Eine gestrichelte Waagrechte markiert den Stand von 1991."
-        }
-      ],
-      "seite": [
-        "Eine Linie über 34 Jahre zeigt den Grünland-Schmetterlingsindex, 1991 gleich 100. Er steht 2024 bei 52,7 — fast die Hälfte der Falter auf den festen Zählstrecken ist verschwunden.",
-        "Die Reihe ist europäisch und nicht österreichisch: Eurostat führt für diesen Indikator ausschließlich das EU-Aggregat. Österreich zählt seit 2020 mit, für einen Verlauf ab 1991 ist diese Reihe zu kurz."
-      ]
-    },
-    {
-      "nummer": "02",
-      "datum": "2026-08-26",
-      "datum_text": "26. August 2026",
-      "titel": "Bewegter Hintergrund — eine von drei Naturaufnahmen je Aufruf",
-      "veroeffentlicht": true,
-      "cacheziffer": 3,
-      "charts": [],
-      "social": null,
-      "abschnitte": [],
-      "seite": [
-        "Der Seitenhintergrund ist jetzt bewegt: Bei jedem Aufruf wird eine von drei Naturaufnahmen gezogen, die dann in einer Schleife läuft. Wer im Betriebssystem weniger Bewegung eingestellt hat oder auf einem schmalen Bildschirm liest, sieht weiterhin ein Standbild — dort wird gar kein Video geladen."
-      ]
-    },
-    {
-      "nummer": "01",
-      "datum": "2026-08-24",
-      "datum_text": "24. August 2026",
-      "titel": "Erste gezählte Ausgabe — acht Messgrößen zur biologischen Vielfalt",
-      "veroeffentlicht": true,
-      "cacheziffer": 3,
-      "charts": [
-        "schutzgebiete",
-        "vogel",
-        "boden",
-        "rotelisten",
-        "erhaltung",
-        "biotoptypen",
-        "wald",
-        "biolandbau"
-      ],
-      "social": null,
-      "abschnitte": [],
-      "seite": [
-        "Erste gezählte Ausgabe. Acht Abschnitte: Fläche unter Schutz, Feld- und Wiesenvögel, Bodenverbrauch, Alter der Roten Listen, Erhaltungszustand der Lebensraumtypen, gefährdete Biotoptypen, Waldfläche im Nachbarschaftsvergleich und Anteil der biologischen Landwirtschaft. Drei davon stellen die nationale Zahl in den europäischen Zusammenhang.",
-        "Vier Reihen kommen bei jedem Lauf frisch von Eurostat, fünf sind aus Fachberichten abgeschrieben. Letztere tragen ihren Stand offen mit — Österreich veröffentlicht seine Biodiversitätsdaten überwiegend als PDF ohne Datenanhang."
-      ]
+     "chart": "schutzstufen",
+     "alt": "Vier liegende Balken, von oben nach unten kürzer werdend, für die geschützte Fläche Österreichs nach abnehmendem Schutzgrad. Jeder Balken ist eine kumulative Summe: alles Geschützte zusammen 29,6 Prozent der Landesfläche, ohne die Flächen ohne IUCN-Kategorie 29,0 Prozent, ohne die gering geschützten Kategorien V und VI 17,6 Prozent, streng geschützt nach IUCN I und II 2,9 Prozent. Die Balken werden nach unten dunkler. Die Achse endet bei 35 Prozent und trägt keine Zielmarke. Stand ist Jänner 2025."
     }
-  ]
+   ],
+   "seite": [
+    "Vier liegende Balken zerlegen die geschützte Fläche nach dem Schutzgrad. Jeder Balken ist eine kumulative Summe: oben alles Geschützte, darunter Stufe für Stufe ohne die weniger streng geschützten Kategorien, unten nur die strengste. Die Stufen folgen den Schutzkategorien der Weltnaturschutzunion (IUCN), Stand Jänner 2025. Die Anteile sind gegen die Staatsfläche von 83.879 Quadratkilometern gerechnet — das Umweltbundesamt nennt in seiner Tabelle ausschließlich Flächen, keine Prozentwerte.",
+    "29,6 Prozent der Landesfläche stehen unter Schutz, streng geschützt sind 2,9 Prozent: 2.449 von 24.815 Quadratkilometern und damit 9,9 Prozent des Schutzes selbst. Auf ein Zehntel der Staatsfläche fehlen 5.939 Quadratkilometer, das Dreieinhalbfache des Bestands. Das Bild trägt keine Zielmarke: Die 10 Prozent streng geschützter Fläche der EU-Biodiversitätsstrategie gelten der EU als Ganzes, nicht jedem Mitgliedstaat — und einen Vergleich der Mitgliedstaaten gibt es dazu nicht, der Indikator ist bei der Kommission als in Entwicklung geführt."
+   ]
+  },
+  {
+   "nummer": "12",
+   "datum": "2026-09-07",
+   "datum_text": "7. September 2026",
+   "titel": "Fast die Hälfte der geschützten Fläche Österreichs ist national ausgewiesen — im EU-Schnitt nicht einmal ein Drittel",
+   "veroeffentlicht": true,
+   "cacheziffer": 18,
+   "charts": [
+    "schutzherkunft"
+   ],
+   "social": "Österreich schützt 29,3 % seiner Landesfläche. 15,4 Punkte davon gehen auf Natura 2000 zurück, 13,9 auf nationale Ausweisung.\n\n47,6 % des Schutzes stammen also nicht aus einer EU-Richtlinie — im EU-Schnitt 29,4 %.\nhttps://biodiversitaet-monitor.at/#s-schutzherkunft",
+   "abschnitte": [
+    {
+     "chart": "schutzherkunft",
+     "alt": "Zwei liegende Balken, Österreich und die EU-27, jeder zweigeteilt nach der Herkunft des Schutzes. Österreich 29,3 Prozent der Landesfläche insgesamt: 15,4 Punkte Natura 2000, 13,9 Punkte national ausgewiesen. EU-27 26,4 Prozent insgesamt: 18,6 Punkte Natura 2000, 7,8 Punkte national. Die Achse endet bei 35 Prozent und trägt keine Zielmarke. Stichjahr ist Ende 2023."
+    }
+   ],
+   "seite": [
+    "Zwei liegende Balken zerlegen die Zahl, die der Abschnitt darüber als eine nennt: Von den 29,3 Prozent geschützter Landesfläche gehen in Österreich 15,4 Punkte auf Natura 2000 zurück und 13,9 Punkte auf eine nationale Ausweisung. In der EU-27 stehen 18,6 Punkten aus Natura 2000 nur 7,8 Punkte nationale Ausweisung gegenüber. Überschneidungen sind herausgerechnet — Fläche, die beides zugleich ist, zählt einmal.",
+    "Damit stammen 47,6 Prozent von Österreichs Schutzfläche nicht aus einer EU-Richtlinie, im EU-Schnitt sind es 29,4 Prozent. Mit seinem Gesamtanteil liegt Österreich auf Platz 10 von 27; neun Mitgliedstaaten kommen über 30 Prozent. Das Bild trägt bewusst keine Zielmarke: Die 30 Prozent der EU-Biodiversitätsstrategie 2030 gelten der EU als Ganzes, nicht jedem Mitgliedstaat. Grundlage ist der EEA-Indikator SEBI 007, Stichjahr Ende 2023."
+   ]
+  },
+  {
+   "nummer": "11",
+   "datum": "2026-09-04",
+   "datum_text": "4. September 2026",
+   "titel": "Belastungen — bei vier von fünf Wasserkörpern, die den guten Zustand verfehlen, nennt Österreich die Verbauung, bei gut vier von zehn als einzige",
+   "veroeffentlicht": true,
+   "cacheziffer": 15,
+   "charts": [
+    "querbauwerke"
+   ],
+   "social": "Von den 4.031 Wasserkörpern, die den guten Zustand verfehlen, nennt Österreichs Meldung bei 3.234 die Verbauung des Gewässers — bei 1.690 als einzigen Grund.\n\nMehr, als die Einträge aus der Fläche überhaupt betreffen: 1.327.\nhttps://biodiversitaet-monitor.at/#s-querbauwerke",
+   "abschnitte": [
+    {
+     "chart": "querbauwerke",
+     "alt": "Drei liegende Balken für die genannten Belastungen der 4.031 Wasserkörper, die den guten Zustand verfehlen. Jeder Balken ist zweigeteilt: dunkel der Anteil, bei dem die Belastung der einzige genannte Grund ist, hell der Anteil zusammen mit anderen. Verbauung des Gewässers 3.234 Wasserkörper, davon 1.690 als einziger Grund. Einträge aus der Fläche 1.327, davon 451. Wasserentnahme 981, davon 162. Die Achse endet beim Nenner 4.031."
+    }
+   ],
+   "seite": [
+    "Drei liegende Balken zeigen, welche Belastungen Österreich für die 4.031 Wasserkörper meldet, die den guten Zustand verfehlen. Jeder Balken ist zweigeteilt — einmal die Wasserkörper, bei denen die Belastung der einzige genannte Grund ist, einmal die, bei denen sie zusammen mit anderen steht. Grundlage ist der Meldezyklus 2022.",
+    "Bei 3.234 der 4.031 nennt die Meldung die Verbauung des Gewässers, das sind 80,2 Prozent; bei 1.690 steht sie allein da und damit häufiger, als die Einträge aus der Fläche überhaupt betreffen (1.327). Die Zahl ist keine Wirkungsmessung: Eine Belastung gilt per Richtlinie als signifikant, wenn sie das Ziel gefährdet, und wird deshalb so gut wie nur dort gemeldet, wo das Ziel verfehlt wird."
+   ]
+  },
+  {
+   "nummer": "10",
+   "datum": "2026-09-03",
+   "datum_text": "3. September 2026",
+   "titel": "Fließgewässer — 49 Prozent der Wasserkörper sind gut, aber nur 42 Prozent der Kilometer",
+   "veroeffentlicht": true,
+   "cacheziffer": 12,
+   "charts": [
+    "fliessgewaesser"
+   ],
+   "social": "Österreichs Flüsse sind in 8.116 Abschnitte geteilt. 49,1 Prozent davon sind in gutem Zustand — nach Flusskilometern gerechnet nur 42,5.\n\nDenn die schlechten Abschnitte sind die längeren: im Mittel 6,1 km gegen 3,0.\nhttps://biodiversitaet-monitor.at/#s-fliessgewaesser",
+   "abschnitte": [
+    {
+     "chart": "fliessgewaesser",
+     "alt": "Zwei gestapelte Balken für denselben Bestand an Fließgewässern. Nach Wasserkörpern gezählt sind 18,9 Prozent in sehr gutem und 30,2 Prozent in gutem Zustand, zusammen 49,1 Prozent. Nach Flusskilometern gemessen sind es 14,2 und 28,3 Prozent, zusammen 42,5 Prozent. Der Rest verteilt sich auf mäßig, unbefriedigend und schlecht."
+    }
+   ],
+   "seite": [
+    "Zwei gestapelte Balken zeigen denselben Bestand auf zwei Arten: einmal nach der Zahl der Wasserkörper, einmal nach ihrer Länge. Grundlage sind 8.116 Oberflächenwasserkörper mit zusammen 32.135 Flusskilometern aus dem Meldezyklus 2022.",
+    "Gezählt sind 49,1 Prozent in gutem Zustand oder besser, gemessen nur 42,5 Prozent. Die 6,6 Punkte Abstand kommen aus der Größenverteilung: Ein Wasserkörper der schlechtesten Klasse ist im Mittel 6,10 Kilometer lang, einer der besten nur 2,97."
+   ]
+  },
+  {
+   "nummer": "09",
+   "datum": "2026-08-30",
+   "datum_text": "30. August 2026",
+   "titel": "Waldzustand nach zwei Messweisen — 93 Prozent gut oder 28 Prozent günstig",
+   "veroeffentlicht": true,
+   "cacheziffer": 11,
+   "charts": [
+    "natura2000"
+   ],
+   "social": "Wie gut geht es Österreichs geschützten Wäldern? Dieselbe EU-Meldung belegt zwei Antworten: 93 Prozent oder 28.\n\nNach Fläche ist fast alles gut. In der Gesamtbewertung kippt ein schlechter Teilwert von vier den ganzen Typ.\nhttps://biodiversitaet-monitor.at/#s-natura2000",
+   "abschnitte": [
+    {
+     "chart": "natura2000",
+     "alt": "Zwei gestapelte Balken für dieselbe EU-Meldung. Nach Fläche gemessen sind 92,8 Prozent der Waldlebensraumtypen in gutem Zustand, 7,1 Prozent nicht gut. Nach der Gesamtbewertung sind nur 28,1 Prozent günstig und 71,9 Prozent ungünstig."
+    }
+   ],
+   "seite": [
+    "Zwei gestapelte Balken stellen dieselbe Meldung Österreichs an die EU auf zwei Arten dar: einmal flächenbezogen nach dem Zustand von Struktur und Funktion, einmal nach der zusammenfassenden Gesamtbewertung. Grundlage sind 32 Bewertungen über 20 Waldlebensraumtypen der Berichtsperiode 2019–2024.",
+    "Nach Fläche sind 92,8 Prozent in gutem Zustand, nach Gesamtbewertung nur 28,1 Prozent günstig. Der Abstand entsteht durch die Zusammenfassungsregel: Ein Waldtyp gilt als ungünstig, sobald einer von vier Teilwerten ungünstig ist — auch wenn seine Fläche zum größten Teil in gutem Zustand ist."
+   ]
+  },
+  {
+   "nummer": "08",
+   "datum": "2026-08-30",
+   "datum_text": "30. August 2026",
+   "titel": "Gefährdete Waldpflanzen — die Summe wächst, die Schwere schneller",
+   "veroeffentlicht": true,
+   "cacheziffer": 11,
+   "charts": [
+    "waldarten"
+   ],
+   "social": "Bei Österreichs Waldpflanzen hat sich die Zahl der Arten kurz vor dem Verschwinden vervierfacht: von 11 auf 43.\n\nDie Zahl aller gefährdeten stieg nur von 200 auf 286. Die bereits gefährdeten rutschen weiter ab.\nhttps://biodiversitaet-monitor.at/#s-waldarten",
+   "abschnitte": [
+    {
+     "chart": "waldarten",
+     "alt": "Drei gestapelte Balken für die Roten Listen 1986, 1999 und 2022. Die Zahl gefährdeter waldgebundener Gefäßpflanzen steigt von 200 über 253 auf 286. Die Stufe „vom Aussterben bedroht\" wächst von 11 über 13 auf 43 Arten, „stark gefährdet\" von 67 auf 83, während „gefährdet\" seit 1999 von 170 auf 157 zurückgeht."
+    }
+   ],
+   "seite": [
+    "Drei gestapelte Balken, einer je Roter Liste, zeigen die gefährdeten waldgebundenen Gefäßpflanzen nach Gefährdungsstufe. Alle drei Listen bewerten denselben Bestand von 1.341 Arten, die Balken sind deshalb ohne Umrechnung vergleichbar.",
+    "Die Zahl steigt von 200 im Jahr 1986 über 253 auf 286 im Jahr 2022. Die Verschiebung wiegt schwerer als die Summe: „vom Aussterben bedroht\" vervierfacht sich von 11 auf 43 Arten, während die unterste Stufe seit 1999 zurückgeht. Moose und Farne liegen unverändert bei 96 gefährdeten Arten."
+   ]
+  },
+  {
+   "nummer": "07",
+   "datum": "2026-08-30",
+   "datum_text": "30. August 2026",
+   "titel": "Nadel- und Laubholz im Wald — die Hälfte des Rückgangs steckt im Nenner",
+   "veroeffentlicht": true,
+   "cacheziffer": 11,
+   "charts": [
+    "baumarten"
+   ],
+   "social": "Nadelholz fällt seit den 1990ern von 69 auf 60 Prozent des bewirtschafteten Waldes.\n\nDie Waldinventur weist zuletzt 50 Prozent aus — sie wechselt die Bezugsgröße. Gut die Hälfte des Einbruchs ist Rechenweg, nicht Wald.\nhttps://biodiversitaet-monitor.at/#s-baumarten",
+   "abschnitte": [
+    {
+     "chart": "baumarten",
+     "alt": "Vier gestapelte Balken für die Erhebungsperioden 1992/96, 2000/02, 2007/09 und 2018/23. Nadelholz sinkt von 69,2 auf 59,8 Prozent, Laubholz steigt von 22,3 auf 25,8 Prozent, Blößen, Lücken und Sträucher wachsen von 8,5 auf 14,3 Prozent."
+    }
+   ],
+   "seite": [
+    "Vier gestapelte Balken, einer je Erhebungsperiode der Österreichischen Waldinventur, zeigen die Anteile von Nadelholz, Laubholz und unbestockten Flächen am bewirtschafteten Wald zwischen 1992/96 und 2018/23.",
+    "Nadelholz fällt von 69,2 auf 59,8 Prozent, Laubholz steigt von 22,3 auf 25,8. Die Waldinventur weist für die letzte Erhebung 50,0 Prozent aus — sie rechnet dort gegen die gesamte Waldfläche statt gegen den bewirtschafteten Wald und macht den Rückgang damit doppelt so groß, wie er ist."
+   ]
+  },
+  {
+   "nummer": "06",
+   "datum": "2026-08-29",
+   "datum_text": "29. August 2026",
+   "titel": "Erhaltungszustand nach Lebensraumgruppen — die Rangfolge folgt der Nutzung",
+   "veroeffentlicht": true,
+   "cacheziffer": 9,
+   "charts": [
+    "lebensraeume"
+   ],
+   "social": "Von Österreichs vier bewirtschafteten Wiesentypen ist keine einzige Bewertung gut — in beiden Naturräumen nicht.\n\nSortiert nach Zustand entsteht eine Rangfolge der Nutzung: Fels 75 % günstig, Wald 28 %, Grünland 8 %, Moore 0 %.\nhttps://biodiversitaet-monitor.at/#s-lebensraeume",
+   "abschnitte": [
+    {
+     "chart": "lebensraeume",
+     "alt": "Sechs gestapelte Balken für Lebensraumgruppen, sortiert nach dem Anteil günstiger Bewertungen: Fels und Höhlen 75 Prozent günstig, Heide und Gebüsch 50, Wald 28, Grünland 8, Gewässer 0 Prozent günstig bei 44 Prozent unbekannt, Moore und Sümpfe 0 Prozent günstig und 69 Prozent schlecht."
+    }
+   ],
+   "seite": [
+    "Sechs gestapelte Balken zeigen den Erhaltungszustand der geschützten Lebensraumtypen, aufgeschlüsselt nach Gruppen und sortiert nach dem Anteil günstiger Bewertungen. Grundlage sind 114 Bewertungen aus 71 Lebensraumtypen, Berichtsperiode 2019–2024.",
+    "Die Rangfolge folgt der Nutzung: Fels und Höhlen stehen bei 75 Prozent günstig, Wald bei 28, Grünland bei 8, Moore bei 0. Von den vier bewirtschafteten Wiesentypen ist keine der acht Bewertungen günstig — die zwei guten Grünlandwerte liegen im Hochgebirge."
+   ]
+  },
+  {
+   "nummer": "05",
+   "datum": "2026-08-26",
+   "datum_text": "26. August 2026",
+   "titel": "Feld- und Wiesenvögel Art für Art — der Rückgang trifft sehr ungleich",
+   "veroeffentlicht": true,
+   "cacheziffer": 8,
+   "charts": [
+    "vogelarten"
+   ],
+   "social": "Die Grauammer hat seit 1998 97 % ihres Bestands verloren. Der Stieglitz hat im selben Zeitraum um 122 % zugelegt.\n\nDer Index zeigt nur das Mittel. Diese Grafik zeigt, wie ungleich der Rückgang verteilt ist:\nhttps://biodiversitaet-monitor.at/#s-vogelarten",
+   "abschnitte": [
+    {
+     "chart": "vogelarten",
+     "alt": "Liegende Balken für 20 Feld- und Wiesenvogelarten, sortiert von der stärksten Abnahme zur stärksten Zunahme: Grauammer minus 97 Prozent, Girlitz minus 90, Turteltaube minus 75, bis Turmfalke plus 33 und Stieglitz plus 122 Prozent. Vierzehn Arten sind zurückgegangen, vier zeigen keine gesicherte Richtung, zwei haben zugenommen."
+    }
+   ],
+   "seite": [
+    "Zwanzig liegende Balken zeigen, wie sich die Bestände der einzelnen Indikatorarten seit 1998 verändert haben. Die Spannweite reicht von der Grauammer mit minus 97 Prozent bis zum Stieglitz mit plus 122 Prozent.",
+    "Der Farmland Bird Index daneben ist ein Mittelwert — und ein Mittelwert verdeckt genau diese Ungleichheit. Vierzehn der zwanzig Arten sind gesichert zurückgegangen, vier zeigen keine gesicherte Richtung, zwei haben zugenommen."
+   ]
+  },
+  {
+   "nummer": "04",
+   "datum": "2026-08-26",
+   "datum_text": "26. August 2026",
+   "titel": "Biber und Fischotter — zurück aus dem Nichts",
+   "veroeffentlicht": true,
+   "cacheziffer": 8,
+   "charts": [
+    "rueckkehrer"
+   ],
+   "social": "1869 war der Biber in Österreich ausgerottet. Heute leben hier wieder 13.833 bis 16.654 Tiere, beim Fischotter 3.100 bis 4.700.\n\nRückgang ist kein Naturgesetz:\nhttps://biodiversitaet-monitor.at/#s-rueckkehrer",
+   "abschnitte": [
+    {
+     "chart": "rueckkehrer",
+     "alt": "Balkendiagramm mit Spannen für Biber und Fischotter über vier Berichtsperioden. Der Biber wächst von 2.575 bis 2.890 Tieren in 2001 bis 2006 auf 13.833 bis 16.654 in 2019 bis 2024, der Fischotter von 430 bis 800 auf 3.100 bis 4.700. Beim Fischotter fehlt die Periode 2013 bis 2018, weil Österreich damals Rasterzellen statt Tieren meldete."
+    }
+   ],
+   "seite": [
+    "Spannenbalken über vier Berichtsperioden zeigen die Bestände, die Österreich nach Artikel 17 der FFH-Richtlinie gemeldet hat. 1869 war der Biber im Land ausgerottet; heute leben hier wieder 13.833 bis 16.654 Tiere.",
+    "Gezeigt wird die gemeldete Spanne und kein Mittelwert: Beide Arten werden über Reviere erhoben und auf Individuen hochgerechnet. Im Alpenraum meldet Österreich für beide eine echte Erholung, nicht bloß besseres Wissen."
+   ]
+  },
+  {
+   "nummer": "03",
+   "datum": "2026-08-26",
+   "datum_text": "26. August 2026",
+   "titel": "Wiesenfalter in Europa — fast die Hälfte ist verschwunden",
+   "veroeffentlicht": true,
+   "cacheziffer": 8,
+   "charts": [
+    "falter"
+   ],
+   "social": "Fast die Hälfte der Wiesenfalter in Europa ist seit 1991 verschwunden. Der Grünland-Schmetterlingsindex steht 2024 bei 52,7 von 100.\n\nNeue Grafik im Biodiversitäts-Monitor:\nhttps://biodiversitaet-monitor.at/#s-falter",
+   "abschnitte": [
+    {
+     "chart": "falter",
+     "alt": "Liniendiagramm des Grünland-Schmetterlingsindex von 1991 bis 2024. Die Linie fällt fast durchgehend von 100 im Basisjahr 1991 auf 52,7 im Jahr 2024. Eine gestrichelte Waagrechte markiert den Stand von 1991."
+    }
+   ],
+   "seite": [
+    "Eine Linie über 34 Jahre zeigt den Grünland-Schmetterlingsindex, 1991 gleich 100. Er steht 2024 bei 52,7 — fast die Hälfte der Falter auf den festen Zählstrecken ist verschwunden.",
+    "Die Reihe ist europäisch und nicht österreichisch: Eurostat führt für diesen Indikator ausschließlich das EU-Aggregat. Österreich zählt seit 2020 mit, für einen Verlauf ab 1991 ist diese Reihe zu kurz."
+   ]
+  },
+  {
+   "nummer": "02",
+   "datum": "2026-08-26",
+   "datum_text": "26. August 2026",
+   "titel": "Bewegter Hintergrund — eine von drei Naturaufnahmen je Aufruf",
+   "veroeffentlicht": true,
+   "cacheziffer": 3,
+   "charts": [],
+   "social": null,
+   "abschnitte": [],
+   "seite": [
+    "Der Seitenhintergrund ist jetzt bewegt: Bei jedem Aufruf wird eine von drei Naturaufnahmen gezogen, die dann in einer Schleife läuft. Wer im Betriebssystem weniger Bewegung eingestellt hat oder auf einem schmalen Bildschirm liest, sieht weiterhin ein Standbild — dort wird gar kein Video geladen."
+   ]
+  },
+  {
+   "nummer": "01",
+   "datum": "2026-08-24",
+   "datum_text": "24. August 2026",
+   "titel": "Erste gezählte Ausgabe — acht Messgrößen zur biologischen Vielfalt",
+   "veroeffentlicht": true,
+   "cacheziffer": 3,
+   "charts": [
+    "schutzgebiete",
+    "vogel",
+    "boden",
+    "rotelisten",
+    "erhaltung",
+    "biotoptypen",
+    "wald",
+    "biolandbau"
+   ],
+   "social": null,
+   "abschnitte": [],
+   "seite": [
+    "Erste gezählte Ausgabe. Acht Abschnitte: Fläche unter Schutz, Feld- und Wiesenvögel, Bodenverbrauch, Alter der Roten Listen, Erhaltungszustand der Lebensraumtypen, gefährdete Biotoptypen, Waldfläche im Nachbarschaftsvergleich und Anteil der biologischen Landwirtschaft. Drei davon stellen die nationale Zahl in den europäischen Zusammenhang.",
+    "Vier Reihen kommen bei jedem Lauf frisch von Eurostat, fünf sind aus Fachberichten abgeschrieben. Letztere tragen ihren Stand offen mit — Österreich veröffentlicht seine Biodiversitätsdaten überwiegend als PDF ohne Datenanhang."
+   ]
+  }
+ ]
 }
