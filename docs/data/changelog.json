@@ -1,10 +1,32 @@
 {
   "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "11",
+  "aktuell": "12",
   "basis_url": "https://biodiversitaet-monitor.at",
   "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
   "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
   "ausgaben": [
+    {
+      "nummer": "12",
+      "datum": "2026-09-07",
+      "datum_text": "7. September 2026",
+      "titel": "Fast die Hälfte der geschützten Fläche Österreichs ist national ausgewiesen — im EU-Schnitt nicht einmal ein Drittel",
+      "veroeffentlicht": true,
+      "cacheziffer": 18,
+      "charts": [
+        "schutzherkunft"
+      ],
+      "social": "Österreich schützt 29,3 % seiner Landesfläche. 15,4 Punkte davon gehen auf Natura 2000 zurück, 13,9 auf nationale Ausweisung.\n\n47,6 % des Schutzes stammen also nicht aus einer EU-Richtlinie — im EU-Schnitt 29,4 %.\nhttps://biodiversitaet-monitor.at/#s-schutzherkunft",
+      "abschnitte": [
+        {
+          "chart": "schutzherkunft",
+          "alt": "Zwei liegende Balken, Österreich und die EU-27, jeder zweigeteilt nach der Herkunft des Schutzes. Österreich 29,3 Prozent der Landesfläche insgesamt: 15,4 Punkte Natura 2000, 13,9 Punkte national ausgewiesen. EU-27 26,4 Prozent insgesamt: 18,6 Punkte Natura 2000, 7,8 Punkte national. Die Achse endet bei 35 Prozent und trägt keine Zielmarke. Stichjahr ist Ende 2023."
+        }
+      ],
+      "seite": [
+        "Zwei liegende Balken zerlegen die Zahl, die der Abschnitt darüber als eine nennt: Von den 29,3 Prozent geschützter Landesfläche gehen in Österreich 15,4 Punkte auf Natura 2000 zurück und 13,9 Punkte auf eine nationale Ausweisung. In der EU-27 stehen 18,6 Punkten aus Natura 2000 nur 7,8 Punkte nationale Ausweisung gegenüber. Überschneidungen sind herausgerechnet — Fläche, die beides zugleich ist, zählt einmal.",
+        "Damit stammen 47,6 Prozent von Österreichs Schutzfläche nicht aus einer EU-Richtlinie, im EU-Schnitt sind es 29,4 Prozent. Mit seinem Gesamtanteil liegt Österreich auf Platz 10 von 27; neun Mitgliedstaaten kommen über 30 Prozent. Das Bild trägt bewusst keine Zielmarke: Die 30 Prozent der EU-Biodiversitätsstrategie 2030 gelten der EU als Ganzes, nicht jedem Mitgliedstaat. Grundlage ist der EEA-Indikator SEBI 007, Stichjahr Ende 2023."
+      ]
+    },
     {
       "nummer": "11",
       "datum": "2026-09-04",
