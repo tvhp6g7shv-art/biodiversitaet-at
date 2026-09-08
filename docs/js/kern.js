@@ -706,7 +706,7 @@ async function start() {
                    "rotelisten", "erhaltung", "lebensraeume",
                    "biotoptypen", "fliessgewaesser", "querbauwerke", "wald",
                    "baumarten", "waldarten", "natura2000",
-                   "biolandbau", "pestizide",
+                   "biolandbau", "pestizide", "gruenland",
                    "falter", "rueckkehrer", "vogelarten"];
   /* STAND 30.08.2026 — drei der fünf Wald-Abschnitte hängen wieder drin.
    Am 29.08. waren alle fünf ausgeklinkt, weil ihre Modul- und Datendateien
@@ -841,6 +841,12 @@ async function start() {
        ist ein wachsender Bio-Anteil bei wachsendem Absatz kein Widerspruch,
        sondern die Frage, die die Notiz beantwortet. */
     sicher("Pestizide",      () => BIO.bauePestizide(geladen.pestizide));
+    /* Schließt den Bereich Landwirtschaft ab: Die beiden Abschnitte darüber
+       sagen, WIE bewirtschaftet wird, dieser sagt, WORAUF. Muss dahinter
+       stehen, weil er die Bezugsgröße nachliefert — ein wachsender
+       Bio-Anteil auf schrumpfender Grünlandfläche liest sich sonst größer,
+       als er ist. */
+    sicher("Grünland",       () => BIO.baueGruenland(geladen.gruenland));
     /* Bereich Tiergruppen — als Gegensatz gebaut: Verlust, Erholung,
        Stillstand. Die Reihenfolge ist die Aussage und darf nicht nach
        Bequemlichkeit umgestellt werden. */

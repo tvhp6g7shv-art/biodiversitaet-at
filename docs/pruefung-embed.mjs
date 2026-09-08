@@ -57,7 +57,7 @@ const GRAFIKEN = ["schutzgebiete", "schutzherkunft", "schutzstufen",
                   "erhaltung", "lebensraeume", "biotoptypen",
                   "fliessgewaesser", "querbauwerke", "wald",
                   "baumarten", "waldarten", "natura2000",
-                  "biolandbau", "pestizide",
+                  "biolandbau", "pestizide", "gruenland",
                   "falter", "rueckkehrer", "vogelarten"];
 
 /* Eine Breite reicht: die Einbettung sitzt im iframe der Gastgeberseite,

@@ -29,6 +29,7 @@ Module:
     natura2000.py    Waldlebensraumtypen nach Artikel 17 (gepflegt)
     biolandbau.py    Bio-Anteil im Ländervergleich, Eurostat sdg_02_40 (API)
     pestizide.py     Absatz und seine Aufteilung, Eurostat aei_fm_salpest09 (API)
+    gruenland.py     Grünland gegen Wald, Eurostat lan_lcv_ovw / LUCAS (API)
     falter.py        Grünland-Schmetterlingsindex, Eurostat sdg_15_61 (API)
     rueckkehrer.py   Biber und Fischotter, Artikel-17-Spannen (gepflegt)
     vogelarten.py    Feld- und Wiesenvögel Art für Art (gepflegt)
@@ -89,6 +90,7 @@ from biotoptypen import baue_biotoptypen
 from wald import baue_wald
 from biolandbau import baue_biolandbau
 from pestizide import baue_pestizide
+from gruenland import baue_gruenland
 from falter import baue_falter
 from rueckkehrer import baue_rueckkehrer
 from vogelarten import baue_vogelarten
@@ -239,6 +241,14 @@ def main() -> None:
     pestizide = baue_pestizide()
     if pestizide:
         ausgaben["pestizide"] = pestizide
+
+    # `gruenland` schließt den Bereich nach unten ab: `biolandbau` und
+    # `pestizide` sagen, WIE bewirtschaftet wird, dieser sagt, WORAUF. Ein
+    # steigender Bio-Anteil auf schrumpfender Grünlandfläche ist kein
+    # Widerspruch, aber ohne diesen Abschnitt fehlt die Bezugsgröße dazu.
+    gruenland = baue_gruenland()
+    if gruenland:
+        ausgaben["gruenland"] = gruenland
 
     # --- Gegenprobe über die Artikel-17-Abschnitte -------------------------
     # `erhaltung` zählt die Lebensraumtypen als Ganzes, `lebensraeume`

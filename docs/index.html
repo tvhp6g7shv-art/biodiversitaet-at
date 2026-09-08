@@ -858,6 +858,29 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
     <p class="viz-unterzeile" style="margin-top:12px" id="h-pestizide"></p>
   </section>
 
+  <!-- 9b — GRÜNLAND GEGEN WALD
+       Die Überschrift steht STATISCH und wird von keinem Modul geschrieben.
+       Beide Zahlen stammen aus lan_lcv_ovw (LUCAS) und ändern sich, sobald
+       eine neue Erhebung dazukommt — 2025 ist die nächste erwartete. Nach
+       jedem Datensprung hier gegenlesen, sonst behauptet die Zeile einen
+       Verlust, den die Linie nicht mehr zeigt. -->
+  <section class="viz-karte" id="s-gruenland" data-chart="gruenland"
+           data-nav="Grünland" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Wiesen und Weiden sind seit 2009 um 7,3 Prozent geschrumpft — der Wald ist um 6,7 gewachsen</h2>
+        <p class="viz-unterzeile" id="u-gruenland"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-gruenland">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-gruenland"></div>
+    <div class="viz-verborgen" id="t-gruenland"></div>
+    <p class="viz-notiz" id="n-gruenland"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-gruenland"></p>
+  </section>
+
   <!-- ===================================================================
        TIERGRUPPEN — drei Abschnitte, als Gegensatz gebaut.
        Verlust (Falter), Erholung (Rückkehrer), Stillstand (Vogelarten).
@@ -931,20 +954,20 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Cacheziffer `?v=NN` hochzaehlen, wenn eine Datei geaendert wurde —
      sie fuehrt eine EIGENE Zaehlung, unabhaengig von der Ausgabenummer
      in kern.js (VERSION.nummer). -->
-<script defer src="js/kern.js?v=19"></script>
-<script defer src="js/charts/kpi.js?v=19"></script>
-<script defer src="js/charts/schutzgebiete.js?v=19"></script>
-<script defer src="js/charts/schutzherkunft.js?v=19"></script>
-<script defer src="js/charts/schutzstufen.js?v=19"></script>
-<script defer src="js/charts/vogel.js?v=19"></script>
-<script defer src="js/charts/boden.js?v=19"></script>
-<script defer src="js/charts/rotelisten.js?v=19"></script>
-<script defer src="js/charts/erhaltung.js?v=19"></script>
-<script defer src="js/charts/lebensraeume.js?v=19"></script>
-<script defer src="js/charts/biotoptypen.js?v=19"></script>
-<script defer src="js/charts/fliessgewaesser.js?v=19"></script>
-<script defer src="js/charts/querbauwerke.js?v=19"></script>
-<script defer src="js/charts/wald.js?v=19"></script>
+<script defer src="js/kern.js?v=20"></script>
+<script defer src="js/charts/kpi.js?v=20"></script>
+<script defer src="js/charts/schutzgebiete.js?v=20"></script>
+<script defer src="js/charts/schutzherkunft.js?v=20"></script>
+<script defer src="js/charts/schutzstufen.js?v=20"></script>
+<script defer src="js/charts/vogel.js?v=20"></script>
+<script defer src="js/charts/boden.js?v=20"></script>
+<script defer src="js/charts/rotelisten.js?v=20"></script>
+<script defer src="js/charts/erhaltung.js?v=20"></script>
+<script defer src="js/charts/lebensraeume.js?v=20"></script>
+<script defer src="js/charts/biotoptypen.js?v=20"></script>
+<script defer src="js/charts/fliessgewaesser.js?v=20"></script>
+<script defer src="js/charts/querbauwerke.js?v=20"></script>
+<script defer src="js/charts/wald.js?v=20"></script>
 <!-- Die fuenf Wald-Abschnitte (totholz, fichte, baumarten, waldarten,
      natura2000) sind am 29.08.2026 ausgeklinkt: gebaut und im Ordner, aber
      ihre Modul- und Datendateien nicht im Repo. Ausgeliefert haetten sie elf
@@ -954,14 +977,15 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Sektionen liegen wortgleich in docs/.ausgeklinkt-wald.html. Wieder
      einhaengen: Sektionen von dort zurueck, Skript-Zeilen hier, dazu
      js/kern.js, embed.html und die beiden Pruefskripte. -->
-<script defer src="js/charts/baumarten.js?v=19"></script>
-<script defer src="js/charts/waldarten.js?v=19"></script>
-<script defer src="js/charts/natura2000.js?v=19"></script>
-<script defer src="js/charts/biolandbau.js?v=19"></script>
-<script defer src="js/charts/pestizide.js?v=19"></script>
-<script defer src="js/charts/falter.js?v=19"></script>
-<script defer src="js/charts/rueckkehrer.js?v=19"></script>
-<script defer src="js/charts/vogelarten.js?v=19"></script>
+<script defer src="js/charts/baumarten.js?v=20"></script>
+<script defer src="js/charts/waldarten.js?v=20"></script>
+<script defer src="js/charts/natura2000.js?v=20"></script>
+<script defer src="js/charts/biolandbau.js?v=20"></script>
+<script defer src="js/charts/pestizide.js?v=20"></script>
+<script defer src="js/charts/gruenland.js?v=20"></script>
+<script defer src="js/charts/falter.js?v=20"></script>
+<script defer src="js/charts/rueckkehrer.js?v=20"></script>
+<script defer src="js/charts/vogelarten.js?v=20"></script>
 <script defer>
   document.addEventListener("DOMContentLoaded", () => {
     BIO.setzeWurzel(document.getElementById("dashboard"));

@@ -537,6 +537,42 @@ PESTIZID_TEILE = {
 PESTIZID_BASISPERIODE = ["2015", "2016", "2017"]
 
 # ---------------------------------------------------------------------------
+# Grünland- und Waldfläche — Eurostat lan_lcv_ovw (LUCAS)
+# ---------------------------------------------------------------------------
+# Flächenstichprobe, fünf Stützstellen 2009–2022. NICHT `apro_cpsh1`
+# (Dauergrünland der Agrarstrukturerhebung): dort ist die Reihe blockweise
+# fortgeschrieben — 2000 bis 2004 fünfmal derselbe Wert — und zwischen 2010
+# und 2011 liegt ein Definitionsbruch von rund 290.000 Hektar.
+LANDNUTZUNG_CODE = "lan_lcv_ovw"
+LANDNUTZUNG_PARAMS = {
+    "format": "JSON",
+    "lang": "DE",
+    "geo": "AT",
+}
+
+# Die Antwort führt DREI Einheiten in einer Dimension: KM2 (Fläche),
+# CVA (Variationskoeffizient zur Fläche) und PC (Anteil an der Landesfläche).
+# Ohne Filter auf eine davon laufen drei Reihen hintereinander im selben
+# Wertefeld — und die Variationskoeffizienten werden als Flächen gelesen.
+LANDNUTZUNG_GRUENLAND = "E00"   # Grassland
+LANDNUTZUNG_WALD = "C00"        # Woodland
+
+# Unter vier gemeinsamen Stützjahren ist es kein Verlauf, sondern ein
+# Vorher-Nachher mit Zwischenpunkt.
+LANDNUTZUNG_MIN_PUNKTE = 4
+
+# Aus km² und Prozent zurückgerechnet muss dieselbe Landesfläche herauskommen.
+# Ein Prozent Streuung deckt die Rundung der auf eine Stelle veröffentlichten
+# Anteile ab; alles darüber heißt, dass die Einheiten verschiedene Nenner haben.
+LANDNUTZUNG_NENNER_TOLERANZ = 1.0
+
+# Die Veränderung muss den kombinierten Stichprobenfehler deutlich übersteigen,
+# sonst trägt sie keine Überschrift. Faktor 2 entspricht grob zwei
+# Standardfehlern — die übliche Schwelle, ab der eine Differenz nicht mehr
+# als Rauschen durchgeht.
+LANDNUTZUNG_MIN_FAKTOR = 2.0
+
+# ---------------------------------------------------------------------------
 # Ausgabe
 # ---------------------------------------------------------------------------
 
