@@ -212,8 +212,10 @@ BLR_MAX_SEITEN = 6
 BLR_GEMEINDEN_MIN = 1_950
 BLR_GEMEINDEN_MAX = 2_200
 
-# Anteil der Grundstücke mit FLAECHE_SONSTIGE = -1 ("nicht ermittelt"), ab dem
-# gewarnt wird. Am 27.08.2026 waren es 0,10 %.
+# Anteil der Grundstücke mit FLAECHE_SONSTIGE = -1, ab dem gewarnt wird.
+# Am 27.08.2026 waren es 0,10 %. KEINE Fehlwertkennung: Das Umweltbundesamt
+# nennt den Wert am 04.09.2026 eine ihm selbst unbekannte Anomalie
+# (Datenformat vermutet). Ausschließen ja, als "nicht ermittelt" auslegen nein.
 BLR_SENTINEL_GRENZE = 2.0
 
 # Flächeninanspruchnahme gesamt in Hektar, Stichjahr 2025 (568.120 ha =

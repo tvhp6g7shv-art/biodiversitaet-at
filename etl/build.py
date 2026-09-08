@@ -109,14 +109,21 @@ from querbauwerke import baue_querbauwerke
 # 13 Quellen statt 16. Für den Waldbiodiversitätsbericht ist die
 # Quellenangabe die BEDINGUNG, unter der der Abdruck erlaubt ist.
 #
-# AUSGEKLINKT BLEIBEN vier Module, die tatsächlich nicht im Repo liegen —
+# WIEDER AUFGENOMMEN 08.09.2026 — `baulandreserven` und `gemeindegrenzen`
+# standen hier ausgeklinkt, weil die Dateien wegen der offenen UBA-Freigabe
+# nicht im Repo lagen. Die Freigabe ist am 04.09.2026 gekommen, beide Dateien
+# sind aus der `.gitignore` genommen. ERSTER ECHTER LAUF: Bis heute ist keine
+# der beiden je gegen die Quelle gelaufen — der Sandkasten erreicht weder
+# ArcGIS noch statistik.at. Geprüft ist nur gegen Attrappen.
+from baulandreserven import baue_baulandreserven
+from gemeindegrenzen import baue_gemeindegrenzen
+
+# AUSGEKLINKT BLEIBEN zwei Module, die tatsächlich nicht im Repo liegen —
 # ein Import einer fehlenden Datei bricht die Pipeline in GitHub Actions mit
 # ImportError ab, bevor eine einzige Zahl gerechnet wird:
 #
 # from totholz import baue_totholz            # wartet auf BFW-Freigabe
 # from fichte import baue_fichte              # wartet auf BFW-Freigabe
-# from baulandreserven import baue_baulandreserven
-# from gemeindegrenzen import baue_gemeindegrenzen
 
 
 def _vogel_abgleichen(vogel: dict, vogelarten: dict) -> None:
@@ -312,11 +319,10 @@ def main() -> None:
             f"Forests aus, einer der beiden zählt anders als gedacht."
         )
 
-    # AUSGEKLINKT 29.08.2026 — alles Folgende hängt an Modulen, die im Ordner
-    # liegen, aber nicht im Repo sind; in GitHub Actions bräche die Pipeline
-    # daran ab. Wieder aufnehmen, sobald `totholz.py`, `fichte.py`,
-    # `baulandreserven.py` und `gemeindegrenzen.py` committet sind —
-    # zusammen mit ihren Importen oben.
+    # AUSGEKLINKT 29.08.2026, TEILWEISE WIEDER AUFGENOMMEN 08.09.2026.
+    # `totholz` und `fichte` liegen weiter nur im Ordner und nicht im Repo —
+    # in GitHub Actions bräche die Pipeline daran ab. Sie bleiben aus, bis die
+    # BFW-Freigabe da ist. Der Baulandreserven-Teil steht unten wieder scharf.
     #
     #   bezirke_geo = None
     #   bezirke_pfad = (Path(__file__).resolve().parent.parent.parent
@@ -343,17 +349,28 @@ def main() -> None:
     #       warnen("Waldabschnitte uneins: " + ", ".join(
     #           f"`{n}` auf {s}" for n, s in wald_staende.items()))
     #
-    #   ausgaben["baulandreserven"] = baue_baulandreserven(
-    #       (ausgaben.get("boden") or {}).get("aktuell_ha_pro_tag"))
-    #   if ausgaben.get("baulandreserven") and ausgaben.get("boden"):
-    #       bestand_ha = round(ausgaben["boden"]["bestand_km2"] * 100)
-    #       if abs(bestand_ha - config.BLR_FI_BESTAND_HA) > 1_000:
-    #           warnen(f"Bodenabschnitte uneins: `boden` nennt {bestand_ha:,} ha "
-    #                  f"…, config.BLR_FI_BESTAND_HA steht auf "
-    #                  f"{config.BLR_FI_BESTAND_HA:,} ha.")
-    #   if ausgaben.get("baulandreserven"):
-    #       baue_gemeindegrenzen(
-    #           {g["gkz"] for g in ausgaben["baulandreserven"]["gemeinden"]})
+    # --- Baulandreserven: der Vorrat, nicht der Verbrauch ------------------
+    # SCHARF SEIT 08.09.2026. `baulandreserven` holt die Gemeindewerte
+    # serverseitig aggregiert vom OGD-FeatureServer des Umweltbundesamts,
+    # `gemeindegrenzen` die Umrisse vom Statistik-Austria-WFS. Die Umrisse
+    # werden nur für die Gemeinden gebaut, die in den Reservendaten
+    # vorkommen — sonst trägt die Datei Flächen ohne Wert.
+    #
+    # Die Gegenprobe hält den Bestand aus `boden` gegen den abgeschriebenen
+    # Wert in `config.BLR_FI_BESTAND_HA`. Sie warnt, sie bricht nicht ab:
+    # ein neuer ÖROK-Stand soll den Lauf nicht kippen, aber auch nicht
+    # unbemerkt an einer zweiten Stelle eine andere Zahl stehen lassen.
+    ausgaben["baulandreserven"] = baue_baulandreserven(
+        (ausgaben.get("boden") or {}).get("aktuell_ha_pro_tag"))
+    if ausgaben.get("baulandreserven") and ausgaben.get("boden"):
+        bestand_ha = round(ausgaben["boden"]["bestand_km2"] * 100)
+        if abs(bestand_ha - config.BLR_FI_BESTAND_HA) > 1_000:
+            warnen(f"Bodenabschnitte uneins: `boden` nennt {bestand_ha:,} ha "
+                   f"Bestand, config.BLR_FI_BESTAND_HA steht auf "
+                   f"{config.BLR_FI_BESTAND_HA:,} ha.")
+    if ausgaben.get("baulandreserven"):
+        baue_gemeindegrenzen(
+            {g["gkz"] for g in ausgaben["baulandreserven"]["gemeinden"]})
 
     # --- Tiergruppen: Verlust, Erholung, Stillstand ------------------------
     # `falter` holt seine Reihe von Eurostat und fällt bei einem Ausfall auf
