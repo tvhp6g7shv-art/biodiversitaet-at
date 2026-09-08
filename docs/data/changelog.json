@@ -1,10 +1,32 @@
 {
  "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
- "aktuell": "13",
+ "aktuell": "14",
  "basis_url": "https://biodiversitaet-monitor.at",
  "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
  "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
  "ausgaben": [
+  {
+   "nummer": "14",
+   "datum": "2026-09-08",
+   "datum_text": "8. September 2026",
+   "titel": "Seit 2009 sind 7,3 Prozent von Österreichs Wiesen und Weiden verschwunden — der Wald ist gewachsen",
+   "veroeffentlicht": true,
+   "cacheziffer": 20,
+   "charts": [
+    "gruenland"
+   ],
+   "social": "Österreichs Wiesen und Weiden sind seit 2009 um 7,3 % geschrumpft — 1.562 km² weniger.\n\nDer Wald wuchs im selben Zeitraum um 6,7 %. Eine Bilanz ist das nicht: Dazwischen liegen Acker, Siedlung und Verkehrsfläche.\nhttps://biodiversitaet-monitor.at/#s-gruenland",
+   "abschnitte": [
+    {
+     "chart": "gruenland",
+     "alt": "Zwei Linien über fünf Erhebungsjahre von 2009 bis 2022, gemessen als Veränderung gegenüber 2009 in Prozent. Die dunkle Linie für Wiesen und Weiden fällt stetig auf minus 7,3 Prozent, die helle Linie für den Wald steigt auf plus 6,7 Prozent; beide beginnen 2009 auf der Nulllinie. Der Abstand zwischen ihnen wächst über den ganzen Zeitraum. Die Achse reicht von minus 9 bis plus 9 Prozent."
+    }
+   ],
+   "seite": [
+    "Zwei Linien zeigen über fünf Erhebungsjahre, wie sich Grünland und Wald seit 2009 verändert haben. Das Bild misst die Veränderung gegenüber diesem ersten Jahr und nicht die Fläche selbst: Ein Rückgang von wenigen Prozent wäre auf einer Flächenachse nicht zu erkennen. Grundlage ist die europäische Flächenstichprobe LUCAS, bei der Beobachter an gezogenen Punkten im Gelände eintragen, was dort wächst; die Quadratkilometer stehen in der Tabelle.",
+    "Österreichs Wiesen und Weiden sind zwischen 2009 und 2022 um 7,3 Prozent geschrumpft, von 21.494 auf 19.932 Quadratkilometer — ihr Anteil am Land fiel von 25,6 auf 23,8 Prozent. Der Wald wuchs im selben Zeitraum um 6,7 Prozent auf 36.321 Quadratkilometer. Eine Bilanz ist das nicht: Zwischen beiden liegen Acker, Siedlung und Verkehrsfläche, und 1.562 verlorene Quadratkilometer gegen 2.278 gewonnene gehen auch nicht auf. Weil LUCAS eine Stichprobe ist, trägt jeder Wert einen Fehler von 1,5 bis 3,7 Prozent; der gemessene Rückgang ist größer als er."
+   ]
+  },
   {
    "nummer": "13",
    "datum": "2026-09-07",
