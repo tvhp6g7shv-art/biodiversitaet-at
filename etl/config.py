@@ -251,7 +251,25 @@ GRENZEN_TOLERANZ_METER = 150
 GRENZEN_MIN_GEMEINDEN = 2_000
 
 # Ab dieser Dateigröße wird gewarnt: die Karte lädt sonst spürbar langsam.
+# Am 08.09.2026 gemessen: 1.568 KB, also fast das Doppelte. Bewusst NICHT
+# angehoben und die Toleranz bewusst nicht verändert — im selben Lauf zwei
+# Dinge zu ändern macht unmessbar, welches davon gewirkt hat. Erst den
+# Wien-Aufbau messen, dann über die Toleranz entscheiden.
 GRENZEN_MAX_KB = 900
+
+# Wien führt die Baulandreserven als EINE Gemeinde, der Gebietsstand als 23
+# Bezirke (90101–92301). Ohne Zusammenfassung trägt die Bundeshauptstadt auf
+# der Karte keinen Wert und zerfällt in 23 graue Flecken. Alle Kennziffern,
+# die mit dieser Ziffer beginnen, gehören zu Wien — die Bundesländer 1 bis 8
+# stehen auf den Ziffern 1 bis 8.
+GRENZEN_WIEN_ZIFFER = "9"
+GRENZEN_WIEN_GKZ = "90001"
+
+# Zählt hoch, wenn sich der AUFBAU der Datei ändert, nicht ihr Gebietsstand.
+# Ohne diesen Wert bliebe eine schon gebaute `gemeinden.json` liegen, solange
+# der Gebietsstand gleich heißt — eine Änderung am Modul käme nie in der
+# Datei an. 1 = Erstaufbau (08.09.2026), 2 = Wien zusammengefasst.
+GRENZEN_AUFBAU = 2
 
 # ---------------------------------------------------------------------------
 # Quelle Fließgewässer — EEA Discodata (SQL auf die WISE-WFD-Datenbank)

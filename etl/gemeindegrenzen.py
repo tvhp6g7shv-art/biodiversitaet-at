@@ -96,6 +96,94 @@ def _abrufen() -> dict:
     return roh
 
 
+def _wien_zusammenfassen(roh: dict) -> dict:
+    """
+    Vereinigt die 23 Wiener Bezirke zu einer Fläche mit der Kennziffer 90001.
+
+    WARUM: Die Baulandreserven führen Wien als EINE Gemeinde (90001), der
+    Gebietsstand als 23 Bezirke (90101–92301). Ohne diesen Schritt hat die
+    Datenzeile keinen Umriss und die 23 Umrisse haben keinen Wert — die
+    Bundeshauptstadt bleibt auf der Karte als 23 graue Flecken stehen. Am
+    08.09.2026 im ersten echten Lauf genau so gemessen.
+
+    WARUM VOR DEM VEREINFACHEN: Die Rohpolygone der Nachbarbezirke teilen
+    exakte Stützpunkte; `unary_union` schließt dort sauber. Nach dem
+    Ausdünnen und dem Runden auf ganze Meter liegen die Ränder um bis zu
+    einen Meter auseinander, und die Vereinigung hinterließe Schlitze mitten
+    in der Stadt. Danach vereinfacht `topojson` Wien wie jede andere Fläche,
+    und die Außengrenze bleibt mit Niederösterreich topologisch geteilt.
+
+    WARUM NICHT EINFACH ALS MULTIPOLYGON SAMMELN: Ein MultiPolygon aus 23
+    Teilen behält die Bezirksgrenzen als Ränder — sie würden als Striche
+    quer durch Wien gezeichnet. Die Vereinigung löst die inneren Kanten auf.
+    """
+    bezirke = [
+        m for m in roh.get("features", [])
+        if str((m.get("properties") or {}).get("g_id", ""))
+        .startswith(config.GRENZEN_WIEN_ZIFFER)
+    ]
+    if not bezirke:
+        warnen(
+            f"Gemeindegrenzen: keine Kennziffer beginnt mit "
+            f"{config.GRENZEN_WIEN_ZIFFER!r} — Wien fehlt im Gebietsstand?"
+        )
+        return roh
+
+    kennziffern = {str(m["properties"]["g_id"]) for m in bezirke}
+    if kennziffern == {config.GRENZEN_WIEN_GKZ}:
+        log("    Wien liegt bereits als eine Fläche vor — nichts zu tun")
+        return roh
+
+    try:
+        from shapely.geometry import mapping, shape
+        from shapely.ops import unary_union
+    except ImportError:
+        abbruch(
+            "Gemeindegrenzen: Paket `shapely` fehlt. "
+            "In etl/requirements.txt eintragen und neu installieren."
+        )
+
+    formen = [shape(m["geometry"]) for m in bezirke]
+    vereint = unary_union(formen)
+
+    # Gegenprobe: Die Vereinigung darf nur die inneren Grenzlinien schlucken,
+    # keine Fläche. Überlappen sich die Bezirke oder klafft eine Lücke, weicht
+    # die Summe der Einzelflächen von der Gesamtfläche ab.
+    summe = sum(f.area for f in formen)
+    if summe > 0:
+        abweichung = 100 * abs(summe - vereint.area) / summe
+        log(f"    Wien: {len(bezirke)} Bezirke vereinigt, "
+            f"{vereint.area / 1_000_000:,.1f} km², "
+            f"Flächenabweichung {abweichung:.3f} %")
+        if abweichung > 0.5:
+            warnen(
+                f"Gemeindegrenzen: Wiens Bezirke ergeben vereinigt "
+                f"{abweichung:.2f} % weniger oder mehr Fläche als ihre Summe "
+                f"— sie überlappen sich oder es klafft eine Lücke."
+            )
+
+    geometrie = mapping(vereint)
+    if geometrie["type"] == "Polygon":
+        # Die übrigen Umrisse sind MultiPolygon; einheitlich halten, damit
+        # nachgelagerte Prüfungen nicht zwei Fälle unterscheiden müssen.
+        geometrie = {"type": "MultiPolygon",
+                     "coordinates": [geometrie["coordinates"]]}
+
+    # Über die Kennziffer filtern, nicht über `m not in bezirke`: Ein
+    # `in`-Vergleich auf Feature-Wörterbüchern zieht jedes Mal die ganze
+    # Geometrie durch — bei 2.100 Umrissen mal 23 Bezirken ist das minutenlang.
+    uebrige = [
+        m for m in roh.get("features", [])
+        if str((m.get("properties") or {}).get("g_id", "")) not in kennziffern
+    ]
+    uebrige.append({
+        "type": "Feature",
+        "properties": {"g_id": config.GRENZEN_WIEN_GKZ, "g_name": "Wien"},
+        "geometry": geometrie,
+    })
+    return {**roh, "features": uebrige}
+
+
 def _vereinfachen(roh: dict) -> dict:
     """
     Dünnt die Umrisse aus, ohne die gemeinsamen Grenzen aufzureißen.
@@ -158,6 +246,7 @@ def _aufraeumen(daten: dict) -> dict:
     return {
         "type": "FeatureCollection",
         "gebietsstand": config.GRENZEN_LAYER,
+        "aufbau": config.GRENZEN_AUFBAU,
         "quelle": "Statistik Austria — data.statistik.gv.at",
         "lizenz": "CC BY 4.0",
         "projektion": "EPSG:31287",
@@ -202,16 +291,23 @@ def baue_gemeindegrenzen(kennziffern_daten: set[str] | None = None) -> None:
             vorhanden = json.loads(ZIEL.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             vorhanden = {}
-        if vorhanden.get("gebietsstand") == config.GRENZEN_LAYER:
-            log(f"    {ZIEL.name} liegt auf {config.GRENZEN_LAYER} vor — "
-                f"nichts zu tun ({ZIEL.stat().st_size / 1024:,.0f} KB)")
+        # BEIDE Bedingungen, nicht nur der Gebietsstand: Eine Änderung am
+        # Aufbau der Datei (etwa das Zusammenfassen Wiens am 08.09.2026) käme
+        # sonst nie an — der Gebietsstand heißt ja weiter gleich, und das
+        # Modul würde die alte Datei zufrieden liegen lassen.
+        if (vorhanden.get("gebietsstand") == config.GRENZEN_LAYER
+                and vorhanden.get("aufbau") == config.GRENZEN_AUFBAU):
+            log(f"    {ZIEL.name} liegt auf {config.GRENZEN_LAYER} "
+                f"(Aufbau {config.GRENZEN_AUFBAU}) vor — nichts zu tun "
+                f"({ZIEL.stat().st_size / 1024:,.0f} KB)")
             if kennziffern_daten:
                 pruefe_deckung(vorhanden, kennziffern_daten)
             return
-        log(f"    Gebietsstand wechselt: {vorhanden.get('gebietsstand')} "
-            f"→ {config.GRENZEN_LAYER}, wird neu gebaut")
+        log(f"    Neubau nötig: Gebietsstand {vorhanden.get('gebietsstand')} "
+            f"→ {config.GRENZEN_LAYER}, Aufbau {vorhanden.get('aufbau')} "
+            f"→ {config.GRENZEN_AUFBAU}")
 
-    fertig = _aufraeumen(_vereinfachen(_abrufen()))
+    fertig = _aufraeumen(_vereinfachen(_wien_zusammenfassen(_abrufen())))
 
     ZIEL.parent.mkdir(parents=True, exist_ok=True)
     with ZIEL.open("w", encoding="utf-8") as datei:
