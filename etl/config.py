@@ -226,6 +226,68 @@ BLR_SENTINEL_GRENZE = 2.0
 BLR_FI_BESTAND_HA = 568_120
 
 # ---------------------------------------------------------------------------
+# Flächeninanspruchnahme je Gemeinde (ÖROK-Monitoring 2025, OGD)
+# ---------------------------------------------------------------------------
+# Am 09.09.2026 am Datensatz selbst erhoben, nicht aus der Beschreibung
+# abgeschrieben: Der Verteilweg ist eine Nextcloud-Freigabe des
+# Umweltbundesamts, in ihr liegen zwei Dateien. Die Sitzung erreicht den
+# Server nicht (Proxy), gelesen wurde über den Browsertab mit Range-Abrufen
+# — deshalb stehen Größen und Schema hier als gemessene Zahlen.
+FI_FREIGABE = "https://docs.umweltbundesamt.at/s/8cxzFzKESTpzXmx"
+FI_DATEI = "FI_OGD_2025_v25.zip"
+FI_ZIP_BYTE = 1_357_305_886      # gemessen (Content-Length)
+FI_GPKG_NAME = "FI_OGD_2025_v25.gpkg"
+FI_GPKG_BYTE = 4_149_706_752     # entpackt, aus dem Zip-Verzeichnis gelesen
+FI_TABELLE = "FI_OGD_2025"
+FI_GEOMETRIE_SPALTE = "Shape"
+
+# WARUM KEINE VERSCHNEIDUNG: Die Tabelle trägt `GKZ` (TEXT(5)) je Polygon,
+# dazu KG_NR, KG, PG, BKZ, PB, BL_KZ, BL. Die Zuordnung zur Gemeinde ist
+# damit ein Attribut und keine Geometrieoperation. Gebraucht wird Shapely
+# nur noch für die Fläche — eine `Shape_Area`-Spalte gibt es NICHT.
+FI_SPALTEN = ("OBJECTID", "Shape", "OGD_FI", "OGD_FI_agg",
+              "KG_NR", "KG", "GKZ", "PG", "BKZ", "PB", "BL_KZ", "BL")
+
+# Aggregatklassen laut FI_Codes_GIS_Stand_OGD_2025_12_01.xlsx (im Beipack
+# `1_Zusatzinfos.zip` der Freigabe). Level-3-Codes rollen auf diese fünf auf.
+FI_KLASSEN = {
+    100: "Verkehr",
+    210: "Siedlung innerhalb Baulandwidmung",
+    220: "Siedlung außerhalb Baulandwidmung",
+    300: "Freizeit und Erholung",
+    400: "Ver-, Entsorgungs- und Abbauflächen",
+    500: "Freiflächen-PV und Windkraft",
+}
+FI_DETAIL = {
+    101: "Autobahn und Schnellstraße",
+    102: "Landesstraße B+L",
+    103: "Gemeinde- und sonstige Straßen",
+    104: "Schiene",
+    105: "Flughafen",
+    2112: "Wohnnutzung und gemischte Nutzung",
+    213: "betriebliche Nutzung",
+    214: "sonstige bauliche Nutzung",
+    410: "Ver- und Entsorgung",
+    420: "Abbauflächen",
+    511: "Freiflächen-Photovoltaik",
+    520: "Windkraftanlage",
+}
+
+FI_STAND_JAHR = 2025
+FI_BATCH = 50_000                # Zeilen je Shapely-Durchgang
+FI_TIMEOUT_SEKUNDEN = 1_800
+FI_GEMEINDEN_MIN = 2_000
+FI_GEMEINDEN_MAX = 2_200
+# Gegenprobe: Summe über alle Gemeinden gegen den veröffentlichten Bundeswert
+# 5.681,2 km² (ÖROK-Schriftenreihe 220). Abweichung über dieser Schwelle wird
+# gemeldet, nicht geglättet.
+FI_BUND_KM2 = 5_681.2
+FI_ABWEICHUNG_PROZENT = 2.0
+# Zählung wie GRENZEN_AUFBAU: hochzählen erzwingt den Neuaufbau, auch wenn
+# die Ausgabedatei schon existiert.
+FI_AUFBAU = 1
+
+# ---------------------------------------------------------------------------
 # Quelle Gemeindegrenzen — Statistik Austria WFS
 # ---------------------------------------------------------------------------
 #
@@ -270,7 +332,9 @@ GRENZEN_WIEN_GKZ = "90001"
 # Ohne diesen Wert bliebe eine schon gebaute `gemeinden.json` liegen, solange
 # der Gebietsstand gleich heißt — eine Änderung am Modul käme nie in der
 # Datei an. 1 = Erstaufbau (08.09.2026), 2 = Wien zusammengefasst.
-GRENZEN_AUFBAU = 2
+GRENZEN_AUFBAU = 3   # 3 seit 09.09.2026: die Umrisse tragen jetzt
+                     # `flaeche_m2` je Gemeinde, gerechnet aus den rohen
+                     # Polygonen — Nenner der FI-Karte.
 
 # ---------------------------------------------------------------------------
 # Quelle Fließgewässer — EEA Discodata (SQL auf die WISE-WFD-Datenbank)

@@ -121,6 +121,13 @@ from querbauwerke import baue_querbauwerke
 from baulandreserven import baue_baulandreserven
 from gemeindegrenzen import baue_gemeindegrenzen
 
+# NEU 09.09.2026 — Flächeninanspruchnahme je Gemeinde. Steht bewusst NACH
+# `gemeindegrenzen` in der Reihenfolge unten: Der Nenner der Karte ist
+# `flaeche_m2` aus `gemeinden.json`, und die Datei trägt ihn erst ab
+# GRENZEN_AUFBAU 3. Der Abruf ist 1,27 GiB; das Modul lädt nur, wenn seine
+# Ausgabe fehlt oder auf einem anderen Stand steht.
+from flaecheninanspruchnahme import baue_flaecheninanspruchnahme
+
 # AUSGEKLINKT BLEIBEN zwei Module, die tatsächlich nicht im Repo liegen —
 # ein Import einer fehlenden Datei bricht die Pipeline in GitHub Actions mit
 # ImportError ab, bevor eine einzige Zahl gerechnet wird:
@@ -404,6 +411,31 @@ def main() -> None:
     if ausgaben.get("baulandreserven"):
         baue_gemeindegrenzen(
             {g["gkz"] for g in ausgaben["baulandreserven"]["gemeinden"]})
+
+    # --- Flächeninanspruchnahme je Gemeinde: der Stand, nicht der Zuwachs --
+    # NEU 09.09.2026, freigegeben durch die UBA-Auskunft vom 04.09. Die
+    # Auflage ist bindend und steht im Modulkopf: Zustandskarte, keine
+    # Veränderungskarte, und der Vorbehalt zu den Gemeindeveränderungen
+    # gehört in den Text.
+    #
+    # WARUM NACH `gemeindegrenzen`: Die Kennzahl ist der Anteil an der
+    # Gemeindefläche. Der Nenner steht in `gemeinden.json` und existiert
+    # erst ab Aufbau 3 — läuft dieses Modul vorher, bricht es mit einer
+    # klaren Meldung ab statt eine leere Karte zu bauen.
+    ausgaben["flaecheninanspruchnahme"] = baue_flaecheninanspruchnahme()
+
+    # GEGENPROBE ÜBER ZWEI QUELLEN, wie bei den Baulandreserven: `boden`
+    # führt den Bestand als abgeschriebene Bundeszahl (5.681,2 km²), die
+    # Eigenaggregation summiert ihn aus den Polygonen. Sie warnt, sie bricht
+    # nicht ab — eine Abweichung ist ein Befund für die Methodik, kein Grund,
+    # den Lauf zu kippen.
+    if ausgaben.get("flaecheninanspruchnahme") and ausgaben.get("boden"):
+        aus_polygonen = ausgaben["flaecheninanspruchnahme"]["oesterreich"]["fi_km2"]
+        aus_bericht = ausgaben["boden"]["bestand_km2"]
+        if abs(aus_polygonen - aus_bericht) > aus_bericht * 0.02:
+            warnen(f"Flächeninanspruchnahme: Eigenaggregation "
+                   f"{aus_polygonen:,.1f} km² gegen {aus_bericht:,.1f} km² "
+                   f"aus dem ÖROK-Bericht — Abweichung in die Methodik.")
 
     # --- Tiergruppen: Verlust, Erholung, Stillstand ------------------------
     # `falter` holt seine Reihe von Eurostat und fällt bei einem Ausfall auf

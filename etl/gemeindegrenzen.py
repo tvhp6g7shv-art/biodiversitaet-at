@@ -221,7 +221,60 @@ def _vereinfachen(roh: dict) -> dict:
     return ergebnis
 
 
-def _aufraeumen(daten: dict) -> dict:
+def _flaechen(roh: dict) -> dict[str, float]:
+    """
+    Gemeindefläche in m², aus den ROHEN Umrissen gerechnet.
+
+    WARUM HIER UND NICHT SPÄTER: Die Karte wird mit 150 m Toleranz
+    ausgedünnt. Eine Fläche aus der ausgedünnten Geometrie wäre um Prozente
+    daneben und damit als Nenner unbrauchbar — und genau als Nenner braucht
+    sie `flaecheninanspruchnahme.py`. Gerechnet wird deshalb vor
+    `_vereinfachen()`, aber nach `_wien_zusammenfassen()`, damit Wien mit
+    einer Fläche und nicht mit 23 dasteht.
+
+    WARUM OHNE FREMDDATENSATZ: EPSG:31287 ist metrisch und für Österreich
+    flächentreu genug; die Fläche fällt aus der Geometrie ab, die ohnehin
+    heruntergeladen wird. Eine zweite Quelle für Gemeindeflächen wäre ein
+    zweiter Datenweg, der bei jedem Gebietsstand nachgezogen werden müsste.
+    """
+    try:
+        from shapely.geometry import shape
+    except ImportError:
+        abbruch(
+            "Gemeindegrenzen: Paket `shapely` fehlt — ohne es gibt es keine "
+            "Gemeindefläche und damit keinen Nenner für die FI-Karte."
+        )
+    flaechen: dict[str, float] = {}
+    for merkmal in roh.get("features", []):
+        kennziffer = str((merkmal.get("properties") or {}).get("g_id", ""))
+        if not kennziffer:
+            continue
+        try:
+            flaechen[kennziffer] = float(shape(merkmal["geometry"]).area)
+        except Exception as fehler:          # noqa: BLE001
+            warnen(f"Gemeindegrenzen: Fläche für {kennziffer} nicht "
+                   f"berechenbar ({fehler})")
+    log(f"    Gemeindeflächen aus den Rohumrissen: {len(flaechen):,} Werte, "
+        f"Summe {sum(flaechen.values()) / 1e6:,.0f} km²")
+    return flaechen
+
+
+def _eigenschaften(kennziffer: str, name: str,
+                   flaechen: dict[str, float] | None) -> dict:
+    """
+    `name` und `gkz` wie bisher, dazu `flaeche_m2`, wo sie vorliegt.
+
+    Die Fläche wird auf ganze Quadratmeter gerundet — Nachkommastellen einer
+    Gemeindefläche blähen die Kartendatei auf und sagen nichts.
+    """
+    eigenschaften = {"name": name, "gkz": kennziffer}
+    wert = (flaechen or {}).get(kennziffer)
+    if wert:
+        eigenschaften["flaeche_m2"] = round(wert)
+    return eigenschaften
+
+
+def _aufraeumen(daten: dict, flaechen: dict[str, float] | None = None) -> dict:
     """
     Behält nur, was die Karte braucht: Kennziffer, Name, Umriss.
 
@@ -240,7 +293,7 @@ def _aufraeumen(daten: dict) -> dict:
             continue
         merkmale.append({
             "type": "Feature",
-            "properties": {"name": name, "gkz": str(kennziffer)},
+            "properties": _eigenschaften(str(kennziffer), name, flaechen),
             "geometry": m.get("geometry"),
         })
     return {
@@ -307,7 +360,12 @@ def baue_gemeindegrenzen(kennziffern_daten: set[str] | None = None) -> None:
             f"→ {config.GRENZEN_LAYER}, Aufbau {vorhanden.get('aufbau')} "
             f"→ {config.GRENZEN_AUFBAU}")
 
-    fertig = _aufraeumen(_vereinfachen(_wien_zusammenfassen(_abrufen())))
+    # Reihenfolge ist Absicht: Wien vereinigen, DANN die Flächen aus den
+    # rohen Umrissen rechnen, ERST DANN ausdünnen. Wer die Fläche aus der
+    # ausgedünnten Geometrie nimmt, misst den Nenner falsch.
+    roh = _wien_zusammenfassen(_abrufen())
+    flaechen = _flaechen(roh)
+    fertig = _aufraeumen(_vereinfachen(roh), flaechen)
 
     ZIEL.parent.mkdir(parents=True, exist_ok=True)
     with ZIEL.open("w", encoding="utf-8") as datei:
