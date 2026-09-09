@@ -118,5 +118,56 @@ print(f"  {len(z)} Zeichen")
 print("  " + z)
 if not 150 <= len(z) <= 234: fehler.append("Hinweiszeile")
 
+print("\n[7] Spitzenreiter braucht eine Mindestflaeche")
+# Rattenberg-Fall: hoechster Anteil, aber winzige Gemeinde. Der Satz soll
+# eine Regel erklaeren, nicht eine Ausnahme.
+kandidaten = [
+    {"name": "Rattenberg", "anteil": 78.7, "flaeche_ha": 11.3},
+    {"name": "Brunn am Gebirge", "anteil": 78.2, "flaeche_ha": 725.8},
+    {"name": "Irgendwo", "anteil": 12.0, "flaeche_ha": 900.0},
+]
+gewaehlt = fi._spitzenreiter(kandidaten)
+pruefe("gewaehlter Name ist nicht Rattenberg", 1 if gewaehlt["name"] == "Brunn am Gebirge" else 0, 1)
+# Wenn KEINE Gemeinde die Schwelle nimmt, lieber ungefiltert als gar nichts
+nur_klein = [{"name": "Rattenberg", "anteil": 78.7, "flaeche_ha": 11.3}]
+pruefe("Rueckfall ohne taugliche Gemeinde", 1 if fi._spitzenreiter(nur_klein)["name"] == "Rattenberg" else 0, 1)
+pruefe("leere Liste ergibt None", 1 if fi._spitzenreiter([]) is None else 0, 1)
+
+print("\n[8] Zwischenspeicher friert die Texte NICHT ein")
+# Der teure Teil (gemeinden, oesterreich) kommt aus der Datei, die
+# abgeleiteten Groessen werden neu gerechnet.
+kern = {
+    "stand": config.FI_STAND_JAHR,
+    "aufbau": config.FI_AUFBAU,
+    "gemeinden": [
+        {"gkz": "10101", "name": "Eisenstadt", "fi_ha": 100.0,
+         "flaeche_ha": 1000.0, "anteil": 10.0, "klassen": {"100": 20.0}},
+        {"gkz": "10201", "name": "Rust", "fi_ha": 4.0,
+         "flaeche_ha": 400.0, "anteil": 1.0, "klassen": {"210": 4.0}},
+        {"gkz": "10301", "name": "Winzig", "fi_ha": 40.0,
+         "flaeche_ha": 50.0, "anteil": 80.0, "klassen": {"210": 40.0}},
+    ],
+    "oesterreich": {"fi_km2": 1.44, "anteil": 6.8, "bericht_km2": 5681.2,
+                    "abweichung_prozent": 0.0, "detail_ha": {}},
+}
+quellen_vorher = len(gemeinsam.QUELLEN)
+erg = fi._ableiten(kern)
+pruefe("Klassengrenzen ergaenzt", 1 if erg.get("klassengrenzen") else 0, 1)
+pruefe("Hinweiszeile ergaenzt", 1 if erg.get("hinweis") else 0, 1)
+pruefe("Auflage ergaenzt", 1 if "Zustandskarte" in erg.get("auflage", "") else 0, 1)
+pruefe("Klassennamen aus config", len(erg.get("klassennamen", {})), len(config.FI_KLASSEN))
+pruefe("Kern unveraendert durchgereicht", len(erg["gemeinden"]), 3)
+# Der Zwischenspeicher-Weg muss die Quelle ebenfalls melden, sonst faellt
+# der Abschnitt still aus dem Quellenblock (passiert am 31.08.2026).
+pruefe("Quelle vermerkt", len(gemeinsam.QUELLEN) - quellen_vorher, 1)
+# Und der Spitzenreiter im Text ist NICHT die 50-ha-Gemeinde
+print("  " + erg["hinweis"])
+if "Winzig" in erg["hinweis"]: fehler.append("Spitzenreiter ungefiltert")
+print(("  OK  " if "Winzig" not in erg["hinweis"] else "  FEHL") + " kleine Gemeinde nicht im Satz")
+# `gemeinsam.AUSGABE` steht beim Import fest (WURZEL / config.AUSGABE_ORDNER);
+# ein spaeteres Umbiegen von config.AUSGABE_ORDNER wirkt nicht mehr. Deshalb
+# hier gegen den Pfad pruefen, den das Modul tatsaechlich benutzt.
+pruefe("Datei geschrieben", 1 if (gemeinsam.AUSGABE / "flaecheninanspruchnahme.json").exists() else 0, 1)
+
 print("\n" + ("ALLE PRUEFUNGEN GRUEN" if not fehler else f"FEHLER: {fehler}"))
 sys.exit(1 if fehler else 0)

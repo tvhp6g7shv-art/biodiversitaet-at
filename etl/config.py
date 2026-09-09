@@ -285,6 +285,16 @@ FI_BUND_KM2 = 5_681.2
 FI_ABWEICHUNG_PROZENT = 2.0
 # Zählung wie GRENZEN_AUFBAU: hochzählen erzwingt den Neuaufbau, auch wenn
 # die Ausgabedatei schon existiert.
+# Mindest-Gemeindefläche in Hektar, damit eine Gemeinde als Spitzenreiter in
+# die Hinweiszeile darf. WARUM ÜBERHAUPT: Der erste echte Lauf am 09.09.2026
+# hat Rattenberg gefunden — 78,7 % bei 11,3 Hektar Gemeindefläche,
+# Österreichs kleinste Stadt. Der Wert ist richtig, aber die Nachricht ist
+# dort der Nenner und nicht der Zähler. Mit 100 ha steht in der Zeile Brunn
+# am Gebirge (78,2 % auf 725,8 ha) — ein Fall, der etwas zeigt. Die Karte
+# selbst färbt weiterhin ALLE Gemeinden; die Schwelle gilt nur für den
+# Satz, der eine Regel erklären soll.
+FI_MIN_FLAECHE_HA = 100
+
 FI_AUFBAU = 1
 
 # ---------------------------------------------------------------------------

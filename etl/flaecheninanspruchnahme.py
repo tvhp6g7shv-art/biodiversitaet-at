@@ -319,6 +319,33 @@ def _klassen(werte: list[float]) -> list[float]:
     return grenzen
 
 
+def _spitzenreiter(gemeinden: list[dict]) -> dict | None:
+    """
+    Die Gemeinde für die Hinweiszeile — höchster Anteil ÜBER einer
+    Mindestfläche.
+
+    WARUM NICHT EINFACH DAS MAXIMUM: Der erste echte Lauf am 09.09.2026 hat
+    Rattenberg geliefert — 78,7 % auf 11,3 Hektar. Der Wert stimmt, aber bei
+    Österreichs kleinster Stadt ist der Nenner die Nachricht und nicht der
+    Zähler; ein Satz, der eine Regel erklären soll, erklärte damit eine
+    Ausnahme. Über `config.FI_MIN_FLAECHE_HA` steht dort Brunn am Gebirge.
+
+    Die Karte färbt weiterhin alle Gemeinden. Gefiltert wird nur der Satz.
+    """
+    tauglich = [g for g in gemeinden
+                if g.get("anteil") is not None
+                and (g.get("flaeche_ha") or 0) >= config.FI_MIN_FLAECHE_HA]
+    if not tauglich:
+        # Lieber der ungefilterte Spitzenreiter als gar keine Zeile — dann
+        # aber laut, damit die Schwelle nachgesehen wird.
+        warnen(f"Flächeninanspruchnahme: keine Gemeinde über "
+               f"{config.FI_MIN_FLAECHE_HA} ha — Hinweiszeile ungefiltert.")
+        tauglich = [g for g in gemeinden if g.get("anteil") is not None]
+    if not tauglich:
+        return None
+    return max(tauglich, key=lambda g: g["anteil"])
+
+
 def _hinweis(bund_prozent: float, hoechste: dict) -> str:
     """
     Hinweiszeile im Hausmaß 150–234 Zeichen.
@@ -353,6 +380,53 @@ def _hinweis(bund_prozent: float, hoechste: dict) -> str:
 
 
 # --- Aufbau -----------------------------------------------------------------
+
+def _ableiten(kern: dict) -> dict:
+    """
+    Ergänzt die abgeleiteten Größen und schreibt die Datei.
+
+    WARUM DAS VOM KERN GETRENNT IST: Die Aggregation kostet 37 Minuten und
+    wird deshalb zwischengespeichert. Klassengrenzen, Klassennamen und
+    Hinweiszeile hingegen sind Text und Rechnung von Sekunden — lägen sie
+    im selben Zwischenspeicher fest, kostete eine Formulierungskorrektur
+    einen vollen Neubau. Aufgefallen am 09.09.2026 an der Rattenberg-Zeile.
+
+    Deshalb: den teuren Teil einfrieren, den billigen bei JEDEM Lauf neu
+    rechnen. Beide Wege — Neubau und Zwischenspeicher — laufen durch diese
+    Funktion.
+    """
+    gemeinden = kern.get("gemeinden") or []
+    mit_anteil = [g for g in gemeinden if g.get("anteil") is not None]
+    spitze = _spitzenreiter(gemeinden)
+    bund_prozent = (kern.get("oesterreich") or {}).get("anteil") or 0.0
+
+    ergebnis = dict(kern)
+    ergebnis["klassengrenzen"] = _klassen([g["anteil"] for g in mit_anteil])
+    ergebnis["klassennamen"] = {str(k): v for k, v in config.FI_KLASSEN.items()}
+    ergebnis["auflage"] = (
+        "Zustandskarte. Die Veränderungen 2022–2025 sind auf "
+        "Gemeindeebene laut Umweltbundesamt derzeit nicht valide."
+    )
+    if spitze:
+        ergebnis["hinweis"] = _hinweis(bund_prozent, spitze)
+
+    # Die Quelle wird auf BEIDEN Wegen vermerkt, nicht nur beim Neubau. Am
+    # 31.08.2026 sind drei Abschnitte still aus dem Quellenblock gefallen,
+    # weil ihre Module nicht mehr liefen — dieselbe Falle, nur anders
+    # ausgelöst: Ein Modul, das sich selbst überspringt, meldet sonst seine
+    # Quelle nie wieder.
+    quelle_vermerken(
+        name=("ÖROK-Monitoring Flächeninanspruchnahme 2025 — "
+              "Berechnung: Umweltbundesamt, Aggregation je Gemeinde: eigene"),
+        url="https://www.data.gv.at/datasets/46f43f1c-1f8e-47eb-8526-bb0e683361b5",
+        lizenz="CC BY 4.0",
+        stand=str(config.FI_STAND_JAHR),
+        art="api",
+    )
+
+    schreibe("flaecheninanspruchnahme", ergebnis)
+    return ergebnis
+
 
 def _gemeindeflaechen() -> dict[str, tuple[str, float]]:
     if not GRENZEN.exists():
@@ -389,7 +463,16 @@ def baue_flaecheninanspruchnahme() -> dict | None:
                 and vorhanden.get("aufbau") == config.FI_AUFBAU):
             log(f"    {ZIEL.name} liegt auf Stand {config.FI_STAND_JAHR} "
                 f"(Aufbau {config.FI_AUFBAU}) vor — kein 1,27-GiB-Abruf")
-            return vorhanden
+            # NICHT einfach zurückgeben: Die Aggregation ist eingefroren,
+            # die abgeleiteten Größen sind es nicht. Sie werden aus den
+            # gespeicherten Gemeindewerten neu gerechnet und die Datei neu
+            # geschrieben — sonst hinge jede Textkorrektur an einem
+            # 37-Minuten-Neubau.
+            kern = {schluessel: vorhanden[schluessel]
+                    for schluessel in ("stand", "aufbau", "gemeinden",
+                                       "oesterreich")
+                    if schluessel in vorhanden}
+            return _ableiten(kern)
 
     nenner = _gemeindeflaechen()
     ordner = Path(tempfile.mkdtemp(prefix="fi-ogd-"))
@@ -443,25 +526,12 @@ def baue_flaecheninanspruchnahme() -> dict | None:
             f"Abweichung gehört beziffert in die Methodik, nicht geglättet."
         )
 
-    mit_anteil = [g for g in gemeinden if g["anteil"] is not None]
-    hoechste = max(mit_anteil, key=lambda g: g["anteil"])
     bund_prozent = 100 * summe_m2 / sum(f for _, f in nenner.values())
 
-    quelle_vermerken(
-        name=("ÖROK-Monitoring Flächeninanspruchnahme 2025 — "
-              "Berechnung: Umweltbundesamt, Aggregation je Gemeinde: eigene"),
-        url="https://www.data.gv.at/datasets/46f43f1c-1f8e-47eb-8526-bb0e683361b5",
-        lizenz="CC BY 4.0",
-        stand=str(config.FI_STAND_JAHR),
-        art="api",
-    )
-
-    ergebnis = {
+    kern = {
         "stand": config.FI_STAND_JAHR,
         "aufbau": config.FI_AUFBAU,
         "gemeinden": gemeinden,
-        "klassengrenzen": _klassen([g["anteil"] for g in mit_anteil]),
-        "klassennamen": {str(k): v for k, v in config.FI_KLASSEN.items()},
         "oesterreich": {
             "fi_km2": round(summe_km2, 1),
             "anteil": round(bund_prozent, 2),
@@ -470,11 +540,5 @@ def baue_flaecheninanspruchnahme() -> dict | None:
             "detail_ha": {str(k): round(v / 10_000, 1)
                           for k, v in sorted(je_detail.items())},
         },
-        "auflage": (
-            "Zustandskarte. Die Veränderungen 2022–2025 sind auf "
-            "Gemeindeebene laut Umweltbundesamt derzeit nicht valide."
-        ),
-        "hinweis": _hinweis(bund_prozent, hoechste),
     }
-    schreibe("flaecheninanspruchnahme", ergebnis)
-    return ergebnis
+    return _ableiten(kern)
