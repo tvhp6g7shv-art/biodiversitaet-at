@@ -850,7 +850,8 @@ async function start() {
                    "biotoptypen", "fliessgewaesser", "querbauwerke", "wald",
                    "baumarten", "waldarten", "natura2000",
                    "biolandbau", "pestizide", "stickstoff", "gruenland", "bauland",
-                   "falter", "rueckkehrer", "vogelarten"];
+                   "falter", "rueckkehrer", "vogelarten",
+                   "flaecheninanspruchnahme"];
   /* STAND 30.08.2026 — drei der fünf Wald-Abschnitte hängen wieder drin.
    Am 29.08. waren alle fünf ausgeklinkt, weil ihre Modul- und Datendateien
    nicht im Repo lagen: ausgeliefert hätten sie 404 erzeugt und die rote
@@ -939,6 +940,20 @@ async function start() {
     sicher("Vögel",          () => BIO.baueVogel(geladen.vogel));
     sicher("Bodenverbrauch", () => BIO.baueBoden(geladen.boden));
     sicher("Baulandbilanz",  () => BIO.baueBauland(geladen.bauland));
+
+    /* Die Gemeindekarte wird ZWEIMAL gebaut. Erst ohne Geometrie: Text,
+       Notiz und Klassentabelle stehen damit sofort, im Kartenfeld steht ein
+       Platzhalter. Dann noch einmal, sobald `gemeinden.json` da ist.
+       WARUM NICHT IN `DATEIEN`: Die Datei ist 1,5 MB. In der
+       Sammelladung oben würde sie den Aufbau ALLER Abschnitte aufhalten,
+       für einen einzigen weit unten auf der Seite. Der Fehlerfall ist
+       harmlos — bleibt sie aus, bleibt der Platzhalter stehen, und die
+       Verteilung steht in der Tabelle. */
+    sicher("Flächeninanspruchnahme", () => BIO.baueFlaeche(geladen.flaecheninanspruchnahme, null));
+    hole("gemeinden")
+      .then((geo) => sicher("Gemeindekarte", () => BIO.baueFlaeche(geladen.flaecheninanspruchnahme, geo)))
+      .catch(() => {});
+    sicher("Verkehrsflächen", () => BIO.baueVerkehr(geladen.flaecheninanspruchnahme));
     /* Liest dieselbe Datei wie „Biolandbau" — deshalb kein eigener
        Eintrag in DATEIEN. */
     sicher("Bio im Verlauf", () => BIO.baueBioverlauf(geladen.biolandbau));

@@ -680,6 +680,47 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
     <p class="viz-unterzeile" style="margin-top:12px" id="h-bauland"></p>
   </section>
 
+  <!-- 4b — FLÄCHENINANSPRUCHNAHME JE GEMEINDE (Karte) -->
+  <!-- Überschrift ist STATISCH und trägt die Zahlen: 6,8 % Bundeswert,
+       Spanne 0,15 % (Kaisers) bis 78,7 % (Rattenberg), Stand 2025.
+       Nach jedem Datensprung gegenlesen → reference-statische-ueberschriften. -->
+  <section class="viz-karte" id="s-flaeche" data-chart="flaeche"
+           data-nav="Verbaute Fläche je Gemeinde" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>6,8 % Österreichs sind verbaut — je nach Gemeinde 0,2 bis 79 %</h2>
+        <p class="viz-unterzeile" id="u-flaeche"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-flaeche">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-flaeche"></div>
+    <div class="viz-verborgen" id="t-flaeche"></div>
+    <p class="viz-notiz" id="n-flaeche"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-flaeche"></p>
+  </section>
+
+  <!-- 4c — VERKEHRSFLÄCHEN NACH ART -->
+  <!-- Statisch: 104.292 ha Gemeindestraßen gegen 10.990 ha Autobahnen und
+       Schnellstraßen, Faktor 9,5. -->
+  <section class="viz-karte" id="s-verkehr" data-chart="verkehr"
+           data-nav="Verkehrsflächen" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Gemeindestraßen brauchen neuneinhalbmal so viel Fläche wie Autobahnen</h2>
+        <p class="viz-unterzeile" id="u-verkehr"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-verkehr">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-verkehr"></div>
+    <div class="viz-verborgen" id="t-verkehr"></div>
+    <p class="viz-notiz" id="n-verkehr"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-verkehr"></p>
+  </section>
+
   <!-- 5 — ROTE LISTEN -->
   <section class="viz-karte" id="s-rotelisten" data-chart="rotelisten" style="display:none">
     <header class="viz-kopfzeile">
@@ -1059,6 +1100,8 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
 <script defer src="js/charts/gruenland.js?v=24"></script>
 <script defer src="js/charts/bauland.js?v=24"></script>
 <script defer src="js/charts/bioverlauf.js?v=24"></script>
+<script defer src="js/charts/flaeche.js?v=24"></script>
+<script defer src="js/charts/verkehr.js?v=24"></script>
 <script defer src="js/charts/falter.js?v=24"></script>
 <script defer src="js/charts/rueckkehrer.js?v=24"></script>
 <script defer src="js/charts/vogelarten.js?v=24"></script>

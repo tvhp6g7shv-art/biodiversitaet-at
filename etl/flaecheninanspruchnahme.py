@@ -69,7 +69,8 @@ from pathlib import Path
 import requests
 
 import config
-from gemeinsam import abbruch, log, quelle_vermerken, schreibe, warnen
+from gemeinsam import (abbruch, log, pflegepruefung, quelle_vermerken,
+                       schreibe, warnen)
 
 ZIEL = Path(config.AUSGABE_ORDNER) / "flaecheninanspruchnahme.json"
 GRENZEN = Path(config.AUSGABE_ORDNER) / "gemeinden.json"
@@ -415,6 +416,12 @@ def _ableiten(kern: dict) -> dict:
     # weil ihre Module nicht mehr liefen — dieselbe Falle, nur anders
     # ausgelöst: Ein Modul, das sich selbst überspringt, meldet sonst seine
     # Quelle nie wieder.
+    # Altersprüfung auf BEIDEN Wegen, aus demselben Grund wie die
+    # Quellenmeldung: Ein Modul, das sich selbst überspringt, merkt sonst nie,
+    # dass die Quelle weitergezogen ist.
+    pflegepruefung("flaecheninanspruchnahme", config.FI_STAND_JAHR,
+                   "ÖROK-Monitoring Flächeninanspruchnahme (OGD-GeoPackage)")
+
     quelle_vermerken(
         name=("ÖROK-Monitoring Flächeninanspruchnahme 2025 — "
               "Berechnung: Umweltbundesamt, Aggregation je Gemeinde: eigene"),

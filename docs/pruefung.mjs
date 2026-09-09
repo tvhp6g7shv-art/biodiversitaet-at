@@ -166,6 +166,7 @@ const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/gruenland.js",
                 "charts/bauland.js",
                 "charts/bioverlauf.js",
+                "charts/flaeche.js", "charts/verkehr.js",
                 "charts/falter.js", "charts/rueckkehrer.js",
                 "charts/vogelarten.js"];
 
@@ -176,7 +177,8 @@ const DATEN = ["meta", "kpi", "schutzgebiete", "schutzherkunft", "schutzstufen",
                "baumarten", "waldarten", "natura2000", "biolandbau", "pestizide",
                "stickstoff",
                "gruenland", "bauland",
-               "falter", "rueckkehrer", "vogelarten"];
+               "falter", "rueckkehrer", "vogelarten",
+               "flaecheninanspruchnahme"];
 
 const ABSCHNITTE = ["schutzgebiete", "schutzherkunft", "schutzstufen",
                     "vogel", "boden", "rotelisten",
@@ -184,7 +186,7 @@ const ABSCHNITTE = ["schutzgebiete", "schutzherkunft", "schutzstufen",
                     "fliessgewaesser", "querbauwerke", "wald",
                     "baumarten", "waldarten", "natura2000",
                     "biolandbau", "pestizide", "stickstoff", "gruenland",
-                    "bauland", "bioverlauf",
+                    "bauland", "bioverlauf", "flaeche", "verkehr",
                     "falter", "rueckkehrer", "vogelarten"];
 
 const fehler = [];

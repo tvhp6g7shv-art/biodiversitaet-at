@@ -149,6 +149,12 @@ PFLEGE_RHYTHMUS = {
     "natura2000":   7,   # Artikel 17: Sechsjahreszyklus plus Berichtsverzug
     "schutzstufen": 3,   # UBA-Seite, zuletzt Jänner 2025; loser Rhythmus
     "bauland":      4,   # ÖROK-Monitoring, Zyklus seit 2025 dreijährig
+    # Ohne diesen Eintrag altert der Abschnitt lautlos: Das Modul
+    # überspringt sich selbst, solange seine Ausgabedatei passt — es
+    # würde also nie von sich aus merken, dass die ÖROK längst einen
+    # neuen Stand veröffentlicht hat. Vier Jahre, wie `boden` und
+    # `bauland`: dreijähriger Zyklus plus ein Jahr Veröffentlichungsverzug.
+    "flaecheninanspruchnahme": 4,
 }
 
 # ---------------------------------------------------------------------------

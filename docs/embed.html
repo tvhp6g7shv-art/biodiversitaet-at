@@ -17,6 +17,8 @@
 <script src="js/charts/vogel.js?v=24" defer></script>
 <script src="js/charts/boden.js?v=24" defer></script>
 <script src="js/charts/bauland.js?v=24" defer></script>
+<script src="js/charts/flaeche.js?v=24" defer></script>
+<script src="js/charts/verkehr.js?v=24" defer></script>
 <script src="js/charts/rotelisten.js?v=24" defer></script>
 <script src="js/charts/erhaltung.js?v=24" defer></script>
 <script src="js/charts/lebensraeume.js?v=24" defer></script>
@@ -319,6 +321,8 @@ const CHARTS = {
   vogel: { titel: "Feld- und Wiesenvögel", dateien: ["vogel"], bau: (B, d) => B.baueVogel(d.vogel), hoch: true },
   boden: { titel: "Bodenverbrauch", dateien: ["boden"], bau: (B, d) => B.baueBoden(d.boden), extra: ["t-boden-kategorien"] },
   bauland: { titel: "Bebaut gegen neu gewidmet", dateien: ["bauland"], bau: (B, d) => B.baueBauland(d.bauland) },
+  flaeche: { titel: "Verbaute Fläche je Gemeinde", dateien: ["flaecheninanspruchnahme", "gemeinden"], bau: (B, d) => B.baueFlaeche(d.flaecheninanspruchnahme, d.gemeinden) },
+  verkehr: { titel: "Verkehrsflächen nach Art", dateien: ["flaecheninanspruchnahme"], bau: (B, d) => B.baueVerkehr(d.flaecheninanspruchnahme) },
   rotelisten: { titel: "Alter der Roten Listen", dateien: ["rotelisten"], bau: (B, d) => B.baueRoteListen(d.rotelisten) },
   erhaltung: { titel: "Erhaltungszustand der Lebensraumtypen", dateien: ["erhaltung"], bau: (B, d) => B.baueErhaltung(d.erhaltung) },
   lebensraeume: { titel: "Erhaltungszustand nach Lebensraumgruppen", dateien: ["lebensraeume"], bau: (B, d) => B.baueLebensraeume(d.lebensraeume), hoch: true },

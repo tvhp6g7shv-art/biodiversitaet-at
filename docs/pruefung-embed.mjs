@@ -58,7 +58,7 @@ const GRAFIKEN = ["schutzgebiete", "schutzherkunft", "schutzstufen",
                   "fliessgewaesser", "querbauwerke", "wald",
                   "baumarten", "waldarten", "natura2000",
                   "biolandbau", "pestizide", "stickstoff", "gruenland",
-                  "bauland", "bioverlauf",
+                  "bauland", "bioverlauf", "flaeche", "verkehr",
                   "falter", "rueckkehrer", "vogelarten"];
 
 /* Eine Breite reicht: die Einbettung sitzt im iframe der Gastgeberseite,
