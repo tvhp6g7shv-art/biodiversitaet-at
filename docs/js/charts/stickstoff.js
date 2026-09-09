@@ -37,11 +37,18 @@ const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
    nicht die Bilanz. Eine Marke wäre erfunden. Dieselbe Linie wie bei
    `pestizide`, wo die −50-%-Marke aus demselben Grund fehlt.
 
-   ZUR FARBWAHL: ein Serienton für die Jahreswerte, `--viz-text-2` für das
+   ZUR FARBWAHL: `--viz-series-3` für die Jahreswerte, `--viz-text-2` für das
    Mittel. Keine Ampel — ein Bilanzwert ist keine Bewertungsstufe, und
-   `--viz-kritisch` bleibt nach Konvention dem Status vorbehalten. */
+   `--viz-kritisch` bleibt nach Konvention dem Status vorbehalten.
 
-const FARBE_JAHR = "--viz-series-1";
+   HIER STAND `--viz-series-1`. Am 09.09.2026 am Live-Stand ausgelesen: In der
+   Lichtung-Palette ist `--viz-series-1` #444a3b und `--viz-text-2` #4a5041 —
+   zwei Töne, die im Bild wie derselbe aussehen und deren Legendenmarken gar
+   nicht zu unterscheiden waren. `--viz-series-3` (#848b7a) setzt die dünne
+   Jahreslinie hell gegen die kräftige dunkle Mittellinie ab; die Hierarchie
+   liegt damit auf Farbe UND Strichstärke statt nur auf der Strichstärke. */
+
+const FARBE_JAHR = "--viz-series-3";
 
 function baueStickstoff(daten) {
   const S = schrift();
