@@ -46,8 +46,11 @@ import { spawnSync } from "node:child_process";
 const HIER = dirname(fileURLToPath(import.meta.url));
 
 /* Drei Breiten, weil es ZWEI Schwellen gibt:
-   - 768 (ENG): darunter stehen die Kategorienamen über dem Balken statt
-     links daneben, und die Einordnung unter der Grafik ist eingeklappt.
+   - 640 (ENG): darunter stehen die Kategorienamen über dem Balken statt
+     links daneben. Seit 09.09.2026 640 statt 768 — die Zweispalter-Karten
+     geben dem Diagramm 732 px und standen sonst im Telefon-Layout.
+   - 768 (ENG_FENSTER): darunter ist die Einordnung unter der Grafik
+     eingeklappt. Das ist die FENSTERbreite, nicht die Zeichenfläche.
    - 560 (SCHMAL): darunter zusätzlich Legende scrollbar und keine
      Endpunktbeschriftung.
    700 px prüft den Streifen dazwischen — dort gilt das eine, nicht das
@@ -450,7 +453,7 @@ const zeilenhoehe = (HOEHEN["c-rotelisten"] - 44 - 46) / rlZeilen;
 pruefe(zeilenhoehe >= 16,
   `[${name}] Rote Listen: nur ${zeilenhoehe.toFixed(1)} px je Zeile — Namen kleben`);
 
-/* --- Kategorienamen über dem Balken (< 768 px) ------------------------
+/* --- Kategorienamen über dem Balken (< 640 px) ------------------------
    Gemessen, nicht geglaubt: in den fünf liegenden Balkendiagrammen wird
    aus dem SVG gelesen, wo der Kategoriename steht. Erwartet wird eng:
    - der Name beginnt INNERHALB der Zeichenfläche, nicht links davor
@@ -515,7 +518,7 @@ for (const feldId of BALKENFELDER) {
   if (treffer.length < 2) { hinweise.push(`[${name}] ${feldId}: nur ${treffer.length} Kategorienamen im SVG gefunden`); continue; }
 
   const linkeste = Math.min(...treffer.map((t) => t.x));
-  if (breite < 768) {
+  if (breite < 640) {
     pruefe(linkeste >= 0,
       `[${name}] ${feldId}: Kategoriename beginnt bei x=${linkeste} — steht noch links vom Gitter statt über dem Balken`);
     /* Zwei Abstände, und der ZWEITE ist der, an dem der erste Anlauf am

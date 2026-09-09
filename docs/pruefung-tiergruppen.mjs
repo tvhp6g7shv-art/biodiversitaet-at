@@ -257,7 +257,7 @@ const inst = (id) => echarts.getInstanceByDom(window.document.getElementById(id)
      `kategorieLabel` in kern.js). Die Bandhöhe reicht dort für zwei
      14-px-Balken — der Bandtest oben schlägt also NICHT an, während die
      Gruppe längst im Namen steht. Deshalb hier eigens gemessen. */
-  if (breite < 768) {
+  if (breite < 640) {
     const namensUnterkante = 11;
     const zuHoch = [...oberkante.entries()].filter(([mitte, oben]) =>
       oben < mitte - namensUnterkante);

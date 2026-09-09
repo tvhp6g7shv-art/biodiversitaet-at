@@ -143,7 +143,7 @@ const achse = () => ({
    bleiben 106 px Zeichenflaeche). */
 const SCHMAL = 560;
 
-/* 768 px: die zweite, hoehere Schwelle — ab hier stehen die
+/* 640 px: die zweite, hoehere Schwelle — ab hier stehen die
    Kategorienamen der liegenden Balken NICHT mehr links neben dem
    Gitter, sondern ueber dem jeweiligen Balken. Grund: links kosten sie
    je nach Diagramm 118–168 px, und ein Name wie „von Vernichtung
@@ -151,10 +151,24 @@ const SCHMAL = 560;
    ein Drittel der Karte bleibt. Ueber dem Balken steht die ganze
    Kartenbreite zur Verfuegung, und der Balken bekommt sie auch.
 
-   Die Schwelle liegt bewusst ueber SCHMAL: zwischen 560 und 768 px
+   Die Schwelle liegt bewusst ueber SCHMAL: zwischen 560 und 640 px
    bleiben Legende und Endbeschriftung wie am Desktop, nur die
-   Kategorienamen wandern nach oben. */
-const ENG = 768;
+   Kategorienamen wandern nach oben.
+
+   09.09.2026 — VON 768 AUF 640 GESENKT. 768 war an der Fensterbreite
+   gedacht, gemessen wird aber die Zeichenflaeche. Auf der Live-Seite
+   gibt die Zweispalter-Karte dem Diagramm 3 von 4 Rasterspalten, das
+   sind bei 1566 px Fenster 732 px (Karteninhalt 986 px, vier Spalten
+   zu 223,6 px, 30,4 px Spalte) — also UNTER der alten Schwelle. Acht
+   Diagramme (Schutzgebiete, Vogel, Boden, Rote Listen, Erhaltung,
+   Biotoptypen, Wald, Biolandbau) standen damit auf dem Desktop im
+   Telefon-Layout: Ländername ueber dem Balken, an der Nulllinie
+   klebend, waehrend die einspaltigen Karten daneben (986 px) die
+   Namen links in einer Flucht zeigten. Zwei Layouts auf einer Seite.
+   Die Zweispalter liegen zwischen 700 px (Rasterwechsel bei 1024 px
+   Fenster) und 732 px (gedeckelt); 640 laesst sie alle desktopseitig
+   rendern und laesst echte Telefonbreiten eng. */
+const ENG = 640;
 const feldBreite = (el) =>
   el?.clientWidth || document.documentElement.clientWidth;
 const istSchmal = (el) => feldBreite(el) < SCHMAL;
@@ -257,7 +271,7 @@ const randLinks = (el, desktopLinks = 120) => istSchmal(el)
 
 /* Gitter fuer liegende Balken.
 
-   Eng (< 768): die Kategorienamen stehen IM Gitter ueber den Balken,
+   Eng (< 640): die Kategorienamen stehen IM Gitter ueber den Balken,
    also darf links kein Platz mehr fuer sie reserviert werden —
    `containLabel: false`, sonst rechnet ECharts die nun sehr breiten
    Etiketten in den linken Rand hinein und schiebt das Gitter aus der
@@ -589,9 +603,11 @@ function endEtikett(werte, el, formatter, farbe) {
 const STUFE = 160;
 const breitenStufe = (el) =>
   istSchmal(el) ? -2
-    : istEng(el) ? -1        /* eigene Stufe: 768 faellt sonst mitten in
-                                die 160er-Stufe 640–800 und der Wechsel
-                                der Kategorienamen loeste nie aus */
+    : istEng(el) ? -1        /* eigene Stufe fuer ENG: solange die
+                                Schwelle nicht auf einem Vielfachen von
+                                160 liegt, faellt sie sonst mitten in
+                                eine Stufe und der Wechsel der
+                                Kategorienamen loest nie aus */
     : Math.floor(feldBreite(el) / STUFE);
 
 function beiBreitenwechsel(neuBauen) {
@@ -671,7 +687,12 @@ function setzeHtml(id, html) {
    Live-Stand gemessen). Eine Notiz, die neben dem <details> als
    viertes Kind stuende, riss die Karte auf. `div.viz-einordnung` haelt
    beide zusammen und bleibt damit das eine dritte Kind. */
-const ENG_MQ = "(max-width: 767.98px)";
+/* Die FENSTERschwelle des Aufklappers ist eine andere Groesse als ENG:
+   ENG misst die Zeichenflaeche EINES Diagramms, hier geht es um die
+   Breite der Seite. Sie stand bis 09.09.2026 als `ENG` im Rueckfall und
+   waere mit dessen Senkung auf 640 stillschweigend mitgewandert. */
+const ENG_FENSTER = 768;
+const ENG_MQ = `(max-width: ${ENG_FENSTER - 0.02}px)`;
 
 function einordnungEinklappen() {
   const karten = document.querySelectorAll(".viz-karte");
@@ -702,7 +723,7 @@ function einordnungEinklappen() {
      ganze Aufklapper. */
   const medien = global.matchMedia ? global.matchMedia(ENG_MQ) : null;
   const engJetzt = () => medien ? medien.matches
-    : document.documentElement.clientWidth < ENG;
+    : document.documentElement.clientWidth < ENG_FENSTER;
 
   /* Die Notiz wandert mit der Breite in den Aufklapper und wieder
      heraus. Verschoben wird der Absatz selbst, nicht eine Kopie: die
