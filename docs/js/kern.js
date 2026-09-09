@@ -394,11 +394,90 @@ function kategorieLabel(el, desktopLinks = 120, anzahl = 0, balkenPx = null) {
   };
 }
 
-/* Legende schmal: scrollbar in EINER Zeile statt ueber drei Zeilen ins
-   Diagramm zu laufen. */
+/* Legende schmal: UMBRECHEN, nicht blaettern.
+
+   HIER STAND `type: "scroll"`, und das war ein Fehlgriff — begruendet mit
+   „lieber eine Zeile zum Blaettern als drei Zeilen ins Diagramm hinein".
+   Beide Haelften der Begruendung sind falsch:
+
+   1. ECharts blaettert NICHT eintragsweise. Es fuellt die Zeile bis zur
+      Kante und SCHNEIDET den letzten Eintrag mitten im Wort ab. Auf dem
+      Telefon des Users stand am 09.09.2026 „unl" statt „unbefriedigend",
+      daneben „1/3" und zwei Pfeile. Eine ausdrueckliche `width` aendert
+      daran nichts, am gerenderten SVG geprueft.
+   2. „Ins Diagramm hinein" laufen die Zeilen nur, solange niemand Platz
+      fuer sie macht. Genau das tut jetzt `legendenFreiraeumen()` weiter
+      unten — nach dem Zeichnen gemessen, nicht vorher geschaetzt.
+
+   `width` erzwingt den Umbruch an der Feldkante statt an der
+   Zeichenflaeche; `left` kommt aus dem Modul und ist schmal eine Zahl. */
 const legende = (el, werte) => istSchmal(el)
-  ? { ...werte, type: "scroll", itemGap: 10 }
+  ? { ...werte,
+      width: Math.max(120, feldBreite(el)
+        - (typeof werte.left === "number" ? werte.left : 14) - 6) }
   : werte;
+
+/* --- Platz fuer die Legende freiraeumen, NACH dem Zeichnen -------------
+   Eingefuehrt 09.09.2026, zusammen mit dem Umbruch oben.
+
+   Das Problem, das jede Vorausrechnung hat: Wie viele Zeilen eine Legende
+   belegt, weiss erst ECharts — und es sagt es nicht. Die Module tragen
+   deshalb feste `grid.top`-Werte (46, 40, 34), die fuer EINE Zeile
+   gerechnet sind. Bei 344 px Feldbreite belegen sie zwei bis vier:
+   gemessen am Live-Stand `waldarten` 3, `fliessgewaesser` 3,
+   `schutzstufen` 4, `pestizide` und `rueckkehrer` je 2. Der Balken laeuft
+   dann durch die Legende.
+
+   Also andersherum: erst zeichnen lassen, dann die Unterkante der Legende
+   im gerenderten SVG messen und Gitter und Kartenhoehe nachziehen. Das
+   ist unabhaengig von Schriftbreite, `itemGap` und `itemWidth` und
+   braucht keine Annahme ueber die Namen.
+
+   ZWEI ABSICHERUNGEN:
+   - Ohne Layout (jsdom in `pruefung.mjs`) ist die Hoehe 0; dann passiert
+     nichts und die Vorausrechnung der Module bleibt stehen.
+   - Gezaehlt werden nur Textknoten im OBEREN Drittel. Ein Kategoriename,
+     der zufaellig wie eine Serie heisst, wuerde das Gitter sonst nach
+     unten treiben. */
+function legendenFreiraeumen() {
+  diagramme.forEach((d) => {
+    if (!d || d.isDisposed?.()) return;
+    const el = d.getDom?.();
+    if (!el) return;
+    const o = d.getOption?.();
+    const gitter = (o?.grid || [])[0];
+    const lg = (o?.legend || [])[0];
+    if (!gitter || !lg || lg.show === false) return;
+    const top = Number(gitter.top);
+    if (!isFinite(top)) return;
+
+    const namen = ((lg.data?.length ? lg.data : (o.series || []).map((r) => r.name)) || [])
+      .map((x) => (typeof x === "string" ? x : x?.name))
+      .filter(Boolean);
+    if (!namen.length) return;
+
+    const kasten = el.getBoundingClientRect();
+    if (!kasten.height) return;              /* jsdom: kein Layout */
+    const grenze = kasten.top + kasten.height * 0.45;
+
+    let unten = 0;
+    el.querySelectorAll("svg text").forEach((t) => {
+      const b = t.getBoundingClientRect();
+      if (b.top > grenze) return;
+      if (namen.includes(t.textContent.trim())) {
+        unten = Math.max(unten, b.bottom - kasten.top);
+      }
+    });
+    if (!unten) return;
+
+    const soll = Math.round(unten) + 10;     /* 10 px Luft zum Gitter */
+    if (soll <= top) return;
+    el.style.height = `${Math.round(kasten.height + (soll - top))}px`;
+    el.dataset.hoeheGesetzt = "1";
+    d.resize();
+    d.setOption({ grid: { top: soll } });
+  });
+}
 
 /* Linke Kante der Legende — dieselbe wie die des Gitters.
 
@@ -416,6 +495,47 @@ const legende = (el, werte) => istSchmal(el)
    aendert, muss hier mit. */
 const legendeLinks = (el, desktopLinks) =>
   istEng(el) ? 14 : randLinks(el, desktopLinks);
+
+/* --- Wie viele ZEILEN die Legende belegt ------------------------------
+   Eingefuehrt 09.09.2026 nach einem Befund des Users auf dem Telefon: Bei
+   `schutzstufen` lief der Balken IN die vierte Legendenzeile hinein, weil
+   das Modul drei Zeilen angenommen hatte. Eine Annahme reicht nicht — die
+   Zahl haengt an Feldbreite UND Namenslaenge.
+
+   ECharts rechnet den Umbruch selbst, gibt das Ergebnis aber nicht heraus;
+   `grid.top` muss aber VOR dem Zeichnen feststehen. Also geschaetzt, und
+   zwar an der ausgelieferten Schrift gemessen, nicht geraten (09.09.2026,
+   biodiversitaet-monitor.at, Feld 344 px, MONO 12 px):
+
+     Textbreite  ~ 7,3 px je Zeichen
+     Vorspann     41 px je Eintrag (Marke 11 + Luft 19 + `itemGap` ~11)
+
+   Gegenprobe am gerenderten SVG: `schutzstufen` 4 Zeilen (geschaetzt 4),
+   `fliessgewaesser` 3 Zeilen (geschaetzt 3).
+
+   Die Schaetzung faellt nach OBEN, nicht nach unten: eine Zeile zu viel
+   kostet 26 px Luft, eine zu wenig kostet den Ueberlauf, den dieser
+   Helfer verhindern soll. */
+const LEG_ZEICHEN = 7.3;
+const LEG_VORSPANN = 41;
+/* 26 px Zeilenabstand = 12 px Eintragshoehe + 14 px `itemGap`. */
+const LEG_ZEILE = 26;
+
+function legendeZeilen(el, namen, links = 14) {
+  const platz = feldBreite(el) - links - 6;
+  if (!namen?.length || platz <= 0) return 1;
+  let zeilen = 1, rest = platz;
+  namen.forEach((n) => {
+    const b = String(n).length * LEG_ZEICHEN + LEG_VORSPANN;
+    if (b > rest && rest < platz) { zeilen += 1; rest = platz; }
+    rest -= b;
+  });
+  return zeilen;
+}
+
+/* Hoehe, die diese Zeilen ueber dem Gitter brauchen. */
+const legendeHoehe = (el, namen, links = 14) =>
+  legendeZeilen(el, namen, links) * LEG_ZEILE + 8;
 
 /* Endpunktbeschriftung rechts kostet Breite, die schmal nicht da ist. */
 const endLabelZeigen = (el) => !istSchmal(el);
@@ -502,6 +622,8 @@ function neuVermessen() {
     d.resize();
     if (typeof d.__neuLayouten === "function") d.__neuLayouten();
   });
+  /* Mit der richtigen Schrift bricht die Legende womoeglich anders um. */
+  legendenFreiraeumen();
 }
 
 /* Setzt Text/HTML nur, wenn das Element existiert — eine Gastgeberseite
@@ -857,8 +979,9 @@ async function start() {
   baueAlles();
   /* NACH baueAlles(): erst dort blenden die Module ihre Abschnitte ein.
      Vorher gezählt wäre das Ergebnis immer null. */
+  sicher("Legendenplatz", legendenFreiraeumen);
   sicher("Vorspannzeile", vorspannSetzen);
-  beiBreitenwechsel(baueAlles);
+  beiBreitenwechsel(() => { baueAlles(); legendenFreiraeumen(); });
   sicher("Einordnung einklappen", einordnungEinklappen);
 
   sicher("Quellenangabe", () => baueFuss(meta));
@@ -999,7 +1122,8 @@ const BIO = {
   VERSION, signaturHtml,
   /* Breitenabhaengiges Layout — siehe „Schmale Fenster" oben */
   istSchmal, istEng, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe,
-  legende, legendeLinks, endLabelZeigen, endEtikett,
+  legende, legendeLinks, legendeZeilen, legendeHoehe, legendenFreiraeumen,
+  endLabelZeigen, endEtikett,
   /* Hover an Balken: dunkler statt heller */
   dunkler, hoverDunkler,
   setzeBasis: (pfad) => { DATEN_BASIS = pfad; },

@@ -6,8 +6,8 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
-        diagramme, schrift, balkenGitter, legendeLinks, istSchmal,
-        balkenHoehe, hoverDunkler } = BIO;
+        diagramme, schrift, balkenGitter, legendeLinks, legendeHoehe,
+        istSchmal, balkenHoehe, hoverDunkler } = BIO;
 
 /* --- Wie streng der Schutz ist ----------------------------------------
    EIN liegender Balken — das geschützte Gebiet —, aufgeteilt in vier
@@ -197,18 +197,40 @@ function baueSchutzstufen(daten) {
     `Schutzes · Stand ${daten.stand}`);
   setzeText("h-schutzstufen", daten.hinweis ?? "");
 
-  /* Wie viel Höhe die Legende über dem Balken braucht. Vier Einträge, davon
-     einer 36 Zeichen lang — auf dem Desktop passen sie in eine Zeile, bei
-     420 px werden es drei. Gemessen an der schmalsten geprüften Breite.
-     16 px je Zeile plus 10 px Luft zum Balken. */
-  const LEG_ZEILEN = istSchmal(feld) ? 3 : 1;
-  const LEG_HOEHE = LEG_ZEILEN * 16 + 18;
+  /* Wie viel Höhe die Legende über dem Balken braucht.
+
+     HIER STAND `istSchmal(feld) ? 3 : 1` UND WAR EINE ZEILE ZU WENIG. Der
+     User hat es am 09.09.2026 auf dem Telefon gesehen: Der Balken lief in
+     die vierte Legendenzeile hinein und strich „+ ohne festgelegte Stufe"
+     durch. Nachgemessen am gerenderten SVG (Feld 344 px): die vier
+     Einträge stehen auf VIER Zeilen im Abstand von 26 px — nicht drei zu
+     je 16. Beide Zahlen der alten Rechnung waren falsch, und weil sie
+     Annahmen waren, fiel es nur im Bild auf.
+
+     Jetzt rechnet `legendeHoehe` aus Feldbreite und Namenslänge; die
+     Namen stehen in den Daten und können mit dem UBA-Stand wachsen. */
+  const NAMEN = segmente?.map((z) => z.stufe) ?? [];
+  const LEG_LINKS = legendeLinks(feld, 4);
+  const LEG_HOEHE = legendeHoehe(feld, NAMEN, LEG_LINKS);
+
+  /* Balkenstärke. 120 px füllen die Desktop-Fläche; schmal sind sie zu
+     viel, seit die Legende vier Zeilen belegt — 64 px lassen der Zahl
+     über dem ersten Segment Luft, ohne dass die Karte wächst. */
+  const BALKEN = istSchmal(feld) ? 64 : 120;
+
+  /* Mindestbreite eines Segments, damit sein Etikett hineinpasst — in
+     PIXELN, nicht in Prozent. Die alte Schwelle (`>= 14`) war ein Anteil
+     und traf damit dieselbe Falle wie `fliessgewaesser`: Bei 300 px Feld
+     sind 14 % noch 37 px, „14,0 %" braucht 42 und stünde über der Kante. */
+  const GITTER = balkenGitter(feld, { left: 16, right: 22 });
+  const PLOT = Math.max(80, feld.clientWidth - GITTER.left - GITTER.right);
+  const ETIKETT_SCHWELLE = Math.max(14, (46 / PLOT) * 100);
 
   /* EINE Kategoriezeile statt vier — der Balken ist das Ganze. Die Höhe
      kommt deshalb nicht mehr aus `balkenHoehe(…, zeilen.length, 40)`;
      ein einzelner Balken braucht eine feste, ruhige Fläche, plus den Platz
      für die mehrzeilige Legende. */
-  balkenHoehe(d, feld, 1, 96 + LEG_HOEHE);
+  balkenHoehe(d, feld, 1, BALKEN - 8 + LEG_HOEHE);
 
   d.setOption({
     ...basis(),
@@ -241,7 +263,7 @@ function baueSchutzstufen(daten) {
        daher 16 links und 22 rechts, je die halbe Breite plus etwas Luft.
        Die Prüfsuite hat das NICHT gemeldet: Sie misst Text gegen die
        Zeichenfläche, und der Überstand blieb knapp darunter. */
-    grid: { ...balkenGitter(feld, { left: 16, right: 22 }), top: LEG_HOEHE, bottom: 34 },
+    grid: { ...GITTER, top: LEG_HOEHE, bottom: 34 },
     /* HIER BEWUSST NICHT `legende()`. Der Helfer schaltet schmal auf
        `type: "scroll"` — eine Zeile zum Blättern statt drei Zeilen ins
        Diagramm hinein. Für die meisten Abschnitte ist das richtig; für
@@ -250,7 +272,7 @@ function baueSchutzstufen(daten) {
        hinter einem Pfeil. Am gerenderten SVG gemessen, nicht vermutet.
        Also plain und mehrzeilig, und das Feld bekommt die Zeilen dazu. */
     legend: {
-      left: legendeLinks(feld, 4), top: 0,
+      left: LEG_LINKS, top: 0,
       itemWidth: 10, itemHeight: 10, itemGap: 14,
       textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },
       data: segmente?.map((z) => z.stufe) ?? [],
@@ -293,7 +315,7 @@ function baueSchutzstufen(daten) {
          nur im CSS beider Auslieferungen (und `min-height` schlägt jeden
          JS-Wert), deshalb steht sie auf der Liste für den CSS-Durchgang
          am 12.09. und nicht hier. */
-      barWidth: 120,
+      barWidth: BALKEN,
       data: [z.anteil],
       itemStyle: {
         color: stil(SEGMENTTOENE[k]),
@@ -315,7 +337,7 @@ function baueSchutzstufen(daten) {
          stehen, auf seq-2 (hell) dunkel. `--viz-invers-text` gegen
          `--viz-text` — vorgerechnet, nicht geschätzt. */
       label: {
-        show: z.anteil >= 14,
+        show: z.anteil >= ETIKETT_SCHWELLE,
         position: "inside",
         color: stil(k === 0 ? "--viz-invers-text" : "--viz-text"),
         fontSize: S.label, fontWeight: "bold",
@@ -333,7 +355,12 @@ function baueSchutzstufen(daten) {
       markPoint: {
         silent: true, symbol: "rect", symbolSize: [0, 0],
         label: {
-          show: true, position: "top", distance: 12,
+          /* ABSTAND AUS DER BALKENSTÄRKE, nicht fest. `distance` misst von
+             der MITTE des Balkens, nicht von seiner Kante: mit den alten
+             12 px landete die Zahl IM ersten Segment — dunkles Grau auf
+             `--viz-seq-6`, praktisch unlesbar, auf dem Telefon wie am
+             Desktop. Halbe Stärke plus 12 px setzt sie darüber. */
+          show: true, position: "top", distance: BALKEN / 2 + 12,
           color: stil("--viz-text"), fontSize: S.label, fontWeight: "bold",
           formatter: () => pz(segmente[0].anteil, 1) + " %",
         },

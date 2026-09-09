@@ -7,7 +7,8 @@
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
         diagramme, schrift, istSchmal, balkenGitter, kategorieLabel,
-        balkenBreite, balkenHoehe, legende, legendeLinks, hoverDunkler } = BIO;
+        balkenBreite, balkenHoehe, legendeLinks, legendeHoehe,
+        hoverDunkler } = BIO;
 
 /* --- Fließgewässer: Wasserkörper gegen Flusskilometer -----------------
    Zwei gestapelte Balken, auf 100 % normiert. Beide zeigen denselben
@@ -56,6 +57,10 @@ const FARBEN = [
    nicht im Etikett einer einzelnen Serie. */
 const ZIEL_FAECHER = 2;
 
+/* Mindestbreite eines Fachs, damit sein Etikett hineinpasst: „14,2 %" misst
+   42 px in MONO 11,5 — plus 4 px Luft. Darunter faellt das Etikett weg. */
+const ETIKETT_MIND_PX = 46;
+
 function baueFliessgewaesser(daten) {
   const S = schrift();
   if (!daten?.vergleich?.zeilen?.length) return;
@@ -77,16 +82,37 @@ function baueFliessgewaesser(daten) {
     `Gewässerlänge · Meldezyklus ${daten.zyklus}`);
   setzeText("h-fliessgewaesser", daten.hinweis ?? "");
 
-  balkenHoehe(d, feld, zeilen.length, 44);
+  /* --- Legende: umbrechen statt blaettern ----------------------------
+     HIER STAND `legende(feld, …)`. Der Helfer schaltet schmal auf
+     `type: "scroll"` — und ECharts blaettert dabei NICHT eintragsweise,
+     sondern schneidet den letzten sichtbaren Eintrag mitten im Wort ab.
+     Auf dem Telefon des Users stand am 09.09.2026 „unl" statt
+     „unbefriedigend", daneben „1/3" und zwei Pfeile. Am gerenderten SVG
+     nachgestellt: auch mit ausdruecklicher `width` bleibt der Schnitt
+     mitten im Wort — die Bauform selbst taugt hier nicht.
+
+     Also umbrechen, wie bei `schutzstufen`, und die Zeilen ueber dem
+     Gitter freihalten. Sechs Faecher brauchen bei 344 px drei Zeilen.
+     `Math.max(46, …)` haelt den Desktop auf seinem bisherigen Wert. */
+  const LEG_LINKS = legendeLinks(feld, 168);
+  const LEG_HOEHE = Math.max(46, legendeHoehe(feld, faecher, LEG_LINKS));
+
+  /* Wie breit die Zeichenflaeche wirklich ist — Grundlage der
+     Etikettenschwelle weiter unten. */
+  const GITTER = balkenGitter(feld, { left: 168, right: 60 });
+  const PLOT = Math.max(80, feld.clientWidth - GITTER.left - GITTER.right);
+  const SCHWELLE = Math.max(12, (ETIKETT_MIND_PX / PLOT) * 100);
+
+  balkenHoehe(d, feld, zeilen.length, Math.max(44, LEG_HOEHE));
 
   d.setOption({
     ...basis(),
-    grid: { ...balkenGitter(feld, { left: 168, right: 60 }), top: 46 },
-    legend: legende(feld, {
-      top: 0, left: legendeLinks(feld, 168),
+    grid: { ...GITTER, top: LEG_HOEHE },
+    legend: {
+      top: 0, left: LEG_LINKS, width: feld.clientWidth - LEG_LINKS - 6,
       itemWidth: 11, itemHeight: 11, itemGap: 14, data: faecher,
       textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },
-    }),
+    },
     tooltip: {
       ...basis().tooltip, trigger: "axis",
       axisPointer: { type: "shadow", shadowStyle: { color: stil("--viz-grid"), opacity: 0.35 } },
@@ -121,14 +147,23 @@ function baueFliessgewaesser(daten) {
       },
       emphasis: hoverDunkler(stil(FARBEN[k])),
       /* Nur die zwei Zielklassen beschriftet, und auch die nur, wenn das
-         Fach breit genug ist. Unter 12 % fällt das Etikett weg, statt
-         aus dem Balken zu ragen. Die Schwelle liegt niedriger als die
-         20 % in natura2000.js, weil hier sechs Fächer nebeneinander
-         liegen statt drei — „sehr gut" misst 18,9 %. */
+         Fach breit genug ist.
+
+         DIE SCHWELLE WAR EIN FESTER PROZENTWERT (12) UND DAS WAR FALSCH:
+         Ein Prozentwert misst den Anteil, das Etikett braucht PIXEL. Auf
+         dem Telefon des Users standen die 14,2 % der Zeile
+         „Nach Flusskilometern" ueber 12, das Fach war aber nur rund 38 px
+         breit — „14,2 %" braucht 42 und wurde am Fachrand abgeschnitten,
+         sichtbar blieb „4,2 %". Eine falsche Zahl, nicht nur ein
+         Schoenheitsfehler.
+
+         Jetzt gerechnet: 46 px Mindestbreite (42 fuer den Text, 4 Luft),
+         umgelegt auf die Zeichenflaeche. Am Desktop (759 px) sind das
+         6 % — dort greift weiter die inhaltliche Untergrenze von 12. */
       label: k < ZIEL_FAECHER ? {
         show: true, position: "inside", color: stil("--viz-plane"),
         fontSize: S.label, fontWeight: "bold",
-        formatter: (r) => (r.value >= 12 ? pz(r.value, 1) + " %" : ""),
+        formatter: (r) => (r.value >= SCHWELLE ? pz(r.value, 1) + " %" : ""),
       } : { show: false },
     })),
   }, { replaceMerge: ["series", "xAxis", "yAxis", "legend"] });
