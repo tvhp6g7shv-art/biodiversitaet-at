@@ -557,6 +557,34 @@ PESTIZID_TEILE = {
 PESTIZID_BASISPERIODE = ["2015", "2016", "2017"]
 
 # ---------------------------------------------------------------------------
+# Stickstoffüberschuss — Eurostat aei_pr_gnb
+# ---------------------------------------------------------------------------
+# Bruttonährstoffbilanz je Hektar landwirtschaftlich genutzter Fläche, in
+# Kilogramm Stickstoff. Am 09.09.2026 an der API nachgemessen: 39 lückenlose
+# Stützstellen 1985–2023 (Summe 1.502,4), Datenstand 08.09.2026.
+#
+# BEIDE Filter sind Pflicht, am 09.09.2026 an der API abgezählt: `indic_ag`
+# führt 40 Positionen (Bilanz je Hektar, Zufuhr, Abfuhr, absolute Bilanz und
+# jeden Einzelposten bis hinunter zu Saatgut), `nutrient` zwei (N, P). Ohne
+# beide bricht `jsonstat_reihe` ab, weil viele Reihen übrig bleiben.
+STICKSTOFF_CODE = "aei_pr_gnb"
+STICKSTOFF_PARAMS = {
+    "format": "JSON",
+    "lang": "DE",
+    "geo": "AT",
+    "nutrient": "N",         # Stickstoff, nicht Phosphor (P)
+    "indic_ag": "BAL_UAA",   # Bruttobilanz je Hektar LF, kg
+}
+
+# Die Reihe schwankt witterungsbedingt stark (22,9 bis 51,1 kg). Verglichen
+# werden deshalb Fünfjahresmittel statt Einzeljahren — Entscheid des Users
+# vom 09.09.2026. Der Faktor ist die Mindestgröße des Mittelwertunterschieds
+# gegenüber seinem Standardfehler; darunter meldet das Modul und liefert
+# nichts, statt Witterung als Entwicklung auszugeben.
+STICKSTOFF_FENSTER = 5
+STICKSTOFF_MIN_FAKTOR = 2.0
+
+# ---------------------------------------------------------------------------
 # Grünland- und Waldfläche — Eurostat lan_lcv_ovw (LUCAS)
 # ---------------------------------------------------------------------------
 # Flächenstichprobe, fünf Stützstellen 2009–2022. NICHT `apro_cpsh1`

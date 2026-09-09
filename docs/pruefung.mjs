@@ -95,6 +95,11 @@ const HOEHEN = {
   "c-wald": 340,
   "c-biolandbau": 760,
   "c-pestizide": 340,
+  /* Zwei Linien ueber 39 Stuetzstellen, Legende mit zwei Eintraegen ueber
+     der Flaeche — die Standardhoehe traegt. Eintrag gesetzt, damit eine
+     spaetere eigene `#c-stickstoff`-Regel nicht still an der Pruefung
+     vorbeilaeuft. */
+  "c-stickstoff": 340,
   /* Zwei Linien über fünf Stützstellen — keine Kategorienamen an der Achse,
      deshalb reicht die Standardhöhe. Eintrag trotzdem gesetzt, damit ein
      späterer `#c-gruenland`-Block in index.html nicht still an der Prüfung
@@ -152,6 +157,7 @@ const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/baumarten.js", "charts/waldarten.js",
                 "charts/natura2000.js",
                 "charts/biolandbau.js", "charts/pestizide.js",
+                "charts/stickstoff.js",
                 "charts/gruenland.js",
                 "charts/falter.js", "charts/rueckkehrer.js",
                 "charts/vogelarten.js"];
@@ -161,6 +167,7 @@ const DATEN = ["meta", "kpi", "schutzgebiete", "schutzherkunft", "schutzstufen",
                "erhaltung", "lebensraeume", "biotoptypen",
                "fliessgewaesser", "querbauwerke", "wald",
                "baumarten", "waldarten", "natura2000", "biolandbau", "pestizide",
+               "stickstoff",
                "gruenland",
                "falter", "rueckkehrer", "vogelarten"];
 
@@ -169,7 +176,7 @@ const ABSCHNITTE = ["schutzgebiete", "schutzherkunft", "schutzstufen",
                     "erhaltung", "lebensraeume", "biotoptypen",
                     "fliessgewaesser", "querbauwerke", "wald",
                     "baumarten", "waldarten", "natura2000",
-                    "biolandbau", "pestizide", "gruenland",
+                    "biolandbau", "pestizide", "stickstoff", "gruenland",
                     "falter", "rueckkehrer", "vogelarten"];
 
 const fehler = [];

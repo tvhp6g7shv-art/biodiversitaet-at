@@ -90,6 +90,7 @@ from biotoptypen import baue_biotoptypen
 from wald import baue_wald
 from biolandbau import baue_biolandbau
 from pestizide import baue_pestizide
+from stickstoff import baue_stickstoff
 from gruenland import baue_gruenland
 from falter import baue_falter
 from rueckkehrer import baue_rueckkehrer
@@ -253,6 +254,14 @@ def main() -> None:
     # `pestizide` sagen, WIE bewirtschaftet wird, dieser sagt, WORAUF. Ein
     # steigender Bio-Anteil auf schrumpfender Grünlandfläche ist kein
     # Widerspruch, aber ohne diesen Abschnitt fehlt die Bezugsgröße dazu.
+    # `stickstoff` ist das Gegenstueck zu `pestizide`: derselbe Bereich,
+    # dieselbe Frage nach dem Stoffeintrag, aber eine Zahl, die faellt. Er
+    # steht bewusst direkt daneben — ein Bereich, in dem jede Grafik in
+    # dieselbe Richtung zeigt, liest sich als Auswahl, nicht als Befund.
+    stickstoff = baue_stickstoff()
+    if stickstoff:
+        ausgaben["stickstoff"] = stickstoff
+
     gruenland = baue_gruenland()
     if gruenland:
         ausgaben["gruenland"] = gruenland
