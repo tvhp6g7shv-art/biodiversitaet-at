@@ -85,7 +85,11 @@ function baueBioverlauf(daten) {
     marken.push({
       yAxis: national.anteil,
       label: {
-        show: !istSchmal(feld), position: "insideEndTop", distance: 4,
+        /* LINKS, nicht rechts. Am rechten Ende steht die Beschriftung der
+           Meldelücke — beide zusammen ergaben am 09.09.2026 im Live-Stand
+           zwei übereinanderliegende Textzeilen. Links liegt die Linie am
+           tiefsten, dort ist Platz. */
+        show: !istSchmal(feld), position: "insideStartTop", distance: 4,
         color: stil("--viz-muted"), fontSize: S.achse,
         formatter: `national ${zahl(national.anteil)} % (${national.jahr}), anderer Nenner`,
       },

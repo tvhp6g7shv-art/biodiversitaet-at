@@ -70,7 +70,7 @@ function baueBauland(daten) {
 
   const zeilen = daten.laender;
   const NAMEN = SERIEN.map((s) => s.name);
-  const LEG_LINKS = legendeLinks(feld, 120);
+  const LEG_LINKS = legendeLinks(feld, 136);
 
   setzeText("u-bauland",
     `Veränderung von bebauter Fläche und gewidmetem Bauland in Hektar · ` +
@@ -79,7 +79,13 @@ function baueBauland(daten) {
 
   d.setOption({
     ...basis(),
-    grid: { ...balkenGitter(feld, { left: 120, right: 74 }), top: 46 },
+    /* ACHSENRAND GEGEN DEN LÄNGSTEN NAMEN GERECHNET, nicht geschätzt. Am
+       09.09.2026 im ausgelieferten Stand gemessen: „Niederösterreich" ist in
+       der MONO-Auslieferung (12 px) 116 px breit, dazu 12 px `margin` des
+       Achsenetiketts. Bei 120 brach der Name in zwei Zeilen um („Niederösterrei
+       ch") — derselbe Fehler wie am selben Tag bei `rotelisten` und
+       `biolandbau`. 136 lässt 8 px Luft. → reference-achsenrand-mono */
+    grid: { ...balkenGitter(feld, { left: 136, right: 74 }), top: 46 },
     legend: legende(feld, {
       top: 0, left: LEG_LINKS,
       itemWidth: 11, itemHeight: 11, itemGap: 14,
@@ -112,7 +118,7 @@ function baueBauland(daten) {
     yAxis: { ...achse(), type: "category", inverse: true,
       data: zeilen.map((z) => z.name), splitLine: { show: false },
       axisLabel: { color: stil("--viz-text-2"), fontSize: S.serie, margin: 12,
-                   ...kategorieLabel(feld, 120, zeilen.length) } },
+                   ...kategorieLabel(feld, 136, zeilen.length) } },
     series: SERIEN.map((serie) => ({
       name: serie.name, type: "bar",
       barWidth: balkenBreite(feld, "40%", zeilen.length),

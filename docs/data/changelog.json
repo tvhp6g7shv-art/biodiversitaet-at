@@ -1,10 +1,32 @@
 {
   "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "15",
+  "aktuell": "16",
   "basis_url": "https://biodiversitaet-monitor.at",
   "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
   "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
   "ausgaben": [
+    {
+      "nummer": "16",
+      "datum": "2026-09-09",
+      "datum_text": "9. September 2026",
+      "titel": "4.819 Hektar wurden bebaut — und 2.474 Hektar neu gewidmet",
+      "veroeffentlicht": true,
+      "cacheziffer": 24,
+      "charts": [
+        "bauland"
+      ],
+      "social": "Die Baulandreserve schrumpft — aber nicht, weil weniger gewidmet würde.\n\nVon 2022 bis 2025 kamen 4.819 Hektar bebaute Fläche dazu. Die Reserve fiel nur um 2.304 Hektar, weil gleichzeitig 2.474 Hektar neu gewidmet wurden.\nhttps://biodiversitaet-monitor.at/#s-bauland",
+      "abschnitte": [
+        {
+          "chart": "bauland",
+          "alt": "Ein liegendes Balkendiagramm mit neun Bundesländern. Je Bundesland stehen zwei Balken nebeneinander: der Zuwachs an bebauter Fläche und der Zuwachs an gewidmetem Bauland, jeweils in Hektar zwischen 2022 und 2025. Niederösterreich führt mit 1.224,7 Hektar bebaut gegen 420 Hektar neu gewidmet, gefolgt von der Steiermark mit 1.019,6 gegen 897 und Oberösterreich mit 974,4 gegen 435,3. Im Burgenland stehen 470,6 Hektar bebaut nur 26 Hektar neuer Widmung gegenüber, in Wien 117,2 gegen 31,2."
+        }
+      ],
+      "seite": [
+        "Baulandreserven sind Grundstücke, die als Bauland gewidmet, aber noch nicht bebaut sind. Sie zählen bereits zur Flächeninanspruchnahme — die rechtliche Zusage genügt. Das Bild zeigt nicht den Anteil, den die Quelle fertig liefert, sondern die Bewegung dahinter: wie viel Fläche zwischen den Erhebungen 2022 und 2025 bebaut wurde und wie viel Bauland im selben Zeitraum neu gewidmet wurde, je Bundesland in Hektar.",
+        "Österreichweit kamen 4.819 Hektar bebaute Fläche dazu, die Reserve schrumpfte dabei nur um 2.304 Hektar — weil gleichzeitig 2.474 Hektar neu gewidmet wurden. Auf 100 Hektar bebaute Fläche kamen also 51 Hektar neues Bauland. Der Anteil unbebauten Baulands ist trotzdem in jedem Bundesland gesunken, von 20,5 auf 19,6 Prozent im Bundesschnitt: Er misst die Reserve an einem Nenner, der selbst wächst. Das Burgenland lebt am stärksten von seinem Bestand — 470,6 Hektar bebaut gegen 26 Hektar neuer Widmung —, die Steiermark ersetzt fast alles, was sie verbaut."
+      ]
+    },
     {
       "nummer": "15",
       "datum": "2026-09-09",
