@@ -35,6 +35,21 @@ jobs:
       - name: Daten bauen
         run: python etl/build.py
 
+      # NEU 09.09.2026. Am selben Tag ist ein Lauf von 39 Minuten verloren
+      # gegangen: "Daten bauen" war gruen, der Commit-Schritt wurde
+      # abgewiesen, und damit war die teuer gerechnete
+      # docs/data/flaecheninanspruchnahme.json weg. Der Artefakt-Upload
+      # kostet Sekunden und macht aus so einem Fall eine Unbequemlichkeit
+      # statt eines Totalverlusts. `if: always()` ist Absicht: Gerade wenn
+      # ein spaeterer Schritt scheitert, will man die Dateien haben.
+      - name: Ergebnis sichern
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-data
+          path: docs/data
+          retention-days: 14
+
       - name: Ergebnis übernehmen
         run: |
           git config user.name  "github-actions[bot]"
@@ -42,7 +57,26 @@ jobs:
           git add docs/data
           if git diff --staged --quiet; then
             echo "Keine Änderungen — die Quelle hat noch keine neuen Daten."
-          else
-            git commit -m "Daten aktualisiert ($(date -u '+%Y-%m-%d'))"
-            git push
+            exit 0
           fi
+          git commit -m "Daten aktualisiert ($(date -u '+%Y-%m-%d'))"
+          # WARUM REBASE UND WIEDERHOLUNG: Der Lauf startet auf dem Stand
+          # des ausloesenden Commits und pusht Minuten bis Stunden spaeter.
+          # Wer in der Zwischenzeit auf main gepusht hat, laesst diesen Push
+          # abprallen ("fetch first"). Am 09.09.2026 waren das zwei Commits
+          # einer parallelen Sitzung, 17:09 und 17:14, gegen einen Push um
+          # 17:32 — der Lauf hatte da schon 39 Minuten gerechnet.
+          #
+          # Rebase und nicht Merge: Der Lauf bringt genau einen Commit mit,
+          # der nur docs/data anfasst. Er gehoert oben drauf, nicht in eine
+          # Raute.
+          for versuch in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push abgewiesen (Versuch $versuch) — fremde Commits, also rebasen"
+            git pull --rebase origin main || exit 1
+          done
+          echo "Push auch nach drei Versuchen nicht durchgekommen."
+          echo "Die Dateien liegen als Artefakt 'docs-data' an diesem Lauf."
+          exit 1
