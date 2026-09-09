@@ -93,6 +93,12 @@ const HOEHEN = {
   "c-boden": 340,
   "c-bauland": 340,
   "c-bioverlauf": 340,
+  /* `c-flaeche` steht hier bewusst NICHT: Die Karte wird erst gebaut,
+     wenn `gemeinden.json` nachgeladen ist, und `start()` wartet darauf
+     nicht. Diese Suite säße also vor einem leeren Feld und meldete
+     „keine ECharts-Instanz", wo nichts kaputt ist. Die Karte prüft
+     `pruefung-karte.mjs` mit eigener Geometrie. */
+  "c-verkehr": 340,
   "c-rotelisten": 690,
   "c-erhaltung": 260,
   "c-lebensraeume": 340,

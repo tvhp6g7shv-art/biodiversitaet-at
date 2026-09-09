@@ -184,8 +184,14 @@ function baueFlaeche(daten, geo) {
     /* Zurücksetzen, falls vorher der Platzhalter stand: Das Feld wird
        zweimal gebaut — einmal ohne Geometrie, damit Text und Tabelle sofort
        stehen, und einmal mit, sobald die 1,5 MB da sind. */
-    if (feld.className !== "viz-chart") {
-      feld.className = "viz-chart";
+    if (!feld.classList.contains("viz-chart")) {
+      /* BEIDE Klassen zurückholen, nicht nur `viz-chart`: Der Platzhalter
+         oben räumt `className` leer, und ein schlichtes
+         `className = "viz-chart"` hätte `viz-chart-hoch` mitgenommen — die
+         Karte wäre nach dem Nachladen in einem 340-px-Feld gelandet und auf
+         zwei Drittel der Breite gedeckelt worden. Am Live-Stand gemessen:
+         796 px Karte mit der hohen Klasse, 644 px ohne. */
+      feld.className = "viz-chart viz-chart-hoch";
       feld.style.height = "";
       feld.innerHTML = "";
     }

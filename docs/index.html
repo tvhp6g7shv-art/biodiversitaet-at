@@ -695,7 +695,13 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
         <button class="viz-tabelle-schalter" data-ziel="t-flaeche">Tabelle</button>
       </div>
     </header>
-    <div class="viz-chart" id="c-flaeche"></div>
+    <!-- `viz-chart-hoch` (420 statt 340 px) ist hier gemessen, nicht
+         geraten: Österreich hat im Lambert-Rahmen ein Verhältnis von
+         1,93 : 1. Bei 984 px Kartenbreite braucht die Fläche 509 px
+         Höhe; in einem 340-px-Feld deckelt `kartenLayout()` sie auf
+         644 px und lässt 340 px links und rechts leer. Mit 420 px
+         sind es 796 px Karte und 188 px Rand. -->
+    <div class="viz-chart viz-chart-hoch" id="c-flaeche"></div>
     <div class="viz-verborgen" id="t-flaeche"></div>
     <p class="viz-notiz" id="n-flaeche"></p>
     <p class="viz-unterzeile" style="margin-top:12px" id="h-flaeche"></p>
