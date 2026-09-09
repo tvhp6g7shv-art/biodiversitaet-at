@@ -6,7 +6,7 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, basis, achse, tabelle, setzeText, setzeHtml, diagramme,
-        schrift, istSchmal, balkenGitter, kategorieLabel, balkenBreite,
+        schrift, istSchmal, istEng, balkenGitter, kategorieLabel, balkenBreite,
         legende, legendeLinks, hoverDunkler } = BIO;
 
 /* --- Baulandbilanz: bebaut gegen neu gewidmet --------------------------
@@ -34,10 +34,30 @@ const { stil, zahl, basis, achse, tabelle, setzeText, setzeHtml, diagramme,
    einzelnen Hektars. Dieselbe Zurückhaltung wie bei `gruenland`, wo die
    zweite Linie ausdrücklich keine Bilanz ist.
 
-   ZWEI GRUPPEN, ALSO 40 % BALKENBREITE, nicht die 62 % des Hauses:
+   ZWEI GRUPPEN, ALSO 36 % BALKENBREITE, nicht die 62 % des Hauses:
    `barWidth` gilt je Gruppe, nicht je Kategorie — zwei mal 62 % sind 124 %
    der Bandbreite, und ECharts schiebt die Balken dann stumm in die
    Nachbarzeile → `reference-balkenbreite-zwei-gruppen`.
+
+   ALLE ZAHLEN HIER SIND AM GERENDERTEN SVG GEMESSEN, nicht aus `barWidth`
+   und `barGap` hochgerechnet — der erste Versuch am 09.09.2026 tat genau
+   das und lag daneben: Aus dem Vorgabewert `barGap: "30%"` folgt NICHT ein
+   Zwischenraum von 30 % der Balkenbreite. ECharts verteilt den Rest der
+   Kategoriezeile selbst, sobald `barWidth` fest steht. Gemessen (Feld
+   950 px breit, neun Laender, zwei Serien):
+
+     Feld 340 px, 40 %:  Zeile 28,9 px · Balken 11,6 · Paar 1,1 · Land 4,6
+     Feld 520 px, 36 %:  Zeile 48,9 px · Balken 17,6 · Paar 1,7 · Land 12,0
+
+   Der Befund des Users galt der ersten Zeile: 11,6 px Balken gegen rund
+   600 px Balkenlaenge sind ein Faden. `barGap: "10%"` haelt die beiden
+   Balken eines Landes zusammen, waehrend die Zeile waechst — sonst zoege
+   die groessere Zeilenhoehe das Paar mit auseinander.
+   Beide Zahlen haengen an der FELDHOEHE aus dem CSS (`#c-bauland`). Wer sie
+   aendert, misst neu, statt zu rechnen.
+   Eng bleibt unangetastet: dort steht die Balkenhoehe in Pixeln aus
+   `engStufe()`, und der Kategoriename sitzt UEBER dem Balken — sein
+   Ankerpunkt haengt an derselben Zahl.
 
    ZUR FARBWAHL: `--viz-series-1` für das Bebaute, `--viz-series-3` für die
    neue Widmung. Keine Ampel — was hier steht, ist eine Flächenbilanz und
@@ -121,7 +141,8 @@ function baueBauland(daten) {
                    ...kategorieLabel(feld, 136, zeilen.length) } },
     series: SERIEN.map((serie) => ({
       name: serie.name, type: "bar",
-      barWidth: balkenBreite(feld, "40%", zeilen.length),
+      barWidth: balkenBreite(feld, "36%", zeilen.length),
+      barGap: istEng(feld) ? "30%" : "10%",
       data: zeilen.map((z) => z[serie.schluessel]),
       itemStyle: { color: stil(serie.farbe), borderRadius: [0, 4, 4, 0] },
       emphasis: hoverDunkler(stil(serie.farbe)),

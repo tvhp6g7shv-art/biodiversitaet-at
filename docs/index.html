@@ -337,6 +337,19 @@ body { margin:0; background: #ffffff; font-family: "Figtree", system-ui, -apple-
 /* --- Diagrammflächen: Höhe schließt die Achsenbeschriftung ein --- */
 .viz-chart { width: 100%; height: 340px; }
 .viz-chart-hoch { height: 420px; }
+/* Neun Laender MAL ZWEI SERIEN. Am gerenderten SVG gemessen (Feld 950 px
+   breit): Auf der Standardhoehe bleiben je Zeile 28,9 px, und die teilen
+   sich zwei Balken — 11,6 px Balkenhoehe gegen rund 600 px Balkenlaenge,
+   ein Faden, kein Balken. Befund des Users am 09.09.2026.
+   Die zweite Haelfte des Befundes ist die Karte selbst: Sie ist bei 1330 px
+   Fensterbreite 538 px hoch, weil die TEXTSPALTE sie aufzieht; das Feld
+   stand mit 340 px `align-self: center` mittig darin und liess 198 px tote
+   Flaeche, 92 oben und 106 unten.
+   520 px fuellen diese Karte, ohne sie zu strecken: gemessen 48,9 px je
+   Zeile, 17,6 px Balken. Wer die Notiz kuerzt oder ein Land ergaenzt, muss
+   hier mit — ECharts setzt die Feldhoehe nicht, es haengt von ihr ab. Die
+   Balkenbreite steht im Modul und haengt an dieser Zahl. */
+#c-bauland { height: 520px; }
 /* Die Rote-Listen-Grafik hat 23 liegende Balken. Bei 340 px Standardhoehe
    blieben je Zeile 12,9 px — die Gruppennamen (12 px Schrift, 16 px
    Zeilenhoehe) laegen ineinander. 23 x 26 px plus 44 px Gitterrand plus
