@@ -91,6 +91,8 @@ const HOEHEN = {
   "c-schutzstufen": 340,
   "c-vogel": 420,
   "c-boden": 340,
+  "c-bauland": 340,
+  "c-bioverlauf": 340,
   "c-rotelisten": 690,
   "c-erhaltung": 260,
   "c-lebensraeume": 340,
@@ -162,6 +164,8 @@ const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/biolandbau.js", "charts/pestizide.js",
                 "charts/stickstoff.js",
                 "charts/gruenland.js",
+                "charts/bauland.js",
+                "charts/bioverlauf.js",
                 "charts/falter.js", "charts/rueckkehrer.js",
                 "charts/vogelarten.js"];
 
@@ -171,7 +175,7 @@ const DATEN = ["meta", "kpi", "schutzgebiete", "schutzherkunft", "schutzstufen",
                "fliessgewaesser", "querbauwerke", "wald",
                "baumarten", "waldarten", "natura2000", "biolandbau", "pestizide",
                "stickstoff",
-               "gruenland",
+               "gruenland", "bauland",
                "falter", "rueckkehrer", "vogelarten"];
 
 const ABSCHNITTE = ["schutzgebiete", "schutzherkunft", "schutzstufen",
@@ -180,6 +184,7 @@ const ABSCHNITTE = ["schutzgebiete", "schutzherkunft", "schutzstufen",
                     "fliessgewaesser", "querbauwerke", "wald",
                     "baumarten", "waldarten", "natura2000",
                     "biolandbau", "pestizide", "stickstoff", "gruenland",
+                    "bauland", "bioverlauf",
                     "falter", "rueckkehrer", "vogelarten"];
 
 const fehler = [];

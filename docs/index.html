@@ -645,6 +645,28 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
     <p class="viz-unterzeile" style="margin-top:12px" id="h-boden">Der Rückgang ist echt, die Fläche wächst trotzdem weiter: Die 6,5 Hektar pro Tag kommen zum Bestand dazu, zurückgewonnen wird kaum etwas. Bodenverbrauch ist eine Summe, keine Bilanz.</p>
   </section>
 
+  <!-- Baulandbilanz. Steht direkt hinter `boden`, weil beide dieselbe
+       Erhebung lesen: Dort die Flächeninanspruchnahme insgesamt, hier die
+       Frage, wie viel davon gewidmet, aber noch nicht bebaut ist. Getrennt
+       gelesen ist keiner von beiden falsch — der erste allein lässt aber
+       offen, ob der Verbrauch aus dem Bestand kommt oder aus neuer Widmung. -->
+  <section class="viz-karte" id="s-bauland" data-chart="bauland"
+           data-nav="Baulandbilanz" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>4.819 Hektar wurden bebaut — und 2.474 Hektar neu gewidmet</h2>
+        <p class="viz-unterzeile" id="u-bauland"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-bauland">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-bauland"></div>
+    <div class="viz-verborgen" id="t-bauland"></div>
+    <p class="viz-notiz" id="n-bauland"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-bauland"></p>
+  </section>
+
   <!-- 5 — ROTE LISTEN -->
   <section class="viz-karte" id="s-rotelisten" data-chart="rotelisten" style="display:none">
     <header class="viz-kopfzeile">
@@ -841,6 +863,27 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
     <p class="viz-unterzeile" style="margin-top:12px" id="h-biolandbau">Umgestellte Flächen und Flächen in Umstellung zusammen, Anteil an der landwirtschaftlich genutzten Fläche. Alle Länder im selben Jahr 2020 verglichen — der Datensatz reicht weiter, Österreich meldet zuletzt für dieses Jahr.</p>
   </section>
 
+  <!-- Bio im Verlauf. Liest dieselbe Datei wie der Abschnitt darüber. Muss
+       direkt dahinter stehen: Der Ländervergleich zeigt einen Stichtag, und
+       erst der Verlauf macht sichtbar, dass dieser Stichtag inzwischen vier
+       Jahre alt ist — weil Österreich nicht mehr meldet. -->
+  <section class="viz-karte" id="s-bioverlauf" data-chart="bioverlauf"
+           data-nav="Bio im Verlauf" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Der Bio-Anteil stieg auf 25,7 Prozent — seit 2021 meldet Österreich ihn nicht mehr nach Brüssel</h2>
+        <p class="viz-unterzeile" id="u-bioverlauf"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-bioverlauf">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-bioverlauf"></div>
+    <div class="viz-verborgen" id="t-bioverlauf"></div>
+    <p class="viz-notiz" id="n-bioverlauf"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-bioverlauf"></p>
+  </section>
+
   <section class="viz-karte" id="s-pestizide" data-chart="pestizide"
            data-nav="Pestizidabsatz" style="display:none">
     <header class="viz-kopfzeile">
@@ -971,20 +1014,20 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Cacheziffer `?v=NN` hochzaehlen, wenn eine Datei geaendert wurde —
      sie fuehrt eine EIGENE Zaehlung, unabhaengig von der Ausgabenummer
      in kern.js (VERSION.nummer). -->
-<script defer src="js/kern.js?v=23"></script>
-<script defer src="js/charts/kpi.js?v=23"></script>
-<script defer src="js/charts/schutzgebiete.js?v=23"></script>
-<script defer src="js/charts/schutzherkunft.js?v=23"></script>
-<script defer src="js/charts/schutzstufen.js?v=23"></script>
-<script defer src="js/charts/vogel.js?v=23"></script>
-<script defer src="js/charts/boden.js?v=23"></script>
-<script defer src="js/charts/rotelisten.js?v=23"></script>
-<script defer src="js/charts/erhaltung.js?v=23"></script>
-<script defer src="js/charts/lebensraeume.js?v=23"></script>
-<script defer src="js/charts/biotoptypen.js?v=23"></script>
-<script defer src="js/charts/fliessgewaesser.js?v=23"></script>
-<script defer src="js/charts/querbauwerke.js?v=23"></script>
-<script defer src="js/charts/wald.js?v=23"></script>
+<script defer src="js/kern.js?v=24"></script>
+<script defer src="js/charts/kpi.js?v=24"></script>
+<script defer src="js/charts/schutzgebiete.js?v=24"></script>
+<script defer src="js/charts/schutzherkunft.js?v=24"></script>
+<script defer src="js/charts/schutzstufen.js?v=24"></script>
+<script defer src="js/charts/vogel.js?v=24"></script>
+<script defer src="js/charts/boden.js?v=24"></script>
+<script defer src="js/charts/rotelisten.js?v=24"></script>
+<script defer src="js/charts/erhaltung.js?v=24"></script>
+<script defer src="js/charts/lebensraeume.js?v=24"></script>
+<script defer src="js/charts/biotoptypen.js?v=24"></script>
+<script defer src="js/charts/fliessgewaesser.js?v=24"></script>
+<script defer src="js/charts/querbauwerke.js?v=24"></script>
+<script defer src="js/charts/wald.js?v=24"></script>
 <!-- Die fuenf Wald-Abschnitte (totholz, fichte, baumarten, waldarten,
      natura2000) sind am 29.08.2026 ausgeklinkt: gebaut und im Ordner, aber
      ihre Modul- und Datendateien nicht im Repo. Ausgeliefert haetten sie elf
@@ -994,16 +1037,18 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Sektionen liegen wortgleich in docs/.ausgeklinkt-wald.html. Wieder
      einhaengen: Sektionen von dort zurueck, Skript-Zeilen hier, dazu
      js/kern.js, embed.html und die beiden Pruefskripte. -->
-<script defer src="js/charts/baumarten.js?v=23"></script>
-<script defer src="js/charts/waldarten.js?v=23"></script>
-<script defer src="js/charts/natura2000.js?v=23"></script>
-<script defer src="js/charts/biolandbau.js?v=23"></script>
-<script defer src="js/charts/pestizide.js?v=23"></script>
-<script defer src="js/charts/stickstoff.js?v=23"></script>
-<script defer src="js/charts/gruenland.js?v=23"></script>
-<script defer src="js/charts/falter.js?v=23"></script>
-<script defer src="js/charts/rueckkehrer.js?v=23"></script>
-<script defer src="js/charts/vogelarten.js?v=23"></script>
+<script defer src="js/charts/baumarten.js?v=24"></script>
+<script defer src="js/charts/waldarten.js?v=24"></script>
+<script defer src="js/charts/natura2000.js?v=24"></script>
+<script defer src="js/charts/biolandbau.js?v=24"></script>
+<script defer src="js/charts/pestizide.js?v=24"></script>
+<script defer src="js/charts/stickstoff.js?v=24"></script>
+<script defer src="js/charts/gruenland.js?v=24"></script>
+<script defer src="js/charts/bauland.js?v=24"></script>
+<script defer src="js/charts/bioverlauf.js?v=24"></script>
+<script defer src="js/charts/falter.js?v=24"></script>
+<script defer src="js/charts/rueckkehrer.js?v=24"></script>
+<script defer src="js/charts/vogelarten.js?v=24"></script>
 <script defer>
   document.addEventListener("DOMContentLoaded", () => {
     BIO.setzeWurzel(document.getElementById("dashboard"));

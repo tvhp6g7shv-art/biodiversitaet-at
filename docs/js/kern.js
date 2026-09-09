@@ -849,7 +849,7 @@ async function start() {
                    "rotelisten", "erhaltung", "lebensraeume",
                    "biotoptypen", "fliessgewaesser", "querbauwerke", "wald",
                    "baumarten", "waldarten", "natura2000",
-                   "biolandbau", "pestizide", "stickstoff", "gruenland",
+                   "biolandbau", "pestizide", "stickstoff", "gruenland", "bauland",
                    "falter", "rueckkehrer", "vogelarten"];
   /* STAND 30.08.2026 — drei der fünf Wald-Abschnitte hängen wieder drin.
    Am 29.08. waren alle fünf ausgeklinkt, weil ihre Modul- und Datendateien
@@ -938,6 +938,10 @@ async function start() {
     sicher("Schutzstufen",   () => BIO.baueSchutzstufen(geladen.schutzstufen));
     sicher("Vögel",          () => BIO.baueVogel(geladen.vogel));
     sicher("Bodenverbrauch", () => BIO.baueBoden(geladen.boden));
+    sicher("Baulandbilanz",  () => BIO.baueBauland(geladen.bauland));
+    /* Liest dieselbe Datei wie „Biolandbau" — deshalb kein eigener
+       Eintrag in DATEIEN. */
+    sicher("Bio im Verlauf", () => BIO.baueBioverlauf(geladen.biolandbau));
     sicher("Rote Listen",    () => BIO.baueRoteListen(geladen.rotelisten));
     sicher("Erhaltungszustand", () => BIO.baueErhaltung(geladen.erhaltung));
     /* Loest den Durchschnitt des Abschnitts darueber auf: 22,8 % guenstig

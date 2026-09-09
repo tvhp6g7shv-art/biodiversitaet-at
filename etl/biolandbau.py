@@ -117,6 +117,10 @@ def baue_biolandbau() -> dict | None:
         "luecke": round(config.BIOLANDBAU_ZIEL - oesterreich["wert"], 1),
         "datensatz_bis": int(letztes_im_satz),
         "meldeluecke": veraltet,
+        # Für den Verlaufsabschnitt: die nationale Zahl, die es weiterhin
+        # gibt. Sie wird NICHT in die Linie gezeichnet — anderer Nenner,
+        # siehe config.BIO_NATIONAL.
+        "national": config.BIO_NATIONAL,
         # 28.08.2026 — der zweite Satz stand fast wörtlich schon in der
         # Notiz, der Bezug auf die landwirtschaftlich genutzte Fläche in
         # der Unterzeile. Was hier bleibt, ist der GRUND für das gemeinsame

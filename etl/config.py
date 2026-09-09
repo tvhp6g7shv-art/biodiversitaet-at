@@ -148,6 +148,7 @@ PFLEGE_RHYTHMUS = {
     "waldarten":   25,   # Rote Liste Gefäßpflanzen: 1986, 1999, 2022
     "natura2000":   7,   # Artikel 17: Sechsjahreszyklus plus Berichtsverzug
     "schutzstufen": 3,   # UBA-Seite, zuletzt Jänner 2025; loser Rhythmus
+    "bauland":      4,   # ÖROK-Monitoring, Zyklus seit 2025 dreijährig
 }
 
 # ---------------------------------------------------------------------------
@@ -619,6 +620,60 @@ LANDNUTZUNG_NENNER_TOLERANZ = 1.0
 # Standardfehlern — die übliche Schwelle, ab der eine Differenz nicht mehr
 # als Rauschen durchgeht.
 LANDNUTZUNG_MIN_FAKTOR = 2.0
+
+# ---------------------------------------------------------------------------
+# Baulandbilanz — ÖROK-Monitoring Baulandreserven (Bundesländer)
+# ---------------------------------------------------------------------------
+
+# Dieselbe Erhebung, aus der `baulandreserven.py` seine Gemeindekarte holt —
+# aber nicht derselbe Weg: Dort läuft es über den OGD-FeatureServer des
+# Umweltbundesamts, hier über die veröffentlichte Arbeitsmappe. Der Grund ist
+# der Nenner: Das gewidmete Bauland je Bundesland steht nur in der Mappe, der
+# Dienst führt allein die Reservegrundstücke.
+BLB_URL = (
+    "https://www.oerok.gv.at/fileadmin/user_upload/Bilder/"
+    "2.Reiter-Raum_u._Region/2.Daten_und_Grundlagen/OEROK-Monitoring/"
+    "Daten_Baulandreserven/"
+    "OEROK-Monitoring_Baulandreserven_Stand_2025-12-01.xlsx"
+)
+
+BLB_QUELLE_SEITE = "https://www.oerok.gv.at/monitoring-flaecheninanspruchnahme/daten"
+
+# Neun Blätter, gebraucht werden zwei. Die Namen tragen das Referenzjahr, und
+# beim nächsten Monitoringzyklus wandert die Mappe samt Blattnamen — deshalb
+# stehen sie hier und nicht im Modul.
+BLB_BLATT_FRUEH = "Übersicht Ö+BL 2022"
+BLB_BLATT_SPAET = "Übersicht Ö+BL 2025"
+BLB_JAHR_FRUEH = 2022
+BLB_JAHR_SPAET = 2025
+
+BLB_TIMEOUT_SEKUNDEN = 180    # die Mappe ist rund 4,2 MB
+
+# Nationale Vergleichszahl zum Bio-Anteil, VON HAND ABGESCHRIEBEN.
+#
+# Warum überhaupt: Eurostat führt für Österreich zuletzt 2020. Der Datensatz
+# selbst reicht bis 2024 — Österreich meldet nicht mehr. National wird
+# weitergezählt, und das ist der Punkt: Die Zahl ist nicht verloren, sie steht
+# nur nicht mehr dort, wo Europa sie vergleicht.
+#
+# Warum abgeschrieben und nicht geholt: Die Reihe steht im Grünen Bericht
+# (BMLUK) als Tabellenwerk hinter einem ZIP, das weder aus dem Sandkasten noch
+# vom Rechner des Users erreichbar ist (Proxy 403, geprüft 09.09.2026). Die
+# Einzelwerte stehen auf der Zahlen-Seite des Ministeriums. Abgeschrieben mit
+# Datum, wie bei den Schutzstufen — und in der Methodik als solches benannt.
+#
+# ACHTUNG, ANDERER NENNER als Eurostat: INVEKOS-Fläche, nicht die
+# landwirtschaftlich genutzte Fläche der Eurostat-Definition. Die beiden Werte
+# gehören deshalb NICHT in dieselbe Linie. 27,3 gegen 25,7 ist kein Zuwachs.
+BIO_NATIONAL = {
+    "jahr": 2024,
+    "anteil": 27.3,          # % der landwirtschaftlich genutzten Fläche (INVEKOS)
+    "flaeche_ha": 697_500,
+    "betriebe": 23_942,
+    "quelle": "BMLUK, Biologische Landwirtschaft in Zahlen",
+    "url": "https://www.bmluk.gv.at/themen/landwirtschaft/bio-lw/zahlen-fakten/Biozahlen.html",
+    "abgelesen": "2026-09-09",
+}
 
 # ---------------------------------------------------------------------------
 # Ausgabe

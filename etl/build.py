@@ -30,6 +30,7 @@ Module:
     biolandbau.py    Bio-Anteil im Ländervergleich, Eurostat sdg_02_40 (API)
     pestizide.py     Absatz und seine Aufteilung, Eurostat aei_fm_salpest09 (API)
     gruenland.py     Grünland gegen Wald, Eurostat lan_lcv_ovw / LUCAS (API)
+    bauland.py       Baulandbilanz je Bundesland, ÖROK-Mappe .xlsx (API)
     falter.py        Grünland-Schmetterlingsindex, Eurostat sdg_15_61 (API)
     rueckkehrer.py   Biber und Fischotter, Artikel-17-Spannen (gepflegt)
     vogelarten.py    Feld- und Wiesenvögel Art für Art (gepflegt)
@@ -92,6 +93,7 @@ from biolandbau import baue_biolandbau
 from pestizide import baue_pestizide
 from stickstoff import baue_stickstoff
 from gruenland import baue_gruenland
+from bauland import baue_bauland
 from falter import baue_falter
 from rueckkehrer import baue_rueckkehrer
 from vogelarten import baue_vogelarten
@@ -266,6 +268,15 @@ def main() -> None:
     if gruenland:
         ausgaben["gruenland"] = gruenland
 
+    # `bauland` gehört zu Schutz & Fläche, steht hier aber im Ablauf, weil es
+    # dieselbe Erhebung liest wie `boden` weiter unten und ein Ausfall beider
+    # dann in einem Zug sichtbar wird. Der Abschnitt zerlegt die Veränderung
+    # der Baulandreserve in das, was gebaut, und das, was neu gewidmet wurde.
+    bauland = baue_bauland()
+    if bauland:
+        ausgaben["bauland"] = bauland
+
+
     # --- Gegenprobe über die Artikel-17-Abschnitte -------------------------
     # `erhaltung` zählt die Lebensraumtypen als Ganzes, `lebensraeume`
     # gliedert dieselbe Meldung nach Gruppen. Wird einer nachgezogen und der
@@ -377,6 +388,19 @@ def main() -> None:
             warnen(f"Bodenabschnitte uneins: `boden` nennt {bestand_ha:,} ha "
                    f"Bestand, config.BLR_FI_BESTAND_HA steht auf "
                    f"{config.BLR_FI_BESTAND_HA:,} ha.")
+    # GEGENPROBE ÜBER ZWEI QUELLEN. `bauland` liest die Reserve aus der
+    # veröffentlichten ÖROK-Mappe, `baulandreserven` summiert sie aus den
+    # Einzelgrundstücken des OGD-Dienstes. Beide müssen dieselbe Fläche
+    # ergeben — 63.070 ha, Stand 2025. Weichen sie ab, hat eine der beiden
+    # Auslieferungen einen neuen Monitoringstand und die andere nicht; das
+    # fällt sonst erst auf, wenn zwei Abschnitte verschiedene Zahlen zeigen.
+    if ausgaben.get("bauland") and ausgaben.get("baulandreserven"):
+        aus_mappe = ausgaben["bauland"]["reserve"]
+        aus_dienst = ausgaben["baulandreserven"]["oesterreich"]["gesamt_ha"]
+        if abs(aus_mappe - aus_dienst) > max(aus_mappe, aus_dienst) * 0.02:
+            warnen(f"Baulandreserve: Mappe {aus_mappe:.0f} ha gegen Dienst "
+                   f"{aus_dienst:.0f} ha — die beiden Stände laufen auseinander")
+
     if ausgaben.get("baulandreserven"):
         baue_gemeindegrenzen(
             {g["gkz"] for g in ausgaben["baulandreserven"]["gemeinden"]})
