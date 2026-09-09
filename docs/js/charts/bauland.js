@@ -137,30 +137,23 @@ function baueBauland(daten) {
     })),
   }, { replaceMerge: ["series", "xAxis", "yAxis", "legend"] });
 
-  /* Die Notiz trägt vier Dinge, die die Balken nicht zeigen: die
-     Gesamtbilanz, warum der sinkende Anteil kein Erfolg ist, was „bebaut"
-     hier NICHT heisst, und die vier Gemeinden ohne Vergleichsjahr. */
-  const quote = daten.ersatzquote;
+  /* Die Notiz trägt drei Dinge, die die Balken nicht zeigen: die Gesamtbilanz,
+     warum der sinkende Anteil kein Erfolg ist, und was „bebaut" hier NICHT
+     heisst. Die vier Gemeinden ohne Vergleichsjahr standen hier auch — sie
+     stehen in der Methodik und sind am 09.09.2026 aus der Notiz genommen
+     worden: Sie war mit 903 Zeichen die längste des ganzen Dashboards, bei
+     einem Hausschnitt von rund 330. */
   setzeHtml("n-bauland",
     `Österreichweit kamen zwischen ${daten.frueh} und ${daten.spaet} ` +
     `<strong>${zahl(daten.bebaut_zuwachs)} Hektar</strong> bebaute Fläche ` +
     `dazu. Die Baulandreserve schrumpfte dabei nur um ` +
     `<strong>${zahl(daten.reserve_rueckgang)} Hektar</strong> — weil ` +
     `gleichzeitig <strong>${zahl(daten.bauland_zuwachs)} Hektar</strong> neu ` +
-    `gewidmet wurden. Auf 100 Hektar bebaute Fläche kamen also ` +
-    `${zahl(quote)} Hektar neues Bauland. <strong>Der Anteil unbebauten ` +
-    `Baulands ist trotzdem gesunken</strong>, von ` +
-    `${zahl(daten.anteil_frueher)} auf ${zahl(daten.anteil)} Prozent, und ` +
-    `zwar in jedem Bundesland: Er misst die Reserve an einem Nenner, der ` +
-    `selbst wächst. ${daten.hoechster_anteil} führt ihn heute mit dem ` +
-    `höchsten, ${daten.niedrigster_anteil} mit dem niedrigsten Wert. ` +
-    `<strong>„Bebaut dazugekommen" heisst nicht „aus der Reserve ` +
-    `verbaut":</strong> Gebaut werden kann auch auf neu gewidmetem Land. ` +
-    `Die Zerlegung belegt die Bilanz, nicht den Weg des einzelnen Hektars. ` +
-    `In vier Gemeinden (Eberstein, Glödnitz, Keutschach am See, ` +
-    `Sachsenburg) liegt ein digitaler Flächenwidmungsplan erst ab ` +
-    `${daten.spaet} vor; für sie werden dessen Daten auch für ` +
-    `${daten.frueh} herangezogen, ihre Veränderung ist daher null.`);
+    `gewidmet wurden. <strong>Der Anteil unbebauten Baulands ist trotzdem ` +
+    `gesunken</strong>, von ${zahl(daten.anteil_frueher)} auf ` +
+    `${zahl(daten.anteil)} Prozent: Er misst die Reserve an einem Nenner, der ` +
+    `selbst wächst. „Bebaut dazugekommen" heisst nicht „aus der Reserve ` +
+    `verbaut" — gebaut werden kann auch auf neu gewidmetem Land.`);
 
   setzeHtml("t-bauland", tabelle(
     [{ titel: "Bundesland", wert: (z) => z.name },

@@ -6,7 +6,7 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, basis, achse, tabelle, setzeText, setzeHtml, diagramme,
-        schrift, istSchmal, endEtikett } = BIO;
+        schrift, istSchmal } = BIO;
 
 /* --- Bio-Anteil im Verlauf, und wo die Reihe aufhört -------------------
    LIEST DIESELBE DATEI wie `biolandbau` (docs/data/biolandbau.json). Der
@@ -129,10 +129,15 @@ function baueBioverlauf(daten) {
       lineStyle: { color: stil(FARBE), width: 2.5 },
       itemStyle: { color: stil(FARBE) },
       areaStyle: { color: stil(FARBE), opacity: 0.10 },
-      /* Das Etikett hängt am letzten Wert, nicht am Achsenende — sonst
-         stünde es allein in der leeren Fläche und läse sich, als gälte es
-         für das letzte Jahr der Achse. */
-      markPoint: endEtikett(werte, feld, (r) => zahl(r.value) + " %", stil(FARBE)),
+      /* KEIN Endetikett. Es stand hier und war am 09.09.2026 am Live-Stand
+         nachweislich vorhanden — `<text>` mit Füllfarbe #444a3b, Deckung 1,
+         Lage x1126/y485 — und trotzdem im Bild nicht zu sehen; zweimal
+         nachgezoomt. Vermutung: Es liegt unter der Fläche der Meldelücke,
+         die genau dort beginnt. Statt ein Element auszuliefern, das die
+         Prüfung findet und das Auge nicht, entfällt es: Die 25,7 Prozent
+         stehen in der Überschrift, in der Unterzeile, in der Notiz, in der
+         Tabelle und im Tooltip. Wer es zurückholt, muss es SICHTBAR
+         belegen, nicht im DOM. */
       markLine: marken.length
         ? { silent: true, symbol: "none", data: marken }
         : undefined,
@@ -154,24 +159,20 @@ function baueBioverlauf(daten) {
     }],
   }, { replaceMerge: ["series", "xAxis", "yAxis", "legend"] });
 
+  /* Der Definitionsbruch 2011/12 stand hier und ist am 09.09.2026 in die
+     Methodik gewandert: Er erklärt eine Delle, nicht den Befund. */
   setzeHtml("n-bioverlauf",
     `Zwischen ${punkte[0].jahr} und ${letztes.jahr} stieg der Anteil von ` +
     `<strong>${zahl(punkte[0].wert)} auf ${zahl(letztes.wert)} Prozent</strong>. ` +
     `Danach bricht die Reihe ab. <strong>Nicht der Datensatz endet, sondern ` +
     `die Meldung:</strong> Eurostat führt ihn bis ${bis}, für Österreich sind ` +
-    `${luecke} Jahre leer. Der Bruch zwischen 2011 und 2012 — ` +
-    `19,6 auf 18,6 Prozent — ist kein Rückgang der Fläche, sondern ein ` +
-    `Wechsel der Erhebungsdefinition.` +
+    `${luecke} Jahre leer.` +
     (national
       ? ` <strong>Gezählt wird national weiter:</strong> ${national.quelle} ` +
-        `nennt für ${national.jahr} ${zahl(national.anteil)} Prozent, ` +
-        `${zahl(national.flaeche_ha)} Hektar und ${zahl(national.betriebe)} ` +
-        `Biobetriebe. Diese Zahl steht als waagrechte Marke im Bild, aber ` +
-        `nicht in der Linie: Sie misst gegen die INVEKOS-Fläche, die ` +
-        `Eurostat-Reihe gegen die landwirtschaftlich genutzte Fläche der ` +
-        `EU-Definition. Aus ${zahl(letztes.wert)} und ` +
-        `${zahl(national.anteil)} Prozent lässt sich deshalb keine ` +
-        `Veränderung ablesen.`
+        `nennt für ${national.jahr} ${zahl(national.anteil)} Prozent. Diese ` +
+        `Zahl steht als Marke im Bild, nicht in der Linie: Sie misst gegen ` +
+        `die INVEKOS-Fläche, die Eurostat-Reihe gegen die landwirtschaftlich ` +
+        `genutzte Fläche der EU-Definition.`
       : ""));
 
   setzeHtml("t-bioverlauf", tabelle(
