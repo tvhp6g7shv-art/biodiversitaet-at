@@ -83,7 +83,11 @@ function baueBiolandbau(daten) {
 
   d.setOption({
     ...basis(),
-    grid: { ...balkenGitter(feld, { left: 118, right: 68 }), top: 24 },
+    /* 09.09.2026 — LINKER RAND 118 -> 126. „Nordmazedonien" misst in der
+       ausgelieferten MONO-Schrift 102 px und bekam mit `links - 16` genau
+       102 px: ECharts kuerzte auf „Nordmazedo…". Der Rand muss den
+       laengsten Namen tragen, nicht knapp treffen. */
+    grid: { ...balkenGitter(feld, { left: 126, right: 68 }), top: 24 },
     tooltip: {
       ...basis().tooltip, trigger: "axis",
       axisPointer: { type: "shadow", shadowStyle: { color: stil("--viz-grid"), opacity: 0.35 } },
@@ -108,7 +112,7 @@ function baueBiolandbau(daten) {
       data: liste.map((e) => e.name), splitLine: { show: false },
       axisLabel: { fontSize: istSchmal(feld) ? S.eng : S.serie, margin: 12,
                    color: stil("--viz-text-2"),
-                   ...kategorieLabel(feld, 118, liste.length) } },
+                   ...kategorieLabel(feld, 126, liste.length) } },
     series: [{
       type: "bar", name: "Bio-Anteil", barWidth: balkenBreite(feld, "62%", liste.length),
       data: liste.map((e) => ({

@@ -86,9 +86,19 @@ function baueRoteListen(daten) {
     ...basis(),
     /* `top: 46` überschreibt die 10 aus balkenGitter — sonst klebt die
        Legende am obersten Balken. */
-    grid: { ...balkenGitter(feld, { left: 150, right: 76 }), top: 46 },
+    /* 09.09.2026 — LINKER RAND 150 -> 232. Mit der Schwelle ENG auf 640
+       rendert dieses Diagramm auf der Website (732 px Zeichenflaeche) das
+       Desktop-Layout, und dort schnitt der Rand zwei Namen ab:
+       „Saeugetiere (ohne Fledermaeuse)" und „Amphibien und Reptilien".
+       Gerechnet gegen die ausgelieferte MONO-Schrift (12 px, 7,28 px je
+       Zeichen): laengster Name 210 px, `kategorieLabel` gibt dem Text
+       `links - 16`. 226 reichte im Versuch am Live-Diagramm noch nicht
+       (ECharts misst selbst und haelt Platz fuer „…" frei), 232 schon —
+       bei 232 stehen alle 23 Namen ungekuerzt. Mehr geht nicht: `randLinks`
+       deckelt bei 34 % der Flaeche, das sind hier 249 px. */
+    grid: { ...balkenGitter(feld, { left: 232, right: 76 }), top: 46 },
     legend: legende(feld, {
-      top: 0, left: legendeLinks(feld, 150),
+      top: 0, left: legendeLinks(feld, 232),
       itemWidth: 11, itemHeight: 11, itemGap: 14,
       data: ["im Soll-Zeitraum", "darüber hinaus"],
       textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },
@@ -117,7 +127,7 @@ function baueRoteListen(daten) {
              data: zeilen.map((z) => z.gruppe), splitLine: { show: false },
              axisLabel: { color: stil("--viz-text-2"), fontSize: S.serie,
                           margin: 12,
-                          ...kategorieLabel(feld, 150, zeilen.length) } },
+                          ...kategorieLabel(feld, 232, zeilen.length) } },
     series: [
       {
         name: "im Soll-Zeitraum", type: "bar", stack: "alter", barWidth: balkenBreite(feld, "64%", zeilen.length),
