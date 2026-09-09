@@ -11,7 +11,11 @@ const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
 /* --- Pestizidabsatz und seine Aufteilung ------------------------------
    Gestapelte Balken je Jahr, darüber die Gesamtlinie. Die Balken tragen
    die Aufteilung, die Linie den Verlauf — und sie schließt die Lücke
-   2015, für die Eurostat nur den Gesamtwert veröffentlicht.
+   2015, für die Eurostat nur den Gesamtwert veröffentlicht. Diese Lücke
+   trägt seit 09.09.2026 einen eigenen leeren Balken mit gestricheltem
+   Umriss und senkrechtem Etikett: Vorher war im BILD nichts zu sehen als
+   ein fehlender Balken, die Erklärung stand nur in Notiz, Tooltip und
+   Tabelle.
 
    WARUM DIE AUFTEILUNG ÜBERHAUPT IM BILD STEHT: Gegen die Aussage
    „der Absatz steigt" kommt sofort der Einwand, das seien vor allem
@@ -64,6 +68,13 @@ function bauePestizide(daten) {
     `${daten.beginn} bis ${daten.stand}`);
   setzeText("h-pestizide", daten.hinweis ?? "");
 
+  /* Das Etikett am Lückenbalken steht SENKRECHT im Balken — waagrecht wäre
+     es bei vierzehn Spalten rund dreimal so breit wie eine. Senkrecht
+     braucht es Höhe: unter 45 % der höchsten Säule ragte es unten heraus. */
+  const hoechster = Math.max(...punkte.map((p) => p.gesamt));
+  const etikettPasst = !istSchmal(feld) && punkte.some(
+    (p) => p.anorganisch === null && p.gesamt / hoechster >= 0.45);
+
   d.setOption({
     ...basis(),
     grid: { left: 8, right: istSchmal(feld) ? 16 : 52, top: 40, bottom: 8,
@@ -111,6 +122,40 @@ function bauePestizide(daten) {
         data: punkte.map((p) => p.rest),
         itemStyle: { color: stil(FARBEN.rest), borderRadius: [4, 4, 0, 0] },
         emphasis: hoverDunkler(stil(FARBEN.rest)),
+      },
+      /* DIE LÜCKE BEKOMMT EINEN EIGENEN, LEEREN BALKEN: gestrichelter Umriss
+         in voller Höhe des Gesamtwerts, an genau der Stelle, an der die
+         Aufteilung stünde. Ohne ihn sieht man nur ein Loch und liest es als
+         Null. Die Erklärung stand bis 09.09.2026 nur an drei Stellen, die
+         beim Betrachten der Grafik alle nicht greifen: im vierten Satz der
+         Notiz, im Tooltip (am Handy unerreichbar) und in der Tabelle hinter
+         dem Knopf.
+
+         WARUM KEIN `markArea` wie bei `bioverlauf`, `falter` und `vogel`:
+         Der ankert auf einer Kategorieachse an den BANDMITTEN, nicht an den
+         Bandkanten. Am 09.09.2026 in jsdom mit echarts 5.5.1 gemessen —
+         `[{xAxis:"2015"},{xAxis:"2015"}]` ergibt Breite 0,
+         `[{xAxis:"2015"},{xAxis:"2016"}]` sitzt um ein halbes Band zu weit
+         rechts, Bruchwerte (3.5/4.5) werden auf ganze Kategorien gerundet.
+         Für die Lücke eines BALKENS taugt er deshalb nicht; für die Lücke
+         einer LINIE — bioverlauf, vier Jahre ohne Meldung — ist die
+         Mittenankerung genau richtig.
+
+         `silent`, damit der Umriss keine eigene Hervorhebung bekommt, und
+         bewusst nicht in `legend.data`: er ist keine vierte Stoffgruppe. */
+      {
+        name: "ohne Aufteilung", type: "bar", stack: "absatz", silent: true,
+        data: punkte.map((p) => (p.anorganisch === null ? p.gesamt : null)),
+        itemStyle: {
+          color: "transparent", borderColor: stil("--viz-muted"),
+          borderType: "dashed", borderWidth: 1, borderRadius: [4, 4, 0, 0],
+        },
+        label: {
+          show: etikettPasst, position: "insideTop", distance: 6,
+          rotate: 90, align: "right",
+          color: stil("--viz-muted"), fontSize: S.achse,
+          formatter: "Aufteilung vertraulich",
+        },
       },
       /* Die Linie läuft über ALLE Jahre, auch über 2015, wo die Balken
          fehlen. Ohne sie wäre dort ein Loch und der Gesamtwert dieses
