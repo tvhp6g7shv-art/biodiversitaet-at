@@ -54,6 +54,15 @@
   --viz-surface:        #ffffff;
   --viz-plane:          #fafafa;
   --viz-text:           #0a0a0a;
+  /* Schrift auf dunklem Grund. `schutzstufen.js` setzt sie auf dem
+     Segment, das auf seq-6 sitzt — dort waere --viz-text unlesbar.
+     Auf WordPress war das Token da, hier fehlte es: `stil()` gab einen
+     leeren String zurueck und ECharts fiel auf seinen Standardton
+     zurueck. Aufgefallen erst am 11.09.2026 beim Abgleich der Token-
+     Familien, weil das Etikett unter der Schwelle liegt und gar nicht
+     gezeichnet wird — der Fehler war da, nur unsichtbar.
+     Gemessen: 15,1 : 1 auf seq-6 hell, 13,6 : 1 im Dunkelmodus. */
+  --viz-invers-text:    #ffffff;
   --viz-text-2:         #0a0a0a;
   --viz-muted:          #767676;
   --viz-grid:           #ececec;
@@ -184,6 +193,7 @@
     color-scheme: dark;
     --viz-surface: #1c1f21; --viz-plane: #161819;
     --viz-text: #e9eaea;    --viz-text-2: #e9eaea;
+    --viz-invers-text: #161819;
     --viz-muted: #9aa0a3;   --viz-grid: #2b2f31; --viz-axis: #42484c;
     --viz-border: #373d41;
     --viz-series-1: #e9eaea; --viz-series-2: #9ca4a8;
@@ -211,6 +221,7 @@
   color-scheme: dark;
   --viz-surface: #1c1f21; --viz-plane: #161819;
   --viz-text: #e9eaea;    --viz-text-2: #e9eaea;
+  --viz-invers-text: #161819;
   --viz-muted: #9aa0a3;   --viz-grid: #2b2f31; --viz-axis: #42484c;
   --viz-border: #373d41;
   --viz-series-1: #e9eaea; --viz-series-2: #9ca4a8;
