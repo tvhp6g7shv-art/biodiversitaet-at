@@ -10,33 +10,33 @@
      die Kennzahlenkacheln gehoeren zum Dashboard, nicht zu einer einzelnen
      Grafik. Cacheziffer wird aus index.html uebernommen — beide Auslieferungen
      tragen dieselbe, sonst mischt der Browser Staende. -->
-<script src="js/kern.js?v=24" defer></script>
-<script src="js/charts/schutzgebiete.js?v=24" defer></script>
-<script src="js/charts/schutzherkunft.js?v=24" defer></script>
-<script src="js/charts/schutzstufen.js?v=24" defer></script>
-<script src="js/charts/vogel.js?v=24" defer></script>
-<script src="js/charts/boden.js?v=24" defer></script>
-<script src="js/charts/bauland.js?v=24" defer></script>
-<script src="js/charts/flaeche.js?v=24" defer></script>
-<script src="js/charts/verkehr.js?v=24" defer></script>
-<script src="js/charts/rotelisten.js?v=24" defer></script>
-<script src="js/charts/erhaltung.js?v=24" defer></script>
-<script src="js/charts/lebensraeume.js?v=24" defer></script>
-<script src="js/charts/biotoptypen.js?v=24" defer></script>
-<script src="js/charts/fliessgewaesser.js?v=24" defer></script>
-<script src="js/charts/querbauwerke.js?v=24" defer></script>
-<script src="js/charts/wald.js?v=24" defer></script>
-<script src="js/charts/baumarten.js?v=24" defer></script>
-<script src="js/charts/waldarten.js?v=24" defer></script>
-<script src="js/charts/natura2000.js?v=24" defer></script>
-<script src="js/charts/biolandbau.js?v=24" defer></script>
-<script src="js/charts/bioverlauf.js?v=24" defer></script>
-<script src="js/charts/pestizide.js?v=24" defer></script>
-<script src="js/charts/stickstoff.js?v=24" defer></script>
-<script src="js/charts/gruenland.js?v=24" defer></script>
-<script src="js/charts/falter.js?v=24" defer></script>
-<script src="js/charts/rueckkehrer.js?v=24" defer></script>
-<script src="js/charts/vogelarten.js?v=24" defer></script>
+<script src="js/kern.js?v=25" defer></script>
+<script src="js/charts/schutzgebiete.js?v=25" defer></script>
+<script src="js/charts/schutzherkunft.js?v=25" defer></script>
+<script src="js/charts/schutzstufen.js?v=25" defer></script>
+<script src="js/charts/vogel.js?v=25" defer></script>
+<script src="js/charts/boden.js?v=25" defer></script>
+<script src="js/charts/bauland.js?v=25" defer></script>
+<script src="js/charts/flaeche.js?v=25" defer></script>
+<script src="js/charts/verkehr.js?v=25" defer></script>
+<script src="js/charts/rotelisten.js?v=25" defer></script>
+<script src="js/charts/erhaltung.js?v=25" defer></script>
+<script src="js/charts/lebensraeume.js?v=25" defer></script>
+<script src="js/charts/biotoptypen.js?v=25" defer></script>
+<script src="js/charts/fliessgewaesser.js?v=25" defer></script>
+<script src="js/charts/querbauwerke.js?v=25" defer></script>
+<script src="js/charts/wald.js?v=25" defer></script>
+<script src="js/charts/baumarten.js?v=25" defer></script>
+<script src="js/charts/waldarten.js?v=25" defer></script>
+<script src="js/charts/natura2000.js?v=25" defer></script>
+<script src="js/charts/biolandbau.js?v=25" defer></script>
+<script src="js/charts/bioverlauf.js?v=25" defer></script>
+<script src="js/charts/pestizide.js?v=25" defer></script>
+<script src="js/charts/stickstoff.js?v=25" defer></script>
+<script src="js/charts/gruenland.js?v=25" defer></script>
+<script src="js/charts/falter.js?v=25" defer></script>
+<script src="js/charts/rueckkehrer.js?v=25" defer></script>
+<script src="js/charts/vogelarten.js?v=25" defer></script>
 <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* ===================================================================
@@ -134,6 +134,24 @@
   --viz-seq-5:          #595959;
   --viz-seq-6:          #262626;
 
+  /* --- Neutrale Sequenz, nur fuer die Gemeindekarte ----------------------
+     `flaeche.js` zeigt beanspruchte Flaeche. Gruen liest sich dort als
+     Natur und sagt das Gegenteil dessen, was die Karte zeigt — Befund des
+     Users am 11.09.2026. Im Repo ist `--viz-seq-*` ohnehin neutral; auf
+     WordPress ueberschreibt die Lichtung-Palette sie global mit Gruen.
+     Deshalb eine eigene Familie: Sie haelt beide Auslieferungen gleich und
+     laesst `rotelisten` und `schutzstufen` bei ihrem Gruen.
+     Werte identisch mit der neutralen `--viz-seq-*` des Repos. */
+  --viz-seq-neutral-1:  #f2f2f2;
+  --viz-seq-neutral-2:  #d9d9d9;
+  --viz-seq-neutral-3:  #b3b3b3;
+  --viz-seq-neutral-4:  #8c8c8c;
+  --viz-seq-neutral-5:  #595959;
+  --viz-seq-neutral-6:  #262626;
+  /* Haarlinie zwischen den 2.092 Gemeinden. 1 px verschluckt die kleinen
+     (Entscheid 09.09.), 0,5 px traegt das Bild — am Live-Stand gemessen. */
+  --viz-karte-rand:     rgba(0, 0, 0, .28);
+
   /* Status — nur für Veränderungen, immer mit Pfeil und Text */
   --viz-gut:            #04b404;
   --viz-kritisch:       #f84444;
@@ -219,6 +237,9 @@
     --viz-akzent: #4396b1;
     --viz-seq-1: #292f32; --viz-seq-2: #3c4347; --viz-seq-3: #555d62;
     --viz-seq-4: #7b8489; --viz-seq-5: #a6aeb2; --viz-seq-6: #dde2e4;
+    --viz-seq-neutral-1: #292f32; --viz-seq-neutral-2: #3c4347; --viz-seq-neutral-3: #555d62;
+    --viz-seq-neutral-4: #7b8489; --viz-seq-neutral-5: #a6aeb2; --viz-seq-neutral-6: #dde2e4;
+    --viz-karte-rand: rgba(255, 255, 255, .22);
     --viz-gut: #3fd069;   --viz-kritisch: #f77070;
     --viz-div-neutral: #2e3336;
     --viz-div-gut-1: #1a3327; --viz-div-gut-2: #204d38;
@@ -243,6 +264,9 @@
   --viz-akzent: #4396b1;
   --viz-seq-1: #292f32; --viz-seq-2: #3c4347; --viz-seq-3: #555d62;
   --viz-seq-4: #7b8489; --viz-seq-5: #a6aeb2; --viz-seq-6: #dde2e4;
+  --viz-seq-neutral-1: #292f32; --viz-seq-neutral-2: #3c4347; --viz-seq-neutral-3: #555d62;
+  --viz-seq-neutral-4: #7b8489; --viz-seq-neutral-5: #a6aeb2; --viz-seq-neutral-6: #dde2e4;
+  --viz-karte-rand: rgba(255, 255, 255, .22);
   --viz-gut: #3fd069;   --viz-kritisch: #f77070;
   --viz-div-neutral: #2e3336;
   --viz-div-gut-1: #1a3327; --viz-div-gut-2: #204d38;

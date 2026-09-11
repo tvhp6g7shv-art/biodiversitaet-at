@@ -237,13 +237,17 @@ function baueFlaeche(daten, geo) {
           { gte: grenzen[3], label: namen[4] },
         ],
         textStyle: { color: stil("--viz-muted"), fontSize: S.achse },
-        /* seq-1 ist fast der Untergrund und bliebe auf einer Fläche
-           unsichtbar; die fünf Stufen laufen deshalb von seq-2 nach seq-6.
+        /* EIGENE Familie, nicht `--viz-seq-*`: Die Karte zeigt beanspruchte
+           Fläche, und auf WordPress ist `--viz-seq-*` grün — das liest sich
+           als Natur und sagt das Gegenteil. Befund des Users 11.09.2026.
+           neutral-1 ist fast der Untergrund und bliebe auf einer Fläche
+           unsichtbar; die fünf Stufen laufen deshalb von 2 nach 6.
            Dunkel heißt mehr — in beiden Farbmodi, weil die Rampe im
            Dunkelmodus mitgedreht wird. */
         inRange: { color: [
-          stil("--viz-seq-2"), stil("--viz-seq-3"), stil("--viz-seq-4"),
-          stil("--viz-seq-5"), stil("--viz-seq-6"),
+          stil("--viz-seq-neutral-2"), stil("--viz-seq-neutral-3"),
+          stil("--viz-seq-neutral-4"), stil("--viz-seq-neutral-5"),
+          stil("--viz-seq-neutral-6"),
         ] },
       },
       series: [{
@@ -252,10 +256,14 @@ function baueFlaeche(daten, geo) {
         ...BIO.kartenLayout(feld, RAHMEN_AT, ASPEKT),
         itemStyle: {
           areaColor: stil("--viz-grid"),
-          /* Keine Trennlinie: Bei 2.092 Flächen auf Österreichbreite
-             verschluckt ein 1-px-Rand die kleinen Gemeinden vollständig —
-             das Bild bestünde dann aus Rändern. */
-          borderWidth: 0,
+          /* Haarlinie, keine Trennlinie: Ein 1-px-Rand verschluckt bei
+             2.092 Flächen auf Österreichbreite die kleinen Gemeinden
+             vollständig (Entscheid 09.09.). 0,5 px trägt das Bild — am
+             Live-Stand gemessen und vom User am 11.09. abgenommen. Ohne
+             Rand sind die Gemeinden innerhalb einer Klasse nicht zu
+             unterscheiden, und genau das war der Befund. */
+          borderWidth: 0.5,
+          borderColor: stil("--viz-karte-rand"),
         },
         label: { show: false },
         emphasis: {
