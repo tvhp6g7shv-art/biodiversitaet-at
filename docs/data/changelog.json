@@ -1,10 +1,33 @@
 {
   "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "16",
+  "aktuell": "17",
   "basis_url": "https://biodiversitaet-monitor.at",
   "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
   "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
   "ausgaben": [
+    {
+      "nummer": "17",
+      "datum": "2026-09-11",
+      "datum_text": "11. September 2026",
+      "titel": "Der Bio-Anteil stieg auf 25,7 Prozent — seit 2021 meldet Österreich ihn nicht mehr nach Brüssel",
+      "veroeffentlicht": true,
+      "cacheziffer": 25,
+      "charts": [
+        "bioverlauf"
+      ],
+      "social": "Der Bio-Anteil an Österreichs Agrarfläche stieg von 13,8 auf 25,7 Prozent — Stand 2020.\n\nSeither meldet Österreich nichts mehr nach Brüssel: Eurostat führt den Datensatz bis 2024, vier Jahre bleiben leer.\nhttps://biodiversitaet-monitor.at/#s-bioverlauf",
+      "abschnitte": [
+        {
+          "chart": "bioverlauf",
+          "alt": "Ein Liniendiagramm mit gefüllter Fläche: Österreichs Anteil biologisch bewirtschafteter Fläche an der landwirtschaftlich genutzten Fläche, 2000 bis 2020, mit 21 lückenlosen Stützstellen. Die Linie steigt von 13,8 Prozent im Jahr 2000 auf 25,7 Prozent im Jahr 2020; zwischen 2011 und 2012 liegt eine Delle, die auf den Wechsel der zugrunde liegenden Eurostat-Reihe zurückgeht. Rechts endet die Linie, während die Achse bis 2024 weiterläuft: für 2021 bis 2024 hat Österreich keine Zahlen gemeldet. Diese vier Jahre bleiben als leere Fläche stehen."
+        }
+      ],
+      "seite": [
+        "Der Abschnitt zeigt nicht nur, wie der Bio-Anteil gewachsen ist, sondern auch, wo die europäisch vergleichbare Meldung aufhört. Von 2000 bis 2020 liegen 21 lückenlose Stützstellen vor, der Anteil steigt von 13,8 auf 25,7 Prozent der landwirtschaftlich genutzten Fläche.",
+        "Danach bricht die Reihe ab — nicht der Datensatz. Eurostat führt sdg_02_40 bis 2024 und hat ihn zuletzt im August 2026 aktualisiert; für Österreich sind 2021 bis 2024 leer. Die Delle zwischen 2011 und 2012 ist kein Rückgang, sondern der Wechsel der zugrunde liegenden Reihe.",
+        "National wird weitergezählt: das BMLUK nennt für 2024 27,3 Prozent, 697.500 Hektar und 23.942 Biobetriebe. Diese Zahl steht gegen einen anderen Nenner als die europäische Reihe. Aus 25,7 und 27,3 lässt sich deshalb keine Veränderung ablesen, und der Abschnitt rechnet sie auch nicht gegeneinander."
+      ]
+    },
     {
       "nummer": "16",
       "datum": "2026-09-09",
