@@ -103,7 +103,10 @@ function baueKpis(kpi) {
       /* 03.09.2026 — „Anteil der“ gestrichen: die Einheit hinter der Zahl
          ist „%“, damit ist der Anteil schon gesagt. */
       "Landesfläche unter Schutz",
-      `${kpi.schutzgebiete_jahr} · EU-Ziel 30 %, ${pz(kpi.schutzgebiete_luecke)} Punkte fehlen`,
+      /* 11.09.2026 — Entscheid E6: Die Fehlmenge ist raus. Das Ziel von
+         30 % gilt der EU als Ganzes; „x Punkte fehlen" las sich als
+         nationale Verpflichtung. */
+      `${kpi.schutzgebiete_jahr} · EU-weites Ziel 2030: 30 %`,
       "schutzgebiete"
     ));
   }

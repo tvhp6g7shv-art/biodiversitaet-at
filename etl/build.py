@@ -477,7 +477,8 @@ def main() -> None:
         # eine Lücke in der Reihe — vier Kacheln in einer Viererreihe.
         kpi["schutzgebiete_prozent"] = schutzgebiete["aktuell"]
         kpi["schutzgebiete_jahr"] = schutzgebiete["stand"]
-        kpi["schutzgebiete_luecke"] = schutzgebiete["luecke"]
+        # 11.09.2026 — Entscheid E6: keine nationale Lücke gegen ein
+        # EU-weites Ziel, deshalb kein `schutzgebiete_luecke` mehr.
     kpi["vogel_index"] = ausgaben["vogel"]["aktuell"]
     kpi["vogel_jahr"] = ausgaben["vogel"]["stand"]
     # Die Kachel zeigt seit 25.08.2026 den Verlust, nicht den Indexstand:

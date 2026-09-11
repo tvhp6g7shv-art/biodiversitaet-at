@@ -248,16 +248,16 @@ def baue_schutzstufen() -> dict | None:
             "statt 100,0 — Rundung prüfen"
         )
 
-    # Was auf 10 % streng geschützter Staatsfläche fehlt — als Fläche und als
-    # Vielfaches. Die Zahl steht in der Notiz, nicht als Marke im Bild.
-    luecke_km2 = round(config.SST_EU_ZIEL_STRENG / 100 * config.SST_FLAECHE_KM2 - km2[0], 1)
-    faktor = round(config.SST_EU_ZIEL_STRENG / 100 * config.SST_FLAECHE_KM2 / km2[0], 2)
+    # 11.09.2026 — Entscheid E6: Hier stand, was auf 10 % streng geschützter
+    # Staatsfläche fehlt, als Fläche und als Vielfaches. Beides ist eine
+    # nationale Fehlmenge gegen eine Marke, die der EU als Ganzes gilt —
+    # dieselbe Rechnung, die bei `schutzgebiete` entfallen ist. Die Marke
+    # selbst bleibt in der Notiz, die Fehlmenge nicht.
 
     for stufe, w, a in zip(config.SST_BESCHRIFTUNG, km2, anteile):
         log(f"    {stufe:32s} {w:12,.2f} km²   {a:5.1f} %")
     log(f"    streng am Schutz selbst: {anteil_streng_am_schutz} %")
-    log(f"    auf {config.SST_EU_ZIEL_STRENG:.0f} % streng fehlen {luecke_km2:,.1f} km² "
-        f"(Faktor {faktor})")
+    log(f"    EU-weite Marke streng: {config.SST_EU_ZIEL_STRENG:.0f} %")
 
     pflegepruefung("schutzstufen", config.SST_STAND_JAHR, "Schutzstufen")
 
@@ -302,8 +302,6 @@ def baue_schutzstufen() -> dict | None:
         "gesamt_km2": round(km2[-1], 2),
         "anteil_streng_am_schutz": anteil_streng_am_schutz,
         "eu_ziel_streng": config.SST_EU_ZIEL_STRENG,
-        "luecke_km2": luecke_km2,
-        "faktor": faktor,
         # Die Notiz baut das Chart-Modul aus diesen Zahlen — dort steht der
         # Formatierer, der 2,9 schreibt und nicht 2.9.
         #
@@ -318,10 +316,20 @@ def baue_schutzstufen() -> dict | None:
         # Ein `f"{x:.1f}"` schreibt hier „29.6" und fällt erst am
         # ausgelieferten Stand auf.
         "hinweis": (
+            # 11.09.2026 — Entscheid E3/E4: Diese 29,6 Prozent sind NICHT
+            # die Leitzahl des Dashboards (das ist Eurostat mit 29,3 % für
+            # 2023), sondern eine andere Erhebung zu einem späteren
+            # Stichtag. Sie bleiben hier stehen, weil Zähler und Nenner der
+            # Strengschutz-Rechnung aus derselben Erhebung kommen müssen —
+            # aber nur mit Quelle und Stichtag im selben Satz.
+            # Länge: 230 Zeichen bei zweistelligen Werten, Soll 150–234.
+            # Wird eine der beiden Zahlen dreistellig, reißt das Soll.
             "Der ganze Balken ist die geschützte Fläche Österreichs — "
-            f"{anteile[-1]:.1f}".replace(".", ",") + " Prozent des Landes. "
-            "Die Stufen folgen der Weltnaturschutzunion (IUCN). Das EU-Ziel "
-            f"von {config.SST_EU_ZIEL_STRENG:.0f} Prozent gilt der Union als "
-            "Ganzes, nicht je Mitgliedstaat."
+            f"{anteile[-1]:.1f}".replace(".", ",")
+            + " Prozent des Landes, erhoben vom Umweltbundesamt im "
+            "Jänner 2025. Die Stufen folgen der Weltnaturschutzunion "
+            "(IUCN). Das EU-Ziel von "
+            f"{config.SST_EU_ZIEL_STRENG:.0f} Prozent gilt der Union als "
+            "Ganzes."
         ),
     }

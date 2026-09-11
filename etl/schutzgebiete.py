@@ -57,20 +57,18 @@ def baue_schutzgebiete() -> dict | None:
         stillstand_seit = jahr
     jahre_still = int(letztes) - int(stillstand_seit)
 
-    luecke = round(config.SCHUTZGEBIETE_ZIEL - aktuell, 1)
-    if km2.get(letztes) and aktuell:
-        # Wie viele km² fehlen bis zum Ziel? Über den Dreisatz aus dem
-        # aktuellen Verhältnis Fläche/Prozent — die Landesfläche selbst
-        # steht in der Quelle nicht.
-        pro_punkt = km2[letztes] / aktuell
-        luecke_km2 = round(luecke * pro_punkt)
-    else:
-        luecke_km2 = None
+    # 11.09.2026 — Entscheid E6: Die Zielmarke bleibt im Bild, die daraus
+    # abgeleitete *nationale* Lücke fällt weg. Das Ziel von 30 Prozent gilt
+    # der EU als Ganzes; eine Fehlmenge für Österreich dagegen zu rechnen
+    # unterstellt eine nationale Verpflichtung, die es nicht gibt. Mit
+    # `luecke_km2` fällt auch der Dreisatz weg, der die Landesfläche aus
+    # Fläche und Prozent zurückrechnete — eine aus gerundeten Werten
+    # zurückgerechnete Größe ist keine Quelle.
 
     log(f"    {erstes}: {prozent[erstes]:.1f} %  →  {letztes}: {aktuell:.1f} %")
     if jahre_still:
         log(f"    Unverändert seit {stillstand_seit} ({jahre_still} Jahre)")
-    log(f"    Abstand zum Ziel {config.SCHUTZGEBIETE_ZIEL:.0f} %: {luecke:.1f} Punkte")
+    log(f"    EU-weites Ziel {config.SCHUTZGEBIETE_ZIELJAHR}: {config.SCHUTZGEBIETE_ZIEL:.0f} %")
 
     quelle_vermerken(
         name="Eurostat — sdg_15_20, Surface of the terrestrial protected areas",
@@ -90,8 +88,6 @@ def baue_schutzgebiete() -> dict | None:
         "jahre_still": jahre_still,
         "ziel": config.SCHUTZGEBIETE_ZIEL,
         "zieljahr": config.SCHUTZGEBIETE_ZIELJAHR,
-        "luecke": luecke,
-        "luecke_km2": luecke_km2,
         "hinweis": (
             "Nationale Schutzgebiete und Natura-2000-Gebiete zusammen, "
             "Überschneidungen herausgerechnet. Gemessen wird Fläche, nicht "

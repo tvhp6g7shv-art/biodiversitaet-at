@@ -379,12 +379,14 @@ function baueSchutzstufen(daten) {
     `streng geschützt — Nationalparks und Wildnisgebiete. Das sind ` +
     `<strong>${pz(daten.anteil_streng_am_schutz, 1)} Prozent</strong> des Schutzes ` +
     `selbst, also nicht einmal jeder zehnte geschützte Quadratkilometer. ` +
-    `Auf ${zahl(daten.eu_ziel_streng)} Prozent streng geschützter Fläche fehlen ` +
-    `${zahl(daten.luecke_km2)} km²; das Land müsste seinen strengen Schutz ` +
-    `auf das ${pz(daten.faktor, 2)}-Fache ausweiten. Diese Marke gilt der EU als ` +
-    `Ganzes, nicht je Mitgliedstaat — einen Vergleich der Mitgliedstaaten gibt ` +
-    `es zu ihr nicht, der Indikator ist bei der Kommission als „in Entwicklung“ ` +
-    `geführt.`);
+    /* 11.09.2026 — Entscheid E6: Hier stand, wie viele km² auf die EU-Marke
+       fehlen und auf welches Vielfache das Land ausweiten müsste. Beides ist
+       eine nationale Fehlmenge gegen eine Marke, die der Union als Ganzes
+       gilt. Die Marke bleibt, die Fehlmenge ist raus. */
+    `Die EU-Marke von ${zahl(daten.eu_ziel_streng)} Prozent streng geschützter ` +
+    `Fläche gilt der Union als Ganzes, nicht je Mitgliedstaat — einen Vergleich ` +
+    `der Mitgliedstaaten gibt es zu ihr nicht, der Indikator ist bei der ` +
+    `Kommission als „in Entwicklung“ geführt.`);
 
   /* Die Tabelle führt seit dem Umbau BEIDE Nenner. Das Bild zeigt nur noch
      den einen; wer den anderen sucht — etwa um gegen den Abschnitt

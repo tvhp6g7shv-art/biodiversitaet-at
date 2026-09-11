@@ -174,7 +174,11 @@ function baueBauland(daten) {
     `gesunken</strong>, von ${zahl(daten.anteil_frueher)} auf ` +
     `${zahl(daten.anteil)} Prozent: Er misst die Reserve an einem Nenner, der ` +
     `selbst wächst. „Bebaut dazugekommen" heisst nicht „aus der Reserve ` +
-    `verbaut" — gebaut werden kann auch auf neu gewidmetem Land.`);
+    `verbaut" — gebaut werden kann auch auf neu gewidmetem Land. ` +
+    /* 11.09.2026 — Entscheid E1 (a): aus der Hinweiszeile hierher
+       gewandert, damit dort der Methodenwechsel Platz hat. */
+    `Sechs Kärntner Gemeinden führen keinen digitalen Flächenwidmungsplan ` +
+    `und fehlen in beiden Jahren.`);
 
   setzeHtml("t-bauland", tabelle(
     [{ titel: "Bundesland", wert: (z) => z.name },

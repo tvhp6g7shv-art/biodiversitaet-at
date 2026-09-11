@@ -245,9 +245,16 @@ def baue_bauland() -> dict | None:
         "ersatzquote": round(bauland_zu / bebaut_zu * 100, 1) if bebaut_zu else None,
         "hoechster_anteil": max(laender, key=lambda l: l["anteil"])["name"],
         "niedrigster_anteil": min(laender, key=lambda l: l["anteil"])["name"],
+        # 11.09.2026 — Entscheid E1 (a): Der ÖROK-Methodenwechsel 2025
+        # qualifiziert die Überschrift und gehört deshalb in die
+        # Hinweiszeile. Die sechs Kärntner Gemeinden sind dafür in die Notiz
+        # gewandert — beides zusammen sprengt die 234 Zeichen, und die
+        # Gemeindelücke qualifiziert die Überschrift nicht.
+        # Länge: 218 Zeichen, Soll 150–234.
         "hinweis": (
-            f"Gewidmetes Bauland ohne Verkehrsflächen und innere Erschließung. "
-            f"Sechs Kärntner Gemeinden führen keinen digitalen "
-            f"Flächenwidmungsplan und fehlen in beiden Jahren."
+            "Gewidmetes Bauland ohne Verkehrsflächen und innere "
+            "Erschließung. Die ÖROK hat 2025 die Methode präzisiert: Wie "
+            "viel der Veränderung gegenüber 2022 daher aus der Definition "
+            "stammt und nicht aus dem Verbrauch, ist offen."
         ),
     }

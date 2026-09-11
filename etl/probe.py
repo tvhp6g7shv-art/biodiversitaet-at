@@ -202,7 +202,8 @@ def main() -> None:
     pruefe(len(sg["punkte"]) == 13, f"Schutzgebiete: {len(sg['punkte'])} Punkte statt 13")
     pruefe(sg["aktuell"] == 29.3, f"Schutzgebiete: aktuell {sg['aktuell']}")
     pruefe(sg["stillstand_seit"] == 2021, "Schutzgebiete: Stillstand nicht ab 2021")
-    pruefe(sg["luecke"] == 0.7, f"Schutzgebiete: Lücke {sg['luecke']} statt 0.7")
+    # 11.09.2026 — Entscheid E6: `luecke` gibt es nicht mehr (nationale
+    # Fehlmenge gegen ein EU-weites Ziel). Die Zusicherung entfällt ersatzlos.
 
     vo = lade("vogel")
     pruefe(vo["aktuell"] == 56.8, f"Vögel: aktuell {vo['aktuell']}")
