@@ -1,10 +1,38 @@
 {
   "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "17",
+  "aktuell": "18",
   "basis_url": "https://biodiversitaet-monitor.at",
   "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
   "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
   "ausgaben": [
+    {
+      "nummer": "18",
+      "datum": "2026-09-12",
+      "datum_text": "12. September 2026",
+      "titel": "6,8 Prozent Österreichs sind beansprucht — und der größte Posten ist nicht die Autobahn",
+      "veroeffentlicht": true,
+      "cacheziffer": 26,
+      "charts": [
+        "flaeche",
+        "verkehr"
+      ],
+      "social": "6,8 % der Fläche Österreichs sind verbaut oder Verkehrsweg — je nach Gemeinde 0,2 bis 79 %.\n\nDer größte Verkehrsposten ist nicht die Autobahn: Gemeindestraßen 104.292 ha, Autobahnen und Schnellstraßen 10.990 ha. Faktor 9,5.\nhttps://biodiversitaet-monitor.at/#s-flaeche",
+      "abschnitte": [
+        {
+          "chart": "flaeche",
+          "alt": "Eine Karte Österreichs mit allen 2.092 Gemeinden des Gebietsstands 1. Jänner 2025, eingefärbt nach dem Anteil der Flächeninanspruchnahme an der Gemeindefläche, Stand 2025. Fünf Klassen mit den Grenzen 4,0, 6,5, 9,0 und 13,5 Prozent; die Grenzen sind Quantile der Verteilung. Dunkel liegen die Gemeinden des Wiener Umlands, des oberösterreichischen Zentralraums und der Ost-West-Achse, hell die inneralpinen Gemeinden Tirols, Salzburgs und Kärntens. Der Bundeswert beträgt 6,8 Prozent, der Median der Gemeinden 7,7 Prozent, die Spanne reicht von 0,2 bis 78,2 Prozent in Brunn am Gebirge. Die Karte zeigt den Zustand, nicht die Veränderung."
+        },
+        {
+          "chart": "verkehr",
+          "alt": "Ein liegendes Balkendiagramm mit fünf Balken in einer Farbe: die Verkehrsflächen Österreichs nach Art, Stand 2025, in Hektar. Gemeinde- und sonstige Straßen 104.292 Hektar, Landesstraßen B und L 42.875, Schiene 12.700, Autobahnen und Schnellstraßen 10.990, Flughäfen 1.964. Der oberste Balken ist neuneinhalbmal so lang wie der der Autobahnen und Schnellstraßen. Zusammen ergeben die fünf Arten 172.820 Hektar, das sind 30,4 Prozent der gesamten Flächeninanspruchnahme."
+        }
+      ],
+      "seite": [
+        "Zwei neue Abschnitte zum Bodenverbrauch. Die Karte zeigt für jede der 2.092 Gemeinden, welcher Anteil ihrer Fläche verbaut oder als Verkehrsweg beansprucht ist. Der Bundeswert liegt bei 6,8 Prozent und ist flächengewichtet: die Hälfte der Gemeinden liegt über 7,7 Prozent, die Spanne reicht von 0,2 Prozent bis 78,2 Prozent in Brunn am Gebirge. Der Nenner ist die gesamte Gemeindefläche, Fels und Gletscher eingerechnet — das drückt die Werte inneralpiner Gemeinden nach unten.",
+        "Die Karte zeigt den Stand, nicht die Entwicklung. Das Umweltbundesamt hat die Eigenberechnung aus den offenen ÖROK-Daten am 4. September 2026 freigegeben, weil die amtliche Gemeindestatistik erst 2027 erscheint — mit der Auflage, die Veränderungen 2022 bis 2025 auf Gemeindeebene nicht zu zeigen. Sie sind dort derzeit nicht valide. Wie stark eine einzelne Gemeinde zuletzt zugelegt hat, lässt sich also nicht verlässlich sagen.",
+        "Der zweite Abschnitt zerlegt, wofür die Fläche beansprucht ist. Auf den Verkehr entfallen 172.820 Hektar oder 30,4 Prozent der Inanspruchnahme, und der größte Einzelposten ist nicht die Autobahn: Gemeinde- und sonstige Straßen stehen mit 104.292 Hektar gegen 10.990 Hektar Autobahnen und Schnellstraßen, das Neuneinhalbfache. Verhandelt wird über Bodenverbrauch an den Autobahnen; die Fläche liegt im Netz darunter."
+      ]
+    },
     {
       "nummer": "17",
       "datum": "2026-09-11",
