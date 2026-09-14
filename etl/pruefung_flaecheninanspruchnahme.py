@@ -151,10 +151,19 @@ kern = {
                     "abweichung_prozent": 0.0, "detail_ha": {}},
 }
 quellen_vorher = len(gemeinsam.QUELLEN)
-erg = fi._ableiten(kern)
+# schreiben=False: Ohne das ersetzt dieser Aufruf die ausgelieferten Daten
+# durch die drei Attrappengemeinden von oben (Befund 14.09.2026).
+erg = fi._ableiten(kern, schreiben=False)
 pruefe("Klassengrenzen ergaenzt", 1 if erg.get("klassengrenzen") else 0, 1)
 pruefe("Hinweiszeile ergaenzt", 1 if erg.get("hinweis") else 0, 1)
 pruefe("Auflage ergaenzt", 1 if "Zustandskarte" in erg.get("auflage", "") else 0, 1)
+# Widerspruch 7 (14.09.2026): Die Auflage stand in den Daten, wurde geprueft
+# und im Frontend von niemandem gelesen. Sie wird jetzt in Zone 5 der
+# Einzelseiten gesetzt; die eigene Hinweiszeile des Verkehrsabschnitts
+# kommt aus derselben Datei statt aus dem Chart-Modul.
+pruefe("Hinweiszeile Verkehr ergaenzt", 1 if erg.get("hinweis_verkehr") else 0, 1)
+pruefe("Hinweiszeile Verkehr im Hausmass",
+       1 if 150 <= len(erg.get("hinweis_verkehr", "")) <= 234 else 0, 1)
 pruefe("Klassennamen aus config", len(erg.get("klassennamen", {})), len(config.FI_KLASSEN))
 pruefe("Kern unveraendert durchgereicht", len(erg["gemeinden"]), 3)
 # Der Zwischenspeicher-Weg muss die Quelle ebenfalls melden, sonst faellt
@@ -164,10 +173,19 @@ pruefe("Quelle vermerkt", len(gemeinsam.QUELLEN) - quellen_vorher, 1)
 print("  " + erg["hinweis"])
 if "Winzig" in erg["hinweis"]: fehler.append("Spitzenreiter ungefiltert")
 print(("  OK  " if "Winzig" not in erg["hinweis"] else "  FEHL") + " kleine Gemeinde nicht im Satz")
-# `gemeinsam.AUSGABE` steht beim Import fest (WURZEL / config.AUSGABE_ORDNER);
-# ein spaeteres Umbiegen von config.AUSGABE_ORDNER wirkt nicht mehr. Deshalb
-# hier gegen den Pfad pruefen, den das Modul tatsaechlich benutzt.
-pruefe("Datei geschrieben", 1 if (gemeinsam.AUSGABE / "flaecheninanspruchnahme.json").exists() else 0, 1)
+# Der Schreibschritt wird gegen einen Aufzeichner geprueft, nicht gegen die
+# Existenz der Datei. Grund (14.09.2026): Seit `_ableiten` mit schreiben=False
+# aufgerufen wird, liegt die ausgelieferte Datei ohnehin da — der alte Test
+# waere immer gruen gewesen, auch bei ausgefallenem Schreibschritt. Jetzt
+# laeuft der echte Weg (schreiben=True) einmal durch, ohne etwas anzufassen.
+notiert = []
+_schreibe_echt = fi.schreibe
+fi.schreibe = lambda name, inhalt: notiert.append(name)
+try:
+    fi._ableiten(kern)
+finally:
+    fi.schreibe = _schreibe_echt
+pruefe("Datei geschrieben", 1 if notiert == ["flaecheninanspruchnahme"] else 0, 1)
 
 print("\n" + ("ALLE PRUEFUNGEN GRUEN" if not fehler else f"FEHLER: {fehler}"))
 sys.exit(1 if fehler else 0)

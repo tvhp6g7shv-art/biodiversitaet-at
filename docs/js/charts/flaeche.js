@@ -172,6 +172,13 @@ function baueFlaeche(daten, geo) {
 
   setzeText("h-flaeche", daten.hinweis || "");
 
+  /* Zone 5 des Seitentyps — der Vorbehalt, wörtlich aus den Daten.
+     Auf dem Dashboard fehlt das Feld und `setzeText` läuft ins Leere;
+     die Hinweiszeile darüber trägt die Auflage hier bereits in Prosa.
+     Auf `/flaechenverbrauch-gemeinden/` steht sie als eigener Block.
+     → `doku/seitentyp-einzelseite-2026-09-11.md` § 5 */
+  setzeText("v-flaeche", daten.auflage ?? "");
+
   if (!geo) {
     /* Höhe zurücknehmen, sonst steht ein leerer Kasten da — solange die
        Geometrie noch lädt oder wenn sie ausfällt. */

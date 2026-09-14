@@ -380,11 +380,42 @@ def _hinweis(bund_prozent: float, hoechste: dict) -> str:
     return zeile
 
 
+
+def _hinweis_verkehr() -> str:
+    """
+    Hinweiszeile des Abschnitts `verkehr`, Hausmaß 150–234 Zeichen.
+
+    Wortlaut unverändert aus `docs/js/charts/verkehr.js` übernommen, wo er
+    bis zum 14.09.2026 fest verdrahtet stand. Er gehört hierher, weil die
+    Einzelseite `/verkehrsflaechen/` dieselbe Zeile braucht und sie sonst
+    ein zweites Mal geschrieben würde — zwei Fassungen, die auseinanderlaufen.
+
+    Bewusst ohne Zahlen: Der Satz ist die Einordnung, die Zahlen stehen in
+    Notiz, Etiketten und Tabelle. Er wird deshalb auch nicht gerechnet.
+    """
+    zeile = (
+        "Über Bodenverbrauch wird an Autobahnen gestritten. Die Fläche liegt "
+        "im Netz darunter: Gemeindestraßen und Wege sind die größte einzelne "
+        "Verkehrsfläche des Landes — und die, über die niemand streitet."
+    )
+    if not 150 <= len(zeile) <= 234:
+        warnen(f"Verkehrsflächen: Hinweiszeile {len(zeile)} Zeichen, "
+               f"Hausmaß ist 150–234.")
+    return zeile
+
+
 # --- Aufbau -----------------------------------------------------------------
 
-def _ableiten(kern: dict) -> dict:
+def _ableiten(kern: dict, schreiben: bool = True) -> dict:
     """
     Ergänzt die abgeleiteten Größen und schreibt die Datei.
+
+    `schreiben=False` gibt das Ergebnis zurück, ohne die ausgelieferte
+    JSON anzufassen. Das ist der Weg für Prüfungen: Bis zum 14.09.2026
+    hat jeder Aufruf dieser Funktion `docs/data/flaecheninanspruchnahme.json`
+    überschrieben — auch der aus `pruefung_flaecheninanspruchnahme.py` mit
+    seinen drei Attrappengemeinden. Wer die Prüfung laufen ließ, ersetzte
+    damit 2.092 echte Gemeinden durch drei erfundene, ohne eine Meldung.
 
     WARUM DAS VOM KERN GETRENNT IST: Die Aggregation kostet 37 Minuten und
     wird deshalb zwischengespeichert. Klassengrenzen, Klassennamen und
@@ -410,6 +441,10 @@ def _ableiten(kern: dict) -> dict:
     )
     if spitze:
         ergebnis["hinweis"] = _hinweis(bund_prozent, spitze)
+    # Zweiter Abschnitt aus derselben Datei: `verkehr` hat eine eigene
+    # Hinweiszeile. `hinweis` gehört der Karte und nennt Bundeswert und
+    # Spitzenreiter — auf den Verkehrsbalken passt der Satz nicht.
+    ergebnis["hinweis_verkehr"] = _hinweis_verkehr()
 
     # Die Quelle wird auf BEIDEN Wegen vermerkt, nicht nur beim Neubau. Am
     # 31.08.2026 sind drei Abschnitte still aus dem Quellenblock gefallen,
@@ -431,7 +466,8 @@ def _ableiten(kern: dict) -> dict:
         art="api",
     )
 
-    schreibe("flaecheninanspruchnahme", ergebnis)
+    if schreiben:
+        schreibe("flaecheninanspruchnahme", ergebnis)
     return ergebnis
 
 

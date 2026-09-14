@@ -96,11 +96,19 @@ function baueVerkehr(daten) {
         `Fläche wie alle Autobahnen und Schnellstraßen zusammen.`
       : ""));
 
-  /* Hinweiszeile im Hausmaß 150–234 → `reference-dashboard-konventionen`. */
-  setzeText("h-verkehr",
-    `Über Bodenverbrauch wird an Autobahnen gestritten. Die Fläche liegt im ` +
-    `Netz darunter: Gemeindestraßen und Wege sind die größte einzelne ` +
-    `Verkehrsfläche des Landes — und die, über die niemand streitet.`);
+  /* Hinweiszeile im Hausmaß 150–234 → `reference-dashboard-konventionen`.
+     Sie kommt aus den Daten, nicht aus diesem Modul: Bis zum 14.09.2026 stand
+     der Satz hier fest verdrahtet, und `auflage` las überhaupt niemand — die
+     UBA-Auflage hing allein an der Kartengrafik nebenan (Widerspruch 7).
+     Für eine eigenständige Seite ist das unzulässig: Sie trägt dieselbe
+     Zahl ohne die Bedingung, unter der sie freigegeben ist. */
+  setzeText("h-verkehr", daten.hinweis_verkehr ?? "");
+
+  /* Zone 5 des Seitentyps — der Vorbehalt. Auf dem Dashboard gibt es dieses
+     Feld nicht, `setzeText` läuft dort ins Leere; auf der Einzelseite
+     `/verkehrsflaechen/` steht die Auflage damit im eigenen Block, wie es
+     `doku/seitentyp-einzelseite-2026-09-11.md` § 5 verlangt. */
+  setzeText("v-verkehr", daten.auflage ?? "");
 
   balkenHoehe(d, feld, zeilen.length);
 
