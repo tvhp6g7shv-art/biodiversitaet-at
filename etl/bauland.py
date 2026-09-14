@@ -245,16 +245,21 @@ def baue_bauland() -> dict | None:
         "ersatzquote": round(bauland_zu / bebaut_zu * 100, 1) if bebaut_zu else None,
         "hoechster_anteil": max(laender, key=lambda l: l["anteil"])["name"],
         "niedrigster_anteil": min(laender, key=lambda l: l["anteil"])["name"],
-        # 11.09.2026 — Entscheid E1 (a): Der ÖROK-Methodenwechsel 2025
-        # qualifiziert die Überschrift und gehört deshalb in die
-        # Hinweiszeile. Die sechs Kärntner Gemeinden sind dafür in die Notiz
-        # gewandert — beides zusammen sprengt die 234 Zeichen, und die
-        # Gemeindelücke qualifiziert die Überschrift nicht.
-        # Länge: 218 Zeichen, Soll 150–234.
+        # 14.09.2026 — Der Methodenvorbehalt vom 11.09. (Entscheid E1 a) ist
+        # ERSETZT. Auskunft Gebhard Banko (Umweltbundesamt) vom 14.09.2026:
+        # Die ÖROK rechnet die Baulandreserven in einer konsistenten
+        # Zeitserie nach der neuesten Methodik rückwärts und aktualisiert bei
+        # jeder Neuberechnung auch die Vorjahre. In der Mappe Stand
+        # 2025-12-01 kann die Veränderung 2022 → 2025 deshalb KEINEN
+        # Methodenanteil enthalten — der alte Satz („ist offen") war
+        # unrichtig. Der frei gewordene Platz trägt die Definition der
+        # Reserve, die Banko im selben Schreiben erstmals beziffert hat.
+        # Die sechs Kärntner Gemeinden bleiben in der Notiz (n-bauland).
+        # Länge: 228 Zeichen, Soll 150–234.
         "hinweis": (
             "Gewidmetes Bauland ohne Verkehrsflächen und innere "
-            "Erschließung. Die ÖROK hat 2025 die Methode präzisiert: Wie "
-            "viel der Veränderung gegenüber 2022 daher aus der Definition "
-            "stammt und nicht aus dem Verbrauch, ist offen."
+            "Erschließung. Als Reserve zählen unbebaute, bebaubare "
+            "Grundstücke ab 300 m² Fläche und 8 m Breite. Die ÖROK rechnet "
+            "die Zeitreihe bei jeder Methodenpräzisierung rückwirkend neu."
         ),
     }
