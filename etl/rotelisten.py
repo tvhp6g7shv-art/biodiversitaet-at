@@ -65,12 +65,17 @@ GRUPPEN = [
     ("Wasserkäfer",               2005, 12, "überfällig"),
 ]
 
-# Zum Vergleich, aus derselben Quellfamilie: Die Rote Liste der Farn- und
-# Blütenpflanzen wurde 2022 neu aufgelegt (1.274 Arten, davon 66 vergeblich
-# gesucht). Sie steht nicht in der Tiergruppentabelle und zählt hier nicht
-# mit — sie dient nur als Beleg, dass Neuauflagen möglich sind.
-PFLANZEN_JAHR = 2022
-PFLANZEN_ARTEN = 1274
+# 16.09.2026 — GESTRICHEN, Entscheid des Users (Widerspruch 4).
+# Hier stand ein Nebenwert: PFLANZEN_JAHR = 2022, PFLANZEN_ARTEN = 1274,
+# ausgegeben als Feld "pflanzen", mit dem Kommentar „1.274 Arten, davon 66
+# vergeblich gesucht". Diese Paarung ist an der zitierten Quelle nicht
+# belegbar. Belegt sind dort: etwa 3.460 Farn- und Blütenpflanzen als Flora,
+# mehr als 1.270 nicht heimische, nur vorübergehend auftretende Arten, die
+# ausdrücklich NICHT Gegenstand des Artenkatalogs sind, und 66 Arten
+# ausgestorben bzw. verschollen. Die 1.274 sahen aus wie zwei dieser Sätze,
+# zusammengezogen. Kein Frontend-Modul hat das Feld je gelesen.
+# Soll hier wieder eine Zahl stehen, dann eine aus dem Volltext.
+# Vorgang: ../../memory.md, „Widerspruch 4 und 5 entschieden (16.09.2026)".
 
 
 def baue_rotelisten() -> dict:
@@ -152,7 +157,6 @@ def baue_rotelisten() -> dict:
         "aktuell": zaehlung.get("aktuell", 0),
         "aeltester": aeltester,
         "groesster_ueberzug": groesster_ueberzug,
-        "pflanzen": {"jahr": PFLANZEN_JAHR, "arten": PFLANZEN_ARTEN},
         "pflege": {
             "art": "gepflegt",
             "quelle": ("Umweltbundesamt: Übersicht über den Stand der "

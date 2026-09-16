@@ -239,10 +239,59 @@ const balkenBreite = (el, desktop, anzahl) =>
 
    Wird die Schwelle nach oben ueberschritten, wird die gesetzte Hoehe
    wieder ENTFERNT statt auf einen Desktopwert gesetzt — die richtige
-   Zahl steht im CSS, nicht hier. */
+   Zahl steht im CSS, nicht hier.
+
+   AUSNAHME EINZELSEITE (16.09.2026, Entscheid des Users).
+   Auf den Einzelseiten des Monitors ist die Grafik der Hero und steht
+   allein auf der Seite; dort gibt es keine handgesetzte Kartenhoehe wie
+   im Dashboard, und `.viz-chart` traegt generisch 340 px. Bei 23 Zeilen
+   (rotelisten) ist das die halbe Hoehe, die dieselbe Grafik im Dashboard
+   bekommt. Deshalb rechnet die Formel dort auch im BREITEN Fall.
+
+   Erkannt an `.us-seite` am Vorfahren — die Klasse traegt nur der
+   Seitentyp Einzelseite. Das Dashboard laeuft damit nachweislich durch
+   den unveraenderten Zweig; seine handgesetzten Hoehen bleiben gueltig.
+
+   ZEILE_BREIT ist eine SETZUNG, keine Messung, und das soll so
+   dastehen: Aus den beiden Stellen, an denen das Dashboard eine Hoehe
+   von Hand setzt, laesst sich keine gemeinsame Zeilenhoehe zurueck-
+   rechnen — rotelisten ergibt 26,5 px (23 Zeilen, 690 px, obenExtra 36),
+   biolandbau 21,3 px (33 Zeilen, 760 px, obenExtra 14). 26 folgt dem
+   dichter belegten Fall. Wer sie aendert, misst an der Einzelseite
+   nach, statt zu rechnen.
+
+   HOEHE_MIN_BREIT ist die Untergrenze und der eigentliche Schutz.
+   Die Formel ist fuer den ENGEN Fall geschrieben, in dem jede Zeile
+   ihren Namen ueber sich hat. Breit angewendet faellt sie bei wenigen
+   Zeilen unter das Vernuenftige: erhaltung (2 Zeilen) kaeme auf 132 px,
+   natura2000 (2) auf 140, waldarten (3) auf 158. Die Grafik soll nur
+   WACHSEN duerfen, wenn sie zu viele Zeilen fuer 340 px hat — nie
+   schrumpfen. 340 ist derselbe Wert, den `.viz-chart` im CSS traegt;
+   wer den aendert, aendert auch diesen.
+
+   Gemessen am 16.09.2026 gegen `docs/data/*.json`, alle 18 Aufrufer
+   durchgerechnet. Vier Module wachsen, zwoelf bleiben bei 340:
+
+     biolandbau   33 Zeilen  ->  916      baumarten     4  ->  340
+     rotelisten   23         ->  678      querbauwerke  3  ->  340
+     vogelarten   20         ->  578      waldarten     3  ->  340
+     bauland      14 *       ->  444      erhaltung     2  ->  340
+                                          fliessgew.    2  ->  340
+     * bauland rechnet ceil(laender * 1,5),              natura2000 2 -> 340
+       neun Bundeslaender ergeben 14.                    schutzherk. 2 -> 340
+                                          biotoptypen   6  ->  340
+     verkehr (max. 5 Zeilen) und                         lebensraeume 6 -> 340
+     schutzstufen (anzahl = 1) koennen                   fichte        9 -> 340
+     die Schwelle nicht erreichen.                       wald          9 -> 340
+                                          rueckkehrer   8  ->  340 */
+const ZEILE_BREIT = 26;
+const HOEHE_MIN_BREIT = 340;
+
 function balkenHoehe(d, el, anzahl, obenExtra = 0) {
   if (!el) return;
-  if (!istEng(el)) {
+  const eng = istEng(el);
+  const einzelseite = typeof el.closest === "function" && !!el.closest(".us-seite");
+  if (!eng && !einzelseite) {
     if (el.dataset.hoeheGesetzt) {
       el.style.height = "";
       delete el.dataset.hoeheGesetzt;
@@ -250,7 +299,9 @@ function balkenHoehe(d, el, anzahl, obenExtra = 0) {
     }
     return;
   }
-  const soll = Math.round(anzahl * engStufe(anzahl).zeile + 44 + obenExtra);
+  const zeile = eng ? engStufe(anzahl).zeile : ZEILE_BREIT;
+  const gerechnet = Math.round(anzahl * zeile + 44 + obenExtra);
+  const soll = eng ? gerechnet : Math.max(HOEHE_MIN_BREIT, gerechnet);
   if (parseFloat(el.style.height) === soll) return;
   el.style.height = `${soll}px`;
   el.dataset.hoeheGesetzt = "1";
@@ -278,11 +329,16 @@ const randLinks = (el, desktopLinks = 120) => istSchmal(el)
    Karte. Die 14 px links sind kein Platz fuer Text, sondern die Haelfte
    der ersten Achsenzahl („0"), die mittig ueber dem Gitteranfang
    sitzt. */
-const balkenGitter = (el, desktop) => istEng(el)
+/* Welche Karten ein Balkengitter tragen. `gitterRaenderNachmessen()` fasst
+   nur diese an — Zeitreihen setzen ihr Gitter selbst und rechnen mit
+   `containLabel`, dort waere eine Nachmessung eine Doppelzaehlung. */
+const BALKENKARTEN = typeof WeakSet === "function" ? new WeakSet() : null;
+
+const balkenGitter = (el, desktop) => (el && BALKENKARTEN?.add(el), istEng(el)
   ? { left: 14, right: RAND_RECHTS, top: 10, bottom: 34, containLabel: false }
   : { top: 10, bottom: 34, ...desktop,
       left: randLinks(el, desktop?.left),
-      right: Math.max(RAND_RECHTS, desktop?.right ?? RAND_RECHTS) };
+      right: Math.max(RAND_RECHTS, desktop?.right ?? RAND_RECHTS) });
 
 /* --- Hover an Balken: dunkler, nicht heller -------------------------------
    ECharts hellt einen Balken beim Hover per Default auf (lift +10 %). Bei
@@ -382,7 +438,14 @@ function kategorieLabel(el, desktopLinks = 120, anzahl = 0, balkenPx = null) {
       verticalAlign: "bottom",
       margin: 0,
       padding: [0, 0, (balkenPx ?? engStufe(anzahl).balken) / 2 + 4, 0],
-      width: Math.max(120, feldBreite(el) - 14 - RAND_RECHTS),
+      /* Bis 16.09.2026 stand hier `- RAND_RECHTS`, also 60 px Abzug fuer
+         einen rechten Rand, den `gitterRaenderNachmessen()` inzwischen
+         nach der Messung setzt — meist auf 8 bis 20 px. Der Name verlor
+         damit Platz, den es gar nicht mehr zu reservieren gibt: bei 262 px
+         Feld kuerzte „Gemeinde- und sonstige Strassen" und „Saeugetiere
+         (ohne Fledermaeuse)", obwohl beide in die Karte passen. Jetzt nur
+         noch 14 px Luft rechts, spiegelbildlich zum Beginn. */
+      width: Math.max(120, feldBreite(el) - 14 - 14),
       overflow: "truncate",
       lineHeight: ZEILE,
     };
@@ -425,11 +488,19 @@ function kategorieLabel(el, desktopLinks = 120, anzahl = 0, balkenPx = null) {
 
    `width` erzwingt den Umbruch an der Feldkante statt an der
    Zeichenflaeche; `left` kommt aus dem Modul und ist schmal eine Zahl. */
-const legende = (el, werte) => istSchmal(el)
-  ? { ...werte,
-      width: Math.max(120, feldBreite(el)
-        - (typeof werte.left === "number" ? werte.left : 14) - 6) }
-  : werte;
+const legende = (el, werte) => {
+  if (!istSchmal(el)) return werte;
+  const links = typeof werte.left === "number" ? werte.left : 14;
+  const breite = Math.max(120, feldBreite(el) - links - 6);
+  /* `width` oben bricht nur ZWISCHEN Eintraegen. Ein Eintrag, der allein
+     breiter ist als das Feld, lief bisher aus der Karte — gemessen am
+     16.09.2026: „+ Naturdenkmäler, Artenschutzgebiete" 31 px ueber die
+     Kante bei 262 px Feld. `textStyle.width` + `overflow: "break"` bricht
+     ihn INNERHALB. Die Marke und ihr Abstand gehen vom Platz ab. */
+  const textBreite = Math.max(60, breite - (werte.itemWidth ?? 25) - 10);
+  return { ...werte, width: breite,
+    textStyle: { ...(werte.textStyle || {}), width: textBreite, overflow: "break" } };
+};
 
 /* --- Platz fuer die Legende freiraeumen, NACH dem Zeichnen -------------
    Eingefuehrt 09.09.2026, zusammen mit dem Umbruch oben.
@@ -453,6 +524,8 @@ const legende = (el, werte) => istSchmal(el)
    - Gezaehlt werden nur Textknoten im OBEREN Drittel. Ein Kategoriename,
      der zufaellig wie eine Serie heisst, wuerde das Gitter sonst nach
      unten treiben. */
+const ohneLuft = (s) => String(s ?? "").replace(/\s+/g, "");
+
 function legendenFreiraeumen() {
   diagramme.forEach((d) => {
     if (!d || d.isDisposed?.()) return;
@@ -474,11 +547,16 @@ function legendenFreiraeumen() {
     if (!kasten.height) return;              /* jsdom: kein Layout */
     const grenze = kasten.top + kasten.height * 0.45;
 
+    const namenOhneLuft = namen.map(ohneLuft);
     let unten = 0;
     el.querySelectorAll("svg text").forEach((t) => {
       const b = t.getBoundingClientRect();
       if (b.top > grenze) return;
-      if (namen.includes(t.textContent.trim())) {
+      /* Ohne Leerraum verglichen: bricht ein Eintrag INNERHALB um, zieht
+         ECharts die Zeilen in einem <text> zusammen und das Leerzeichen an
+         der Bruchstelle faellt weg. Ein Vergleich auf Gleichheit schlaegt
+         dann fehl, und die Legende wuerde als 0 px hoch gemessen. */
+      if (namenOhneLuft.includes(ohneLuft(t.textContent))) {
         unten = Math.max(unten, b.bottom - kasten.top);
       }
     });
@@ -491,6 +569,95 @@ function legendenFreiraeumen() {
     d.resize();
     d.setOption({ grid: { top: soll } });
   });
+}
+
+/* --- Linker und rechter Gitterrand NACH dem Zeichnen messen ------------
+   Eingefuehrt 16.09.2026, nach der Breitenmessung an der lokalen Kopie.
+
+   `RAND_RECHTS = 60` war eine feste Schaetzung fuer zwei Dinge, die ECharts
+   beim Layout nicht mitrechnet: die Wertbeschriftung am Balkenende und die
+   halbe letzte Achsenzahl. Gemessen bei 262 px Kartenbreite ist die Zahl
+   gleichzeitig zu gross und zu klein — bei `bauland` bleiben alle 60 px
+   ungenutzt, bei `biotoptypen` 50, bei `wald` nur 10, und `rueckkehrer`
+   laeuft mit „13 833–16 654" 24 px UEBER die Kante. Dasselbe links: die
+   14 px des engen Gitters sind als halbe Breite der Zahl „0" gerechnet;
+   bei `vogelarten` steht dort „-100 %" und ragt hinaus.
+
+   Also dasselbe Verfahren wie bei `legendenFreiraeumen()`: zeichnen lassen,
+   den Ueberstand ueber die Gitterkanten im gerenderten SVG messen, Rand
+   nachsetzen. Zwei Durchgaenge, weil ein breiteres Gitter die Achsenteilung
+   und damit die letzte Zahl aendern kann.
+
+   ABSICHERUNGEN:
+   - Ohne Layout (jsdom in `pruefung.mjs`) ist die Kastenbreite 0; dann
+     passiert nichts.
+   - Gezaehlt werden nur Texte, die AUF HOEHE des Gitters liegen. Sonst
+     zoege eine ueberstehende Legende den rechten Rand mit.
+   - Der linke Rand wird nur ENG angefasst. Darueber ist er die Spalte der
+     Kategorienamen und gehoert `randLinks`, nicht dieser Messung. */
+const RAND_LUFT = 6;
+const RAND_MIN = 8;
+
+function gitterRaenderNachmessen(durchgang = 0) {
+  let nochmal = false;
+  diagramme.forEach((d) => {
+    if (!d || d.isDisposed?.()) return;
+    const el = d.getDom?.();
+    if (!el || !BALKENKARTEN?.has(el)) return;   /* nur Balkengitter */
+    const gitter = (d.getOption?.()?.grid || [])[0];
+    if (!gitter) return;
+    const kasten = el.getBoundingClientRect();
+    if (!kasten.width) return;               /* jsdom: kein Layout */
+
+    let feld;
+    try { feld = d.getModel().getComponent("grid", 0)?.coordinateSystem?.getRect(); }
+    catch (e) { return; }
+    if (!feld || !feld.width) return;
+
+    const gL = feld.x, gR = feld.x + feld.width;
+    let ueberR = 0, ueberL = 0;
+    el.querySelectorAll("svg text").forEach((t) => {
+      const b = t.getBoundingClientRect();
+      /* Die Legende steht UEBER dem Gitter und zaehlt nicht mit: sie ist
+         breiter als jede Wertbeschriftung und wuerde den Rand aufblasen.
+         Die Achsenzahlen UNTER dem Gitter zaehlen sehr wohl mit — die
+         letzte sitzt mittig ueber der Gitterkante, und genau ihre halbe
+         Breite war der zweite Zweck von RAND_RECHTS. */
+      if (b.bottom - kasten.top < feld.y) return;
+      const l = b.left - kasten.left, r = b.right - kasten.left;
+      if (r > gR) ueberR = Math.max(ueberR, r - gR);
+      if (l < gL) ueberL = Math.max(ueberL, gL - l);
+    });
+
+    /* NUR ENG. Ueber 640 px ist der rechte Rand mit 60 px rund 9 % der
+       Karte — da lohnt die Nachmessung nicht, und sie ging in der Messung
+       vom 16.09. schief: das Gitter wurde breiter, die Achsenteilung
+       aenderte sich, und die neue letzte Zahl ragte aus der Karte. Eng
+       sind dieselben 60 px 23 %, und dort zahlt es sich aus. */
+    if (!istEng(el)) return;
+    const deckel = kasten.width * 0.3;
+    const neu = {};
+    const sollR = Math.round(Math.min(Math.max(ueberR + RAND_LUFT, RAND_MIN), deckel));
+    if (isFinite(Number(gitter.right)) && Math.abs(Number(gitter.right) - sollR) > 2) {
+      neu.right = sollR;
+    }
+    const sollL = Math.round(Math.min(Math.max(ueberL + RAND_LUFT, RAND_MIN), deckel));
+    if (isFinite(Number(gitter.left)) && Math.abs(Number(gitter.left) - sollL) > 2) {
+      neu.left = sollL;
+    }
+    if (!Object.keys(neu).length) return;
+    d.setOption({ grid: neu });
+    nochmal = true;
+  });
+  /* Ein geaenderter Rand verschiebt Achsenteilung und Wertbeschriftung.
+     Zwei Durchgaenge reichen; mehr waere Flackern. */
+  if (nochmal && durchgang < 1) {
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(() => gitterRaenderNachmessen(durchgang + 1));
+    } else {
+      gitterRaenderNachmessen(durchgang + 1);
+    }
+  }
 }
 
 /* Linke Kante der Legende — dieselbe wie die des Gitters.
@@ -640,6 +807,7 @@ function neuVermessen() {
   });
   /* Mit der richtigen Schrift bricht die Legende womoeglich anders um. */
   legendenFreiraeumen();
+  gitterRaenderNachmessen();
 }
 
 /* Setzt Text/HTML nur, wenn das Element existiert — eine Gastgeberseite
@@ -1025,8 +1193,9 @@ async function start() {
   /* NACH baueAlles(): erst dort blenden die Module ihre Abschnitte ein.
      Vorher gezählt wäre das Ergebnis immer null. */
   sicher("Legendenplatz", legendenFreiraeumen);
+  sicher("Gitterränder",  gitterRaenderNachmessen);
   sicher("Vorspannzeile", vorspannSetzen);
-  beiBreitenwechsel(() => { baueAlles(); legendenFreiraeumen(); });
+  beiBreitenwechsel(() => { baueAlles(); legendenFreiraeumen(); gitterRaenderNachmessen(); });
   sicher("Einordnung einklappen", einordnungEinklappen);
 
   sicher("Quellenangabe", () => baueFuss(meta));
@@ -1168,6 +1337,7 @@ const BIO = {
   /* Breitenabhaengiges Layout — siehe „Schmale Fenster" oben */
   istSchmal, istEng, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe,
   legende, legendeLinks, legendeZeilen, legendeHoehe, legendenFreiraeumen,
+  gitterRaenderNachmessen,
   endLabelZeigen, endEtikett,
   /* Hover an Balken: dunkler statt heller */
   dunkler, hoverDunkler,

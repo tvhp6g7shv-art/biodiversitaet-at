@@ -7,6 +7,7 @@
 "use strict";
 const { stil, zahl, basis, achse, tabelle, setzeText, setzeHtml, diagramme,
         schrift, istSchmal, istEng, balkenGitter, kategorieLabel, balkenBreite,
+        balkenHoehe,
         legende, legendeLinks, hoverDunkler } = BIO;
 
 /* --- Baulandbilanz: bebaut gegen neu gewidmet --------------------------
@@ -92,6 +93,18 @@ function baueBauland(daten) {
   const NAMEN = SERIEN.map((s) => s.name);
   const LEG_LINKS = legendeLinks(feld, 136);
 
+  /* Hoehe der Balkengruppe eng: zwei Balken zu BAR_ENG plus `barGap` 30 %.
+     Sie steht an zwei Stellen — beim Anheben des Namens und bei der
+     Kartenhoehe. Wer eine aendert, muss die andere mitziehen. */
+  const GRUPPE_ENG = 32;
+  /* Eng braucht jede Zeile Platz fuer Name UND Gruppe: 16 Text + 4 Luft +
+     32 Gruppe + 6 nach unten = 58 px. `balkenHoehe` rechnet in Zeilen zu
+     40 px, deshalb der Faktor 1,5 — 60 px je Bundesland. Bis heute rief
+     dieses Modul `balkenHoehe` GAR NICHT auf; die Kartenhoehe kam aus dem
+     CSS, und dass die Zeilen 49 px hoch waren, lag allein an dem Platz,
+     den die zweizeilige Legende zusaetzlich freigeraeumt hat. */
+  balkenHoehe(d, feld, Math.ceil(zeilen.length * 1.5), 36);
+
   setzeText("u-bauland",
     `Veränderung von bebauter Fläche und gewidmetem Bauland in Hektar · ` +
     `Bundesländer · ${daten.frueh} bis ${daten.spaet}`);
@@ -138,7 +151,11 @@ function baueBauland(daten) {
     yAxis: { ...achse(), type: "category", inverse: true,
       data: zeilen.map((z) => z.name), splitLine: { show: false },
       axisLabel: { color: stil("--viz-text-2"), fontSize: S.serie, margin: 12,
-                   ...kategorieLabel(feld, 136, zeilen.length) } },
+                   /* Viertes Argument: ZWEI Serien je Bundesland. `kategorieLabel` hebt den
+       Namen sonst um die halbe Hoehe EINES Balkens an — gemessen am
+       16.09.2026 bei 262 px Feld sass er damit 4 px IM oberen Balken.
+       Anzugeben ist die Hoehe der ganzen Gruppe: 14 + 30 % Abstand + 14. */
+    ...kategorieLabel(feld, 136, zeilen.length, GRUPPE_ENG) } },
     series: SERIEN.map((serie) => ({
       name: serie.name, type: "bar",
       barWidth: balkenBreite(feld, "36%", zeilen.length),

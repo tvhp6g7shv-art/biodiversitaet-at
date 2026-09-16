@@ -206,8 +206,13 @@ def main() -> None:
     # Fehlmenge gegen ein EU-weites Ziel). Die Zusicherung entfällt ersatzlos.
 
     vo = lade("vogel")
-    pruefe(vo["aktuell"] == 56.8, f"Vögel: aktuell {vo['aktuell']}")
-    pruefe(vo["verlust"] == 43.2, f"Vögel: Verlust {vo['verlust']}")
+    # 16.09.2026 — Widerspruch 5 am ausgelieferten Stand entschieden: es gilt
+    # 53,3 / 2025. Die Zusicherungen standen noch auf 56,8 / 2023 und wären bei
+    # jedem Lauf gefallen. Kommt ein neuer Berichtsjahrgang, wandern diese
+    # Literale mit — deshalb steht das Standjahr daneben.
+    pruefe(vo["stand"] == 2025, f"Vögel: Standjahr {vo['stand']} statt 2025")
+    pruefe(vo["aktuell"] == 53.3, f"Vögel: aktuell {vo['aktuell']}")
+    pruefe(vo["verlust"] == 46.7, f"Vögel: Verlust {vo['verlust']}")
     pruefe(vo["arten_anzahl"] == 23, "Vögel: nicht 23 Arten")
     pruefe(vo["eu_vorhanden"], "Vögel: EU-Reihe fehlt")
     # Umbasierung: EU 1998 = 103.16 -> muss nach der Umrechnung 100 sein
@@ -217,10 +222,11 @@ def main() -> None:
     pruefe(abs(eu2023 - 66.9) < 0.2, f"Vögel: EU 2023 = {eu2023}, erwartet ~66.9")
     pruefe(vo["eu_vergleich"]["differenz"] < 0,
            "Vögel: Österreich müsste unter der EU-Linie liegen")
-    # Die AT-Reihe endet 2023, die EU-Reihe 2024 — die Achse muss beides tragen
-    pruefe(vo["punkte"][-1]["jahr"] == 2024, "Vögel: Achse endet nicht 2024")
-    pruefe(vo["punkte"][-1]["index"] is None,
-           "Vögel: AT hat 2024 einen Wert, den es nicht geben darf")
+    # Seit dem Wert für 2025 ist es umgekehrt: die AT-Reihe endet 2025, die
+    # EU-Reihe 2024 — die Achse muss beides tragen
+    pruefe(vo["punkte"][-1]["jahr"] == 2025, "Vögel: Achse endet nicht 2025")
+    pruefe(vo["punkte"][-1]["eu"] is None,
+           "Vögel: EU hat 2025 einen Wert, den es nicht geben darf")
     pruefe(vo["punkte"][0]["jahr"] == 1990, "Vögel: Achse beginnt nicht 1990")
     pruefe(vo["punkte"][0]["index"] is None, "Vögel: AT hat 1990 einen Wert")
 

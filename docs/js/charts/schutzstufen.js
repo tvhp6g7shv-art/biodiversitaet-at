@@ -6,7 +6,7 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
-        diagramme, schrift, balkenGitter, legendeLinks, legendeHoehe,
+        diagramme, schrift, balkenGitter, legende, legendeLinks, legendeHoehe,
         istSchmal, balkenHoehe, hoverDunkler } = BIO;
 
 /* --- Wie streng der Schutz ist ----------------------------------------
@@ -264,19 +264,21 @@ function baueSchutzstufen(daten) {
        Die Prüfsuite hat das NICHT gemeldet: Sie misst Text gegen die
        Zeichenfläche, und der Überstand blieb knapp darunter. */
     grid: { ...GITTER, top: LEG_HOEHE, bottom: 34 },
-    /* HIER BEWUSST NICHT `legende()`. Der Helfer schaltet schmal auf
-       `type: "scroll"` — eine Zeile zum Blättern statt drei Zeilen ins
-       Diagramm hinein. Für die meisten Abschnitte ist das richtig; für
-       diesen ist es falsch, denn die Legende ist die EINZIGE Erklärung der
-       vier Segmente. Bei 420 px zeigte sie „1/4": ein Name sichtbar, drei
-       hinter einem Pfeil. Am gerenderten SVG gemessen, nicht vermutet.
-       Also plain und mehrzeilig, und das Feld bekommt die Zeilen dazu. */
-    legend: {
+    /* HIER STAND „BEWUSST NICHT `legende()`" — mit der Begruendung, der
+       Helfer schalte schmal auf `type: "scroll"`, und geblaettert werde in
+       genau dieser Legende nicht, weil sie die EINZIGE Erklaerung der vier
+       Segmente ist. Die Begruendung gilt, `scroll` aber ist am 09.09.2026
+       aus `legende()` verschwunden; seither setzt der Helfer eine `width`
+       und laesst umbrechen — also genau das, was dieser Abschnitt braucht.
+       Der Verzicht kostete nur: ohne `width` lief „+ Naturdenkmaeler,
+       Artenschutzgebiete" bei 262 px Feld 31 px aus der Karte
+       (gemessen 16.09.2026). */
+    legend: legende(feld, {
       left: LEG_LINKS, top: 0,
       itemWidth: 10, itemHeight: 10, itemGap: 14,
       textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },
       data: segmente?.map((z) => z.stufe) ?? [],
-    },
+    }),
     tooltip: {
       ...basis().tooltip, trigger: "item",
       /* Der Tooltip nennt beide Nenner nebeneinander — das ist genau die
