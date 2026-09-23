@@ -205,6 +205,37 @@ def laender_namen(rohdaten: dict) -> dict[str, str]:
 
 # --- Quellen und Pflege -----------------------------------------------------
 
+def jsonstat_stand(rohdaten: dict, quelle: str) -> str | None:
+    """
+    Der Tabellenstand einer JSON-stat-Antwort als `TT.MM.JJJJ`.
+
+    Eurostat legt in das Feld `updated` den Zeitpunkt, zu dem die Tabelle
+    zuletzt bespielt wurde (dasselbe, was der Databrowser als `UPDATE_DATA`
+    zeigt). Das ist NICHT das letzte Datenjahr und nicht das Abrufdatum:
+    `aei_pr_gnb` stand am 18.09.2026 auf dem 14.09.2026, endete aber mit dem
+    Jahr 2023 und war am 09.09.2026 geholt worden — drei verschiedene Daten.
+
+    WARUM DAS HIER STEHT UND NICHT IM TEXT: Bis zum 18.09.2026 trug
+    `/stickstoffueberschuss/` den Stempel `08.09.2026` von Hand im Lesertext.
+    Sechs Tage später stimmte er nicht mehr, ohne dass sich ein einziger Wert
+    geändert hätte. Ein Stempel, den die Pipeline nicht mitzieht, veraltet
+    zwangsläufig — Entscheid des Users vom 18.09.2026.
+
+    Fehlt das Feld, gibt die Funktion `None` zurück und warnt: Kein Stempel
+    ist besser als ein falscher.
+    """
+    roh = rohdaten.get("updated")
+    if not roh:
+        warnen(f"{quelle}: Antwort ohne Feld `updated` — kein Tabellenstand")
+        return None
+    teil = str(roh)[:10].split("-")
+    if len(teil) != 3:
+        warnen(f"{quelle}: Feld `updated` unlesbar ({roh!r}) — kein Tabellenstand")
+        return None
+    jahr, monat, tag = teil
+    return f"{tag}.{monat}.{jahr}"
+
+
 def quelle_vermerken(name: str, url: str, lizenz: str, stand: str, art: str) -> None:
     """
     Sammelt die Quellenangaben für meta.json und damit für den Fuß der Seite.

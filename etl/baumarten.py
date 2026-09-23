@@ -13,7 +13,9 @@ Die ÖWI hat zwischen den Perioden die Bezugsgröße ihrer Prozentangaben
 gewechselt. Nachgerechnet aus den Flächen dieser Datei:
 
     Nadelholz 1992/96   2320 / 3352 (Ertragswald) = 69,2 %   so veröffentlicht
-    Nadelholz 2018/23   2008 / 3356 (Ertragswald) = 59,8 %   NICHT veröffentlicht
+    Nadelholz 2018/23   2008 / 3356 (Ertragswald) = 59,8 %   nicht in der ÖWI-Abfrage,
+                                                         aber im Waldbiodiversitäts-
+                                                         bericht (BFW 2026, Tab. 2)
     Nadelholz 2018/23   2008 / 4018 (Gesamtwald)  = 50,0 %   so veröffentlicht
 
 Wer die veröffentlichten Prozentwerte der ersten und der letzten Periode

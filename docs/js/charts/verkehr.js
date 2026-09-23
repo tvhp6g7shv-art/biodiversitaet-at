@@ -104,11 +104,9 @@ function baueVerkehr(daten) {
      Zahl ohne die Bedingung, unter der sie freigegeben ist. */
   setzeText("h-verkehr", daten.hinweis_verkehr ?? "");
 
-  /* Zone 5 des Seitentyps — der Vorbehalt. Auf dem Dashboard gibt es dieses
-     Feld nicht, `setzeText` läuft dort ins Leere; auf der Einzelseite
-     `/verkehrsflaechen/` steht die Auflage damit im eigenen Block, wie es
-     `doku/seitentyp-einzelseite-2026-09-11.md` § 5 verlangt. */
-  setzeText("v-verkehr", daten.auflage ?? "");
+  /* 23.09.2026 (A64): Die Zeile `setzeText("v-verkehr", …)` ist entfernt.
+     Entscheid des Users vom 21.09.: Die UBA-Auflage wird redaktionell im
+     Vorbehalt der Textakte gepflegt, Vorlage 441 hat kein Element `v-verkehr`. */
 
   balkenHoehe(d, feld, zeilen.length);
 

@@ -79,7 +79,11 @@ BIOLANDBAU_PARAMS = {
     "crops": "UAAXK0000",   # LN ohne Haus- und Nutzgärten
     "agprdmet": "TOTAL",    # umgestellt plus in Umstellung
 }
-# Ziel der Biodiversitäts-Strategie Österreich 2030+ und des Green Deal.
+# Ziel des Bio-Aktionsprogramms 2023+ (BMLUK), Abschnitt "Erhalt und Ausbau der
+# Position Oesterreichs als EU-Bioland Nr. 1": bis 2027 "Richtung 30 %", danach
+# "auf 35 % weiter gesteigert". NICHT die Biodiversitaets-Strategie 2030+ (deren
+# Seite nennt keinen Bio-Prozentsatz) und NICHT der Green Deal (der nennt 25 %).
+# Am 18.09.2026 an den Ministeriumsseiten geprueft; das PDF selbst ist ungelesen.
 BIOLANDBAU_ZIEL = 35.0
 
 # for_area — Waldfläche nach FAO-Definition. Der EINZIGE geprüfte Datensatz,

@@ -61,14 +61,17 @@ TAGESWERTE = [
 ]
 
 # Aufteilung des Bestands 2025 nach Hauptkategorien.
-# Der Bericht nennt bei zwei Kategorien leicht abweichende km²-Werte an
-# verschiedenen Stellen (Rundung); hier steht jeweils der niedrigere.
+# Der Bericht führt die Aufteilung zweimal und nicht deckungsgleich:
+# S. 9 nennt 2.797 / 1.725 km² und 2,7 % für Ver- und Entsorgung,
+# S. 28 nennt 2.798 / 1.726 km² und 2,6 %. Verbindlich ist hier
+# durchgängig die Fassung von S. 9 (Entscheid 22.09.2026, A61/A62);
+# 151 / 5.681,2 = 2,66 % bestätigt die 2,7 %.
 KATEGORIEN = [
     {"name": "Siedlung im Bauland",      "prozent": 49.2, "km2": 2797.0},
     {"name": "Verkehr",                  "prozent": 30.4, "km2": 1725.0},
     {"name": "Siedlung außerhalb",       "prozent": 11.9, "km2": 677.0},
     {"name": "Freizeit und Erholung",    "prozent": 5.6,  "km2": 320.0},
-    {"name": "Ver- und Entsorgung",      "prozent": 2.6,  "km2": 151.0},
+    {"name": "Ver- und Entsorgung",      "prozent": 2.7,  "km2": 151.0},
     {"name": "Energie",                  "prozent": 0.2,  "km2": 9.3},
 ]
 

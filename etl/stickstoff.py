@@ -51,7 +51,8 @@ Bild wäre erfunden.
 from __future__ import annotations
 
 import config
-from gemeinsam import jsonstat_reihe, lade_json, log, quelle_vermerken, warnen
+from gemeinsam import (jsonstat_reihe, jsonstat_stand, lade_json, log,
+                       quelle_vermerken, warnen)
 
 
 def _mittel(werte: list[float]) -> float:
@@ -69,11 +70,12 @@ def _stdabw(werte: list[float]) -> float:
 def baue_stickstoff() -> dict | None:
     log("\n[23/23] Stickstoffüberschuss — Eurostat aei_pr_gnb")
 
-    reihe = jsonstat_reihe(
-        lade_json(f"{config.EUROSTAT_BASIS}/{config.STICKSTOFF_CODE}",
-                  config.STICKSTOFF_PARAMS),
-        "aei_pr_gnb (Bruttostickstoffbilanz je Hektar)",
-    )
+    roh = lade_json(f"{config.EUROSTAT_BASIS}/{config.STICKSTOFF_CODE}",
+                    config.STICKSTOFF_PARAMS)
+    reihe = jsonstat_reihe(roh, "aei_pr_gnb (Bruttostickstoffbilanz je Hektar)")
+    # Der Tabellenstand kommt aus der Antwort, nicht aus dem Text (A46).
+    tabellenstand = jsonstat_stand(roh, "aei_pr_gnb")
+    log(f"    Tabellenstand laut Antwort: {tabellenstand or 'nicht gemeldet'}")
     if not reihe:
         warnen("Stickstoff: keine Reihe — Abschnitt bleibt ausgeblendet")
         return None
@@ -188,6 +190,7 @@ def baue_stickstoff() -> dict | None:
         "punkte": punkte,
         "beginn": int(erstes),
         "stand": int(letztes),
+        "tabellenstand": tabellenstand,
         "aktuell": reihe[letztes],
         "fenster": fenster,
         "frueh_von": int(frueh_jahre[0]),
