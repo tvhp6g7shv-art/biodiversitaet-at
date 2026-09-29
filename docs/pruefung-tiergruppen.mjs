@@ -12,8 +12,8 @@
    Deshalb hier drei gezielte Messungen am gerenderten SVG:
 
      1  falter      — 34 Punkte, Basislinie bei 100, kein Symbol
-     2  rueckkehrer — Sockel unsichtbar, Balken beginnen bei der
-                      Untergrenze, die Lücke beim Fischotter bleibt leer
+     2  rueckkehrer — Blasen: Scheibe = Untergrenze, Ring = Obergrenze,
+                      Fläche ∝ Wert, die Lücke beim Fischotter ohne Kreis
      3  vogelarten  — 20 Balken, Farbe je Einstufung, Beschriftung links
                       bei Abnahme und rechts bei Zunahme
 
@@ -144,7 +144,11 @@ const inst = (id) => echarts.getInstanceByDom(window.document.getElementById(id)
     `halbiert=${halbiert}`);
 }
 
-/* --- 2  rueckkehrer: die eigentliche Gegenprobe ------------------------ */
+/* --- 2  rueckkehrer: Blasen (seit 29.09.2026) --------------------------
+   Je Art zwei Reihen: Scheibe (Untergrenze) und Ring (Obergrenze), beide
+   am selben Punkt [Periode, Art]. Geprüft wird, was schiefgehen kann, ohne
+   dass es auffällt: FLÄCHE statt Durchmesser proportional zum Wert, der
+   Ring nie kleiner als die Scheibe, die Lücke beim Fischotter ohne Kreis. */
 {
   const o = inst("c-rueckkehrer").getOption();
   const arten = daten.rueckkehrer.arten;
@@ -152,122 +156,53 @@ const inst = (id) => echarts.getInstanceByDom(window.document.getElementById(id)
 
   pruefe(o.series.length === arten.length * 2,
     `rueckkehrer: ${o.series.length} Reihen (erwartet ${arten.length * 2} — ` +
-    `je Art ein Sockel und eine Spanne)`);
+    `je Art Scheibe und Ring)`);
+  pruefe(o.series.every((r) => r.type === "scatter"),
+    "rueckkehrer: alle Reihen sind Kreise (scatter)");
+  pruefe(o.legend?.[0]?.show === false,
+    "rueckkehrer: keine Legende (die Zeilen tragen die Namen)");
+
+  const alle = arten.flatMap((a) => a.werte.map((w) => w.oben)).filter((v) => v != null);
+  const maxWert = Math.max(...alle);
+  let dMax = 0;
+  o.series.forEach((r) => r.data.forEach((p) => { dMax = Math.max(dMax, p.symbolSize); }));
 
   arten.forEach((art, i) => {
-    const sockel = o.series[i * 2];
-    const spanne = o.series[i * 2 + 1];
-    pruefe(sockel.itemStyle.color === "transparent",
-      `rueckkehrer: Sockel ${art.name} unsichtbar`);
-    pruefe(sockel.stack === spanne.stack,
-      `rueckkehrer: ${art.name} — Sockel und Spanne im selben Stapel`);
-    pruefe(sockel.stack !== o.series[(1 - i) * 2].stack,
-      `rueckkehrer: ${art.name} hat einen eigenen Stapel (steht neben der anderen Art)`);
+    const scheibe = o.series[i * 2];
+    const ring = o.series[i * 2 + 1];
+    pruefe(ring.itemStyle.color === "transparent",
+      `rueckkehrer: Ring ${art.name} ungefüllt`);
+    pruefe(scheibe.itemStyle.color !== "transparent",
+      `rueckkehrer: Scheibe ${art.name} gefüllt`);
 
     perioden.forEach((p, k) => {
       const w = art.werte.find((x) => x.periode === p);
-      const s = sockel.data[k], v = spanne.data[k];
+      const s = scheibe.data[k], r = ring.data[k];
+      pruefe(s.value[0] === k && s.value[1] === i && r.value[0] === k && r.value[1] === i,
+        `rueckkehrer: ${art.name} ${p} sitzt in Spalte ${k}, Zeile ${i}`);
       if (w.unten === null) {
-        pruefe(s === null && v === null,
-          `rueckkehrer: ${art.name} ${p} bleibt leer (Sockel ${s}, Spanne ${v})`);
-      } else {
-        pruefe(s === w.unten,
-          `rueckkehrer: ${art.name} ${p} beginnt bei ${s} (gemeldet ${w.unten})`);
-        pruefe(s + v === w.oben,
-          `rueckkehrer: ${art.name} ${p} endet bei ${s + v} (gemeldet ${w.oben})`);
+        pruefe(s.symbolSize === 0 && r.symbolSize === 0,
+          `rueckkehrer: ${art.name} ${p} ohne Kreis (keine Individuenzahl)`);
+        return;
+      }
+      pruefe(r.symbolSize >= s.symbolSize,
+        `rueckkehrer: ${art.name} ${p} Ring (${r.symbolSize.toFixed(1)}) ` +
+        `nicht kleiner als Scheibe (${s.symbolSize.toFixed(1)})`);
+      /* Fläche ∝ Wert: d² / D² = w / max. Unter 6 px greift die
+         Mindestgröße, dort wird nicht verglichen. */
+      if (s.symbolSize > 6) {
+        const soll = w.unten / maxWert, ist = (s.symbolSize / dMax) ** 2;
+        pruefe(Math.abs(soll - ist) < 0.01,
+          `rueckkehrer: ${art.name} ${p} Fläche ∝ Wert (soll ${soll.toFixed(3)}, ` +
+          `ist ${ist.toFixed(3)})`);
       }
     });
   });
 
-  /* Und am SVG: Beginnt der jüngste Biberbalken wirklich rechts vom
-     Nullpunkt? Ein Sockel, der nicht greift, führt zu x = Gitterrand. */
-  const svg = inst("c-rueckkehrer").renderToSVGString();
-  const rechtecke = [...svg.matchAll(/<path[^>]*d="M([\d.]+)\s+([\d.]+)/g)]
-    .map((m) => Number(m[1]));
-  pruefe(rechtecke.length > 0, "rueckkehrer: SVG enthält Balkenpfade");
-  notiz.push(`  kleinste Balken-x-Koordinate: ${Math.min(...rechtecke).toFixed(1)}`);
-
-  /* JEDER BALKEN MUSS IN SEINER EIGENEN ZEILE LIEGEN.
-     Dieses Modul ist das einzige mit zwei Balkengruppen je Kategorie. Ist
-     die Breite je Gruppe größer als das halbe Band, wird die Gruppe breiter
-     als ihr Band — ECharts meldet nichts, zentriert weiter, und die Balken
-     rutschen in die Nachbarzeilen. Am 26.08.2026 stand deshalb der
-     Fischotter-Balken von 2001–2006 auf der Beschriftung „2007–2012".
-
-     Gemessen wird nicht die Option, sondern die Lage im SVG: y-Spanne jedes
-     gefüllten Balkenpfades gegen die Bandgrenzen um die Beschriftung. */
+  /* Kein Etikett außerhalb der Karte — der Anlass des Umbaus (E1). */
   const feld = window.document.getElementById("c-rueckkehrer");
-  const svgKnoten = feld.querySelector("svg");
-  const mitten = perioden.map((p) => {
-    const t = [...svgKnoten.querySelectorAll("text")]
-      .find((n) => n.textContent === p);
-    const m = /translate\(\s*[\d.-]+\s+([\d.-]+)/.exec(t?.getAttribute("transform") || "");
-    return m ? Number(m[1]) : NaN;
-  });
-  pruefe(mitten.every(Number.isFinite),
-    `rueckkehrer: alle ${perioden.length} Periodennamen im SVG gefunden`);
-  const band = Math.abs(mitten[1] - mitten[0]);
-
-  /* Die Legendensymbole tragen dieselbe Füllfarbe wie die Balken und hängen
-     im selben `<g>` — sie lassen sich weder am Elternknoten noch an der
-     Pfadform sicher trennen. Getrennt wird deshalb an der LAGE: alles über
-     `grid.top` liegt außerhalb der Zeichenfläche und ist Legende. Damit
-     dieser Filter nicht stillschweigend alles wegwirft, wird die Zahl der
-     gefundenen Balken gegen die Zahl der gemeldeten Werte gehalten. */
-  const gitterOben = o.grid[0].top;
-  const sollBalken = arten.reduce((n, art) =>
-    n + art.werte.filter((w) => w.unten !== null).length, 0);
-
-  const farben = [token.get("--viz-series-1"), token.get("--viz-series-2")];
-  let ausserhalb = 0, gefunden = 0;
-  const oberkante = new Map();   /* Bandmitte → höchster Balkenanfang */
-  farben.forEach((farbe) => {
-    [...svgKnoten.querySelectorAll("path")]
-      .filter((n) => n.getAttribute("fill") === farbe &&
-                     /^M[\d.]+ [\d.]+L/.test(n.getAttribute("d") || ""))
-      .filter((n) => {
-        const ys = [...n.getAttribute("d").matchAll(/[ML]([\d.]+) ([\d.]+)/g)]
-          .map((m) => Number(m[2]));
-        return (Math.min(...ys) + Math.max(...ys)) / 2 >= gitterOben;
-      })
-      .forEach((n) => {
-        gefunden++;
-        const ys = [...n.getAttribute("d").matchAll(/[ML]([\d.]+) ([\d.]+)/g)]
-          .map((m) => Number(m[2]));
-        const oben = Math.min(...ys), unten = Math.max(...ys);
-        const mitte = (oben + unten) / 2;
-        const naechste = mitten.reduce((a, b) =>
-          Math.abs(b - mitte) < Math.abs(a - mitte) ? b : a);
-        oberkante.set(naechste, Math.min(oberkante.get(naechste) ?? Infinity, oben));
-        if (oben < naechste - band / 2 || unten > naechste + band / 2) {
-          ausserhalb++;
-          notiz.push(`  Balken y ${oben.toFixed(1)}–${unten.toFixed(1)} ` +
-                     `verlässt das Band um ${naechste.toFixed(1)} (${band.toFixed(1)} px)`);
-        }
-      });
-  });
-  pruefe(gefunden === sollBalken,
-    `rueckkehrer: ${gefunden} Balken in der Zeichenfläche (erwartet ${sollBalken})`);
-  pruefe(ausserhalb === 0,
-    `rueckkehrer: kein Balken verlässt seine Zeile (${ausserhalb} Abweichungen, ` +
-    `Bandhöhe ${band.toFixed(1)} px)`);
-
-  /* ENG: der Periodenname steht ÜBER der Balkengruppe, seine Unterkante
-     liegt `BAR_ENG / 2 + 4` = 11 px über der Bandmitte (siehe
-     `kategorieLabel` in kern.js). Die Bandhöhe reicht dort für zwei
-     14-px-Balken — der Bandtest oben schlägt also NICHT an, während die
-     Gruppe längst im Namen steht. Deshalb hier eigens gemessen. */
-  if (breite < 640) {
-    const namensUnterkante = 11;
-    const zuHoch = [...oberkante.entries()].filter(([mitte, oben]) =>
-      oben < mitte - namensUnterkante);
-    zuHoch.forEach(([mitte, oben]) => notiz.push(
-      `  Balkengruppe beginnt bei y ${oben.toFixed(1)}, Name endet bei ` +
-      `${(mitte - namensUnterkante).toFixed(1)}`));
-    pruefe(zuHoch.length === 0,
-      `rueckkehrer ENG: Balken bleiben unter dem Periodennamen ` +
-      `(${zuHoch.length} Überschneidungen)`);
-  }
+  const svg = feld.querySelector("svg");
+  pruefe(!!svg, "rueckkehrer: SVG gerendert");
 }
 
 /* --- 3  vogelarten ----------------------------------------------------- */

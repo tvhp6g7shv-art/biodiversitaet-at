@@ -10,7 +10,8 @@ const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
         balkenHoehe, legende, legendeLinks, hoverDunkler } = BIO;
 
 /* --- 10 — Biber und Fischotter, der Erholungspol ----------------------
-   Liegende Balken, vier Berichtsperioden, zwei Arten.
+   Wachsende Kreise, vier Berichtsperioden, zwei Arten (seit 29.09.2026;
+   vorher schwebende Balken, siehe Block „BLASEN" unten).
 
    WARUM SPANNEN UND KEIN MITTELWERT: Beide Arten werden über Reviere und
    Nachweise erhoben und auf Individuen hochgerechnet. Eine einzelne Zahl
@@ -86,119 +87,125 @@ function baueRueckkehrer(daten) {
     (otter ? ` und ${zahl(otter.letzte_unten)} bis ` +
              `${zahl(otter.letzte_oben)} Fischotter` : "") + `.</p>`);
 
-  balkenHoehe(d, feld, perioden.length * arten.length, 30);
+  /* --- BLASEN statt schwebender Balken — Entscheid des Users 29.09.2026 --
+     „Die gesamte Grafik funktioniert so nicht. Sie ist nicht lesbar."
+     Bei 390 px lief das Etikett „13 833–16 654" aus der Karte (E1), die
+     Achsenzahlen liefen ineinander (A109), und die Balken der ersten
+     Perioden waren Punkte. Die Zunahme zeigen jetzt wachsende Kreise.
 
-  /* BALKENBREITE — KORREKTUR 26.08.2026, Befund des Users am Bildschirmfoto.
-     Hier stand `balkenBreite(feld, "62%")` wie in den übrigen Modulen. Dort
-     ist es richtig, weil dort EINE Balkengruppe je Kategorie steht: 62 % der
-     Bandbreite, 38 % Luft. Dieses Modul hat als einziges ZWEI Gruppen je
-     Kategorie (`s0` und `s1` sind getrennte Stapel, damit die Arten
-     nebeneinander stehen). Zwei Gruppen zu je 62 % ergeben 124 % — die
-     Gruppe ist breiter als ihr Band, ECharts zentriert sie trotzdem, und
-     jeder Balken rutscht aus seiner Zeile.
+     AUFBAU: Spalten = Berichtsperioden, Zeilen = Arten. Je Periode und Art
+     ZWEI Kreise um denselben Mittelpunkt: die gefüllte Scheibe ist die
+     Untergrenze, der Ring die Obergrenze. Die Spanne bleibt damit sichtbar,
+     ohne dass eine Mitte erfunden wird (siehe oben: keine einzelne Zahl).
 
-     Gemessen am gerenderten SVG bei 1.058 px Feldbreite: Band 58 px, Balken
-     36 px, Bandmitten bei y = 63/121/179/237. Der Fischotter-Balken der
-     Periode 2001–2006 lag bei y = 64,8–100,8 und damit auf der Beschriftung
-     „2007–2012". Die Grafik ordnete jede Zahl der falschen Periode zu.
+     FLÄCHE, NICHT DURCHMESSER, ist proportional zum Wert: d = D · √(w / max).
+     Ein Durchmesser proportional zum Wert ließe 16 654 Biber 40-mal so
+     groß erscheinen wie 2 575 statt 6,5-mal. Beide Arten teilen eine Skala,
+     damit Biber und Fischotter direkt vergleichbar bleiben.
 
-     Die Obergrenze für zwei Gruppen liegt bei 50 % minus Zwischenraum.
-     40 % ergibt 23,2 px je Balken, dazu der ECharts-Standardabstand von
-     30 % der Balkenbreite (7 px) — zusammen 53,4 px in einem 58-px-Band.
+     DIE LÜCKE BEIM FISCHOTTER bleibt eine Lücke: kein Kreis, ein Strich,
+     und der Tooltip sagt warum (Rasterzellen statt Individuen). */
+  const breite = feld.clientWidth || 600;
+  const eng = istEng(feld);
+  /* Eng stehen die Artnamen um 90° gedreht in einer schmalen Randspalte:
+     die Legende allein trüge die Zuordnung nur über die Farbe. */
+  const LINKS = eng ? 24 : 96;
+  const RECHTS = 8;
+  const spalte = Math.max(56, (breite - LINKS - RECHTS) / perioden.length);
+  /* Größter Kreis: Spaltenbreite minus Luft, gedeckelt, damit die Grafik
+     am Desktop nicht zur Plakatwand wird. */
+  const D = Math.round(Math.min(spalte - 10, 120));
+  const alle = arten.flatMap((a) => a.werte.map((w) => w.oben)).filter((v) => v != null);
+  const maxWert = Math.max(...alle);
+  const durchmesser = (v) => (v == null ? 0 : Math.max(6, D * Math.sqrt(v / maxWert)));
 
-     ENG (unter 768 px): dort ist die Breite ein fester Pixelwert, weil der
-     Kategoriename ÜBER dem Balken steht. `kategorieLabel` setzt dessen
-     Unterkante auf `BAR_ENG / 2 + 4` = 11 px über die Bandmitte. Der feste
-     Wert BAR_ENG = 14 aus `balkenBreite()` gilt für EINE Gruppe; zwei
-     Gruppen zu 14 px belegen ±16 px und schöben den oberen Balken 5 px in
-     den Namen. Deshalb 8 px: gemessen bei 700 px Fensterbreite belegt die
-     Gruppe y = 66,35–83,15 um die Bandmitte 74,75, die Namensunterkante
-     liegt bei 63,75 — 2,6 px Luft. Wer diesen Wert erhöht, schiebt den
-     Namen in den oberen Balken. */
-  const spannenBreite = istEng(feld) ? 8 : "40%";
+  /* Etikett unter dem Kreis: eng zweizeilig, sonst eine Zeile. Zeilenhöhe
+     aus der Achsenschrift. */
+  const ZEILE = Math.round(S.label * 1.35);
+  const ETIKETT = (eng ? 2 : 1) * ZEILE + 8;
+  const ZEILENHOEHE = D + ETIKETT + 18;
+  const OBEN = 12;
+  const UNTEN = 28;
+  feld.style.height = `${OBEN + arten.length * ZEILENHOEHE + UNTEN}px`;
+  d.resize();
 
-  /* Je Art ein unsichtbarer Sockel und die sichtbare Spanne, in einem
-     eigenen Stapel. `wert()` liest aus der Periodenliste der Art. */
+  const etikett = (w) => {
+    if (w.unten == null) return "keine Zählung";
+    return eng ? `${zahl(w.unten)}–\n${zahl(w.oben)}` : `${zahl(w.unten)}–${zahl(w.oben)}`;
+  };
+
   const reihen = [];
   arten.forEach((art, i) => {
     const wert = (k) => art.werte.find((w) => w.periode === perioden[k]) || {};
+    const punkte = perioden.map((p, k) => ({ k, w: wert(k) }));
+    /* Scheibe = Untergrenze. Steht VOR dem Ring, weil die Legende die
+       Marke der ersten Reihe gleichen Namens zeigt — sonst ein leerer Kreis. */
     reihen.push({
-      name: `${art.name} (Sockel)`, type: "bar", stack: `s${i}`,
-      silent: true, legendHoverLink: false,
-      barWidth: spannenBreite,
-      itemStyle: { color: "transparent" },
+      name: art.name, type: "scatter", z: 3, silent: true,
+      data: punkte.map(({ k, w }) => ({
+        value: [k, i], w,
+        symbolSize: w.unten == null ? 0 : durchmesser(w.unten),
+      })),
+      itemStyle: { color: farben[i], opacity: 0.85 },
       emphasis: { disabled: true },
-      data: perioden.map((p, k) => wert(k).unten ?? null),
     });
+    /* Ring = Obergrenze. Trägt das Etikett, weil er der äußere Kreis ist. */
     reihen.push({
-      name: art.name, type: "bar", stack: `s${i}`,
-      barWidth: spannenBreite,
-      itemStyle: { color: farben[i], borderRadius: 4 },
-      emphasis: hoverDunkler(farben[i]),
-      data: perioden.map((p, k) => {
-        const w = wert(k);
-        return w.spanne === null || w.spanne === undefined ? null : w.spanne;
-      }),
-      /* Beschriftet wird nur die jüngste Periode. Alle vier zu
-         beschriften ergibt acht Zahlenpaare auf engem Raum; die
-         übrigen Werte stehen in Tooltip und Tabelle. */
+      name: art.name, type: "scatter", z: 2,
+      data: punkte.map(({ k, w }) => ({
+        value: [k, i], w,
+        symbolSize: w.oben == null ? 0 : durchmesser(w.oben),
+      })),
+      itemStyle: { color: "transparent", borderColor: farben[i], borderWidth: 2 },
+      emphasis: { scale: false, itemStyle: { borderWidth: 3 } },
       label: {
-        show: true, position: "right", distance: 8,
-        color: stil("--viz-text-2"), fontSize: S.label,
-        formatter: (p) => {
-          if (p.dataIndex !== letzte) return "";
-          const w = wert(letzte);
-          if (w.unten === null || w.unten === undefined) return "";
-          return `${zahl(w.unten)}–${zahl(w.oben)}`;
-        },
+        show: true, position: "bottom", distance: 6,
+        color: stil("--viz-text-2"), fontSize: S.label, lineHeight: ZEILE,
+        align: "center",
+        formatter: (p) => etikett(p.data.w),
       },
+      labelLayout: { hideOverlap: false },
     });
   });
 
   d.setOption({
     ...basis(),
-    grid: { ...balkenGitter(feld, { left: 96, right: 112 }), top: 34 },
-    legend: legende(feld, {
-      top: 0, left: legendeLinks(feld, 96),
-      itemWidth: 11, itemHeight: 11, itemGap: 16,
-      data: arten.map((a) => a.name),
-      textStyle: { color: stil("--viz-text-2"), fontSize: S.serie },
-    }),
+    grid: { left: LINKS, right: RECHTS, top: OBEN, bottom: UNTEN, containLabel: false },
+    /* KEINE LEGENDE: Die Zeilen tragen die Artnamen direkt. Eine Legende
+       mit denselben Namen wäre doppelt — und legendenFreiraeumen() hielte
+       die Zeilennamen „Biber“ und „Fischotter“ für Legendeneinträge und
+       schöbe das Gitter um eine Zeile nach unten (am 29.09. gemessen:
+       80 px Leerraum über der Grafik). */
+    legend: { show: false },
     tooltip: {
-      ...basis().tooltip, trigger: "axis",
-      axisPointer: { type: "shadow", shadowStyle: { color: stil("--viz-grid"), opacity: 0.35 } },
+      ...basis().tooltip, trigger: "item",
       formatter: (p) => {
-        const k = p[0].dataIndex;
-        const zeilen = [`<strong>${perioden[k]}</strong>`];
-        arten.forEach((art, i) => {
-          const w = art.werte.find((x) => x.periode === perioden[k]) || {};
-          if (w.unten === null || w.unten === undefined) {
-            zeilen.push(
-              `<span style="color:${farben[i]}">■</span> ${art.name} ` +
-              `<span style="color:${stil("--viz-muted")}">keine Individuenzahl ` +
-              `gemeldet — Österreich meldete für diese Periode Rasterzellen</span>`);
-          } else {
-            zeilen.push(
-              `<span style="color:${farben[i]}">■</span> ${art.name} ` +
-              `<strong>${zahl(w.unten)}–${zahl(w.oben)}</strong>`);
-          }
-        });
-        return zeilen.join("<br>");
+        const w = p.data.w || {};
+        const art = arten[p.data.value[1]];
+        const kopf = `<strong>${art.name}</strong> · ${perioden[p.data.value[0]]}`;
+        if (w.unten == null) {
+          return `${kopf}<br><span style="color:${stil("--viz-muted")}">keine ` +
+            `Individuenzahl gemeldet — Österreich meldete für diese Periode ` +
+            `Rasterzellen</span>`;
+        }
+        return `${kopf}<br><strong>${zahl(w.unten)}–${zahl(w.oben)}</strong> Tiere` +
+          `<br><span style="color:${stil("--viz-muted")}">Scheibe: Untergrenze · ` +
+          `Ring: Obergrenze</span>`;
       },
     },
-    xAxis: { ...achse(), type: "value", min: 0, axisLine: { show: false },
-      axisLabel: { hideOverlap: true, color: stil("--viz-muted"),
-                   fontSize: S.achse, formatter: (v) => zahl(v) } },
+    xAxis: { ...achse(), type: "category", data: perioden, boundaryGap: true,
+      position: "bottom", axisLine: { show: false }, axisTick: { show: false },
+      splitLine: { show: false },
+      axisLabel: { color: stil("--viz-muted"), fontSize: S.achse, interval: 0,
+                   formatter: (v) => v } },
     yAxis: { ...achse(), type: "category", inverse: true,
-      data: perioden, splitLine: { show: false },
-      axisLabel: { color: stil("--viz-text-2"),
-                   fontSize: istSchmal(feld) ? S.eng : S.serie, margin: 12,
-                   /* Viertes Argument: dieses Modul setzt seine Balkenhoehe eng selbst
-       (`spannenBreite` = 8 px), holt sie also nicht von `balkenBreite()`.
-       Die 14 halten den gemessenen Abstand von 2,6 px zwischen Name und
-       Balken — siehe den Block ueber `spannenBreite`. Ohne das Argument
-       zoege die Staffelung nach Zeilenzahl den Namen 7 px hoeher. */
-    ...kategorieLabel(feld, 96, perioden.length, 14) } },
+      data: arten.map((a) => a.name), boundaryGap: true,
+      axisLine: { show: false }, axisTick: { show: false },
+      splitLine: { show: false },
+      axisLabel: eng
+        ? { color: stil("--viz-text-2"), fontSize: S.eng || S.serie, rotate: 90,
+            margin: 8, align: "center" }
+        : { color: stil("--viz-text-2"), fontSize: S.serie, margin: 12 } },
     series: reihen,
   }, { replaceMerge: ["series", "xAxis", "yAxis", "legend"] });
 
