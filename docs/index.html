@@ -889,8 +889,8 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
        Wieder eingehängt am 30.08.2026. Die Bundeswerte stehen in Tab. 2 des
        Waldbiodiversitätsberichts, dessen Impressum den auszugsweisen Abdruck
        mit Quellenangabe ausdrücklich gestattet — dieser Abschnitt hängt NICHT
-       an der offenen waldinventur.at-Freigabe. Totholz und Fichte tun das
-       weiterhin und bleiben ausgehängt. -->
+       an der waldinventur.at-Freigabe. Totholz und Fichte hingen daran und
+       sind seit der BFW-Zustimmung vom 30.09.2026 wieder eingehängt. -->
   <section class="viz-karte" id="s-baumarten" data-chart="baumarten" data-nav="Nadel und Laub" style="display:none">
     <header class="viz-kopfzeile">
       <div>
@@ -942,6 +942,40 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
   </section>
 
   <!-- 9 — BIOLOGISCHE LANDWIRTSCHAFT -->
+  <!-- 8f — TOTHOLZ UND FICHTE. Wieder eingehängt am 30.09.2026: Zustimmung
+       des BFW (Christian Lackner) per Mail vom 30.09. -->
+  <section class="viz-karte" id="s-totholz" data-chart="totholz" data-nav="Totes Holz" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>In manchen Bundesländern bleibt doppelt so viel totes Holz stehen wie in anderen</h2>
+        <p class="viz-unterzeile" id="u-totholz"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-totholz">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-totholz"></div>
+    <div class="viz-verborgen" id="t-totholz"></div>
+    <p class="viz-notiz" id="n-totholz"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-totholz"></p>
+  </section>
+
+  <section class="viz-karte" id="s-fichte" data-chart="fichte" data-nav="Fichte" style="display:none">
+    <header class="viz-kopfzeile">
+      <div>
+        <h2>Auf fast der Hälfte des bewirtschafteten Waldes steht Fichte</h2>
+        <p class="viz-unterzeile" id="u-fichte"></p>
+      </div>
+      <div class="viz-knopfreihe">
+        <button class="viz-tabelle-schalter" data-ziel="t-fichte">Tabelle</button>
+      </div>
+    </header>
+    <div class="viz-chart" id="c-fichte"></div>
+    <div class="viz-verborgen" id="t-fichte"></div>
+    <p class="viz-notiz" id="n-fichte"></p>
+    <p class="viz-unterzeile" style="margin-top:12px" id="h-fichte"></p>
+  </section>
+
   <section class="viz-karte" id="s-biolandbau" data-chart="biolandbau" style="display:none">
     <header class="viz-kopfzeile">
       <div>
@@ -1109,43 +1143,46 @@ table.viz-tabelle td.num, table.viz-tabelle th.num { text-align: right; }
      Die Cacheziffer `?v=NN` hochzaehlen, wenn eine Datei geaendert wurde —
      sie fuehrt eine EIGENE Zaehlung, unabhaengig von der Ausgabenummer
      in kern.js (VERSION.nummer). -->
-<script defer src="js/kern.js?v=26"></script>
-<script defer src="js/charts/kpi.js?v=26"></script>
-<script defer src="js/charts/schutzgebiete.js?v=26"></script>
-<script defer src="js/charts/schutzherkunft.js?v=26"></script>
-<script defer src="js/charts/schutzstufen.js?v=26"></script>
-<script defer src="js/charts/vogel.js?v=26"></script>
-<script defer src="js/charts/boden.js?v=26"></script>
-<script defer src="js/charts/rotelisten.js?v=26"></script>
-<script defer src="js/charts/erhaltung.js?v=26"></script>
-<script defer src="js/charts/lebensraeume.js?v=26"></script>
-<script defer src="js/charts/biotoptypen.js?v=26"></script>
-<script defer src="js/charts/fliessgewaesser.js?v=26"></script>
-<script defer src="js/charts/querbauwerke.js?v=26"></script>
-<script defer src="js/charts/wald.js?v=26"></script>
+<script defer src="js/kern.js?v=27"></script>
+<script defer src="js/charts/kpi.js?v=27"></script>
+<script defer src="js/charts/schutzgebiete.js?v=27"></script>
+<script defer src="js/charts/schutzherkunft.js?v=27"></script>
+<script defer src="js/charts/schutzstufen.js?v=27"></script>
+<script defer src="js/charts/vogel.js?v=27"></script>
+<script defer src="js/charts/boden.js?v=27"></script>
+<script defer src="js/charts/rotelisten.js?v=27"></script>
+<script defer src="js/charts/erhaltung.js?v=27"></script>
+<script defer src="js/charts/lebensraeume.js?v=27"></script>
+<script defer src="js/charts/biotoptypen.js?v=27"></script>
+<script defer src="js/charts/fliessgewaesser.js?v=27"></script>
+<script defer src="js/charts/querbauwerke.js?v=27"></script>
+<script defer src="js/charts/wald.js?v=27"></script>
 <!-- Die fuenf Wald-Abschnitte (totholz, fichte, baumarten, waldarten,
      natura2000) sind am 29.08.2026 ausgeklinkt: gebaut und im Ordner, aber
      ihre Modul- und Datendateien nicht im Repo. Ausgeliefert haetten sie elf
      404 erzeugt und die rote Stoermeldung im Fuss ausgeloest, wie am 21.08.
      bei `selbstaendige`. Zusaetzlich Live-Sperre fuer totholz, fichte und
-     baumarten bis zur BFW-Freigabe.
+     baumarten bis zur BFW-Freigabe. ERLEDIGT 30.09.2026: Zustimmung da,
+     totholz und fichte stehen wieder unten vor s-biolandbau.
      Die Sektionen liegen wortgleich in docs/.ausgeklinkt-wald.html. Wieder
      einhaengen: Sektionen von dort zurueck, Skript-Zeilen hier, dazu
      js/kern.js, embed.html und die beiden Pruefskripte. -->
-<script defer src="js/charts/baumarten.js?v=26"></script>
-<script defer src="js/charts/waldarten.js?v=26"></script>
-<script defer src="js/charts/natura2000.js?v=26"></script>
-<script defer src="js/charts/biolandbau.js?v=26"></script>
-<script defer src="js/charts/pestizide.js?v=26"></script>
-<script defer src="js/charts/stickstoff.js?v=26"></script>
-<script defer src="js/charts/gruenland.js?v=26"></script>
-<script defer src="js/charts/bauland.js?v=26"></script>
-<script defer src="js/charts/bioverlauf.js?v=26"></script>
-<script defer src="js/charts/flaeche.js?v=26"></script>
-<script defer src="js/charts/verkehr.js?v=26"></script>
-<script defer src="js/charts/falter.js?v=26"></script>
-<script defer src="js/charts/rueckkehrer.js?v=26"></script>
-<script defer src="js/charts/vogelarten.js?v=26"></script>
+<script defer src="js/charts/baumarten.js?v=27"></script>
+<script defer src="js/charts/waldarten.js?v=27"></script>
+<script defer src="js/charts/natura2000.js?v=27"></script>
+<script defer src="js/charts/totholz.js?v=27"></script>
+<script defer src="js/charts/fichte.js?v=27"></script>
+<script defer src="js/charts/biolandbau.js?v=27"></script>
+<script defer src="js/charts/pestizide.js?v=27"></script>
+<script defer src="js/charts/stickstoff.js?v=27"></script>
+<script defer src="js/charts/gruenland.js?v=27"></script>
+<script defer src="js/charts/bauland.js?v=27"></script>
+<script defer src="js/charts/bioverlauf.js?v=27"></script>
+<script defer src="js/charts/flaeche.js?v=27"></script>
+<script defer src="js/charts/verkehr.js?v=27"></script>
+<script defer src="js/charts/falter.js?v=27"></script>
+<script defer src="js/charts/rueckkehrer.js?v=27"></script>
+<script defer src="js/charts/vogelarten.js?v=27"></script>
 <script defer>
   document.addEventListener("DOMContentLoaded", () => {
     BIO.setzeWurzel(document.getElementById("dashboard"));

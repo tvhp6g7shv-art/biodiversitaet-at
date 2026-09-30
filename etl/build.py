@@ -132,8 +132,8 @@ from flaecheninanspruchnahme import baue_flaecheninanspruchnahme
 # ein Import einer fehlenden Datei bricht die Pipeline in GitHub Actions mit
 # ImportError ab, bevor eine einzige Zahl gerechnet wird:
 #
-# from totholz import baue_totholz            # wartet auf BFW-Freigabe
-# from fichte import baue_fichte              # wartet auf BFW-Freigabe
+from totholz import baue_totholz            # BFW-Zustimmung 30.09.2026
+from fichte import baue_fichte              # BFW-Zustimmung 30.09.2026
 
 
 def _vogel_abgleichen(vogel: dict, vogelarten: dict) -> None:
@@ -346,35 +346,35 @@ def main() -> None:
             f"Forests aus, einer der beiden zählt anders als gedacht."
         )
 
-    # AUSGEKLINKT 29.08.2026, TEILWEISE WIEDER AUFGENOMMEN 08.09.2026.
-    # `totholz` und `fichte` liegen weiter nur im Ordner und nicht im Repo —
-    # in GitHub Actions bräche die Pipeline daran ab. Sie bleiben aus, bis die
-    # BFW-Freigabe da ist. Der Baulandreserven-Teil steht unten wieder scharf.
-    #
-    #   bezirke_geo = None
-    #   bezirke_pfad = (Path(__file__).resolve().parent.parent.parent
-    #                   / "arbeitsmarkt-at" / "docs" / "data" / "karte_geo.json")
-    #   if bezirke_pfad.exists():
-    #       with bezirke_pfad.open(encoding="utf-8") as datei:
-    #           bezirke_geo = json.load(datei)
-    #   else:
-    #       warnen(f"Bezirksgeometrie nicht gefunden ({bezirke_pfad}) — die "
-    #              f"Totholzkarte entfällt, die Tabelle bleibt.")
-    #
-    #   totholz, totholz_geo = baue_totholz(bezirke_geo)
-    #   if totholz:     ausgaben["totholz"] = totholz
-    #   if totholz_geo: ausgaben["totholz_geo"] = totholz_geo
-    #   ausgaben["fichte"]     = baue_fichte()
+    # WIEDER SCHARF SEIT 30.09.2026 (BFW-Zustimmung). Vorher: AUSGEKLINKT 29.08.2026, TEILWEISE WIEDER AUFGENOMMEN 08.09.2026.
+    # `totholz` und `fichte` lagen bis dahin nur im Ordner und nicht im Repo.
+    # In GitHub Actions fehlt die Bezirksgeometrie aus arbeitsmarkt-at — dann
+    # warnt der Lauf, schreibt totholz_geo nicht neu und die committete Datei
+    # bleibt stehen.
+    bezirke_geo = None
+    bezirke_pfad = (Path(__file__).resolve().parent.parent.parent
+                    / "arbeitsmarkt-at" / "docs" / "data" / "karte_geo.json")
+    if bezirke_pfad.exists():
+        with bezirke_pfad.open(encoding="utf-8") as datei:
+            bezirke_geo = json.load(datei)
+    else:
+        warnen(f"Bezirksgeometrie nicht gefunden ({bezirke_pfad}) — die "
+               f"Totholzkarte entfällt, die Tabelle bleibt.")
+
+    totholz, totholz_geo = baue_totholz(bezirke_geo)
+    if totholz:     ausgaben["totholz"] = totholz
+    if totholz_geo: ausgaben["totholz_geo"] = totholz_geo
+    ausgaben["fichte"]     = baue_fichte()
     #
     # `baumarten`, `waldarten` und `natura2000` standen bis 31.08.2026 hier
     # und laufen jetzt oben mit den übrigen Abschnitten.
     #
-    #   wald_staende = {name: ausgaben[name]["stand"]
-    #                   for name in ("totholz", "fichte", "baumarten")
-    #                   if ausgaben.get(name)}
-    #   if len(set(wald_staende.values())) > 1:
-    #       warnen("Waldabschnitte uneins: " + ", ".join(
-    #           f"`{n}` auf {s}" for n, s in wald_staende.items()))
+    wald_staende = {name: ausgaben[name]["stand"]
+                    for name in ("totholz", "fichte", "baumarten")
+                    if ausgaben.get(name)}
+    if len(set(wald_staende.values())) > 1:
+        warnen("Waldabschnitte uneins: " + ", ".join(
+            f"`{n}` auf {s}" for n, s in wald_staende.items()))
     #
     # --- Baulandreserven: der Vorrat, nicht der Verbrauch ------------------
     # SCHARF SEIT 08.09.2026. `baulandreserven` holt die Gemeindewerte

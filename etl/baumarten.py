@@ -281,7 +281,7 @@ def baue_baumarten() -> dict | None:
         # Freigabe da ist, kann die Zeile wieder aufgenommen und daraus
         # ein Ländervergleich gebaut werden — die Werte stehen oben im
         # Modul und sind nachgerechnet.
-        #   "eintraege": eintraege,
+        "eintraege": eintraege,   # wieder ausgeliefert seit 30.09.2026 (BFW-Zustimmung)
         # Einordnung unter der Grafik, Konvention 150–234 Zeichen. Gemessen: 213.
         "hinweis": (
             "Alle Anteile gegen den bewirtschafteten Wald gerechnet, nicht gegen "
@@ -294,7 +294,7 @@ def baue_baumarten() -> dict | None:
     quelle_vermerken(
         "Nadel- und Laubholz im Ertragswald",
         "https://www.waldinventur.at/",
-        "BFW — Verwendung mit Quellenangabe, Freigabe angefragt",
+        "BFW — Verwendung mit Quellenangabe, Zustimmung des BFW vom 30.09.2026",
         f"ÖWI {letzte}",
         "gepflegt",
     )

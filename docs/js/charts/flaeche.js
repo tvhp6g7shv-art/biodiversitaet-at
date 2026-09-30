@@ -53,8 +53,8 @@ const { stil, zahl, pz, basis, tabelle, setzeText, setzeHtml,
    die die Karte aufwirft: wie viele Gemeinden liegen eigentlich oben. */
 
 /* ECharts kennt nur Polygon und MultiPolygon. Eigene Fassung statt der aus
-   `totholz.js`: Dieses Modul wird ausgeliefert, jenes liegt hinter der
-   offenen BFW-Freigabe und ist auf der Seite gar nicht geladen — ein
+   `totholz.js`: Bis 30.09.2026 lag jenes hinter der offenen BFW-Freigabe
+   und war auf der Seite gar nicht geladen — ein
    Rückgriff auf `BIO.flaechenNormalisieren` wäre in der Auslieferung
    `undefined`. */
 function nurFlaechen(geometrie) {

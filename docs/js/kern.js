@@ -1017,6 +1017,7 @@ async function start() {
                    "rotelisten", "erhaltung", "lebensraeume",
                    "biotoptypen", "fliessgewaesser", "querbauwerke", "wald",
                    "baumarten", "waldarten", "natura2000",
+                   "totholz", "totholz_geo", "fichte",
                    "biolandbau", "pestizide", "stickstoff", "gruenland", "bauland",
                    "falter", "rueckkehrer", "vogelarten",
                    "flaecheninanspruchnahme"];
@@ -1034,8 +1035,8 @@ async function start() {
    mit Quellenangabe ausdrücklich gestattet; `waldarten` und `natura2000`
    stammen aus Tab. 7 desselben Berichts bzw. aus dem Eionet-Werkzeug.
 
-   NOCH AUSGEKLINKT, bis die BFW-Freigabe da ist: "totholz", "totholz_geo",
-   "fichte". Wieder einzuhängen sind dann vier Stellen — hier, index.html
+   WIEDER EINGEHÄNGT am 30.09.2026 nach Zustimmung des BFW: "totholz",
+   "totholz_geo", "fichte". Vorher: noch ausgeklinkt. Wieder einzuhängen sind dann vier Stellen — hier, index.html
    (Sektionsblock UND Skript-Tag), embed.html über den Generator, und die
    beiden Prüfskripte.
 
@@ -1150,15 +1151,10 @@ async function start() {
        gibt, dann was in ihm steht. Die Waldfläche wächst; Totholz und
        Fichtenanteil sagen, dass daraus noch keine Vielfalt folgt.
 
-       NOCH AUSGEKLINKT (Stand 30.08.2026): Totholz und Fichte ziehen ihre
-       Werte aus `waldinventur.at/data/` und warten auf die BFW-Freigabe.
-       Sobald sie da ist: hier einhängen, dazu Sektionsblock und Skript-Tag
-       in index.html, den Generator für embed.html und die beiden
-       Prüfskripte.
-
+       WIEDER EINGEHÄNGT 30.09.2026 nach Zustimmung des BFW (Lackner,
+       Mail vom 30.09.). Vorher ausgeklinkt seit 30.08.2026. */
     sicher("Totholz",        () => BIO.baueTotholz(geladen.totholz, geladen.totholz_geo));
     sicher("Fichte",         () => BIO.baueFichte(geladen.fichte));
-    */
     sicher("Baumarten",      () => BIO.baueBaumarten(geladen.baumarten));
     /* Erst der Wald selbst, dann was in ihm lebt und wie er bewertet wird.
        `waldarten` zeigt den Verlust, `natura2000` die Kehrseite: dass

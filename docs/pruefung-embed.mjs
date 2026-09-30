@@ -57,6 +57,7 @@ const GRAFIKEN = ["schutzgebiete", "schutzherkunft", "schutzstufen",
                   "erhaltung", "lebensraeume", "biotoptypen",
                   "fliessgewaesser", "querbauwerke", "wald",
                   "baumarten", "waldarten", "natura2000",
+                  "totholz", "fichte",
                   "biolandbau", "pestizide", "stickstoff", "gruenland",
                   "bauland", "bioverlauf", "flaeche", "verkehr",
                   "falter", "rueckkehrer", "vogelarten"];

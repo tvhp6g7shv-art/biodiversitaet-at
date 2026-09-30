@@ -10,33 +10,35 @@
      die Kennzahlenkacheln gehoeren zum Dashboard, nicht zu einer einzelnen
      Grafik. Cacheziffer wird aus index.html uebernommen — beide Auslieferungen
      tragen dieselbe, sonst mischt der Browser Staende. -->
-<script src="js/kern.js?v=26" defer></script>
-<script src="js/charts/schutzgebiete.js?v=26" defer></script>
-<script src="js/charts/schutzherkunft.js?v=26" defer></script>
-<script src="js/charts/schutzstufen.js?v=26" defer></script>
-<script src="js/charts/vogel.js?v=26" defer></script>
-<script src="js/charts/boden.js?v=26" defer></script>
-<script src="js/charts/bauland.js?v=26" defer></script>
-<script src="js/charts/flaeche.js?v=26" defer></script>
-<script src="js/charts/verkehr.js?v=26" defer></script>
-<script src="js/charts/rotelisten.js?v=26" defer></script>
-<script src="js/charts/erhaltung.js?v=26" defer></script>
-<script src="js/charts/lebensraeume.js?v=26" defer></script>
-<script src="js/charts/biotoptypen.js?v=26" defer></script>
-<script src="js/charts/fliessgewaesser.js?v=26" defer></script>
-<script src="js/charts/querbauwerke.js?v=26" defer></script>
-<script src="js/charts/wald.js?v=26" defer></script>
-<script src="js/charts/baumarten.js?v=26" defer></script>
-<script src="js/charts/waldarten.js?v=26" defer></script>
-<script src="js/charts/natura2000.js?v=26" defer></script>
-<script src="js/charts/biolandbau.js?v=26" defer></script>
-<script src="js/charts/bioverlauf.js?v=26" defer></script>
-<script src="js/charts/pestizide.js?v=26" defer></script>
-<script src="js/charts/stickstoff.js?v=26" defer></script>
-<script src="js/charts/gruenland.js?v=26" defer></script>
-<script src="js/charts/falter.js?v=26" defer></script>
-<script src="js/charts/rueckkehrer.js?v=26" defer></script>
-<script src="js/charts/vogelarten.js?v=26" defer></script>
+<script src="js/kern.js?v=27" defer></script>
+<script src="js/charts/schutzgebiete.js?v=27" defer></script>
+<script src="js/charts/schutzherkunft.js?v=27" defer></script>
+<script src="js/charts/schutzstufen.js?v=27" defer></script>
+<script src="js/charts/vogel.js?v=27" defer></script>
+<script src="js/charts/boden.js?v=27" defer></script>
+<script src="js/charts/bauland.js?v=27" defer></script>
+<script src="js/charts/flaeche.js?v=27" defer></script>
+<script src="js/charts/verkehr.js?v=27" defer></script>
+<script src="js/charts/rotelisten.js?v=27" defer></script>
+<script src="js/charts/erhaltung.js?v=27" defer></script>
+<script src="js/charts/lebensraeume.js?v=27" defer></script>
+<script src="js/charts/biotoptypen.js?v=27" defer></script>
+<script src="js/charts/fliessgewaesser.js?v=27" defer></script>
+<script src="js/charts/querbauwerke.js?v=27" defer></script>
+<script src="js/charts/wald.js?v=27" defer></script>
+<script src="js/charts/baumarten.js?v=27" defer></script>
+<script src="js/charts/waldarten.js?v=27" defer></script>
+<script src="js/charts/natura2000.js?v=27" defer></script>
+<script src="js/charts/totholz.js?v=27" defer></script>
+<script src="js/charts/fichte.js?v=27" defer></script>
+<script src="js/charts/biolandbau.js?v=27" defer></script>
+<script src="js/charts/bioverlauf.js?v=27" defer></script>
+<script src="js/charts/pestizide.js?v=27" defer></script>
+<script src="js/charts/stickstoff.js?v=27" defer></script>
+<script src="js/charts/gruenland.js?v=27" defer></script>
+<script src="js/charts/falter.js?v=27" defer></script>
+<script src="js/charts/rueckkehrer.js?v=27" defer></script>
+<script src="js/charts/vogelarten.js?v=27" defer></script>
 <link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* ===================================================================
@@ -368,6 +370,8 @@ const CHARTS = {
   baumarten: { titel: "Nadel- und Laubholz im Wald", dateien: ["baumarten"], bau: (B, d) => B.baueBaumarten(d.baumarten) },
   waldarten: { titel: "Gefährdete Waldpflanzen", dateien: ["waldarten"], bau: (B, d) => B.baueWaldarten(d.waldarten) },
   natura2000: { titel: "Waldzustand nach zwei Messweisen", dateien: ["natura2000"], bau: (B, d) => B.baueNatura2000(d.natura2000) },
+  totholz: { titel: "Stehendes Totholz", dateien: ["totholz", "totholz_geo"], bau: (B, d) => B.baueTotholz(d.totholz, d.totholz_geo) },
+  fichte: { titel: "Fichtenanteil", dateien: ["fichte"], bau: (B, d) => B.baueFichte(d.fichte) },
   biolandbau: { titel: "Anteil der biologischen Landwirtschaft", dateien: ["biolandbau"], bau: (B, d) => B.baueBiolandbau(d.biolandbau) },
   bioverlauf: { titel: "Bio-Anteil im Verlauf", dateien: ["biolandbau"], bau: (B, d) => B.baueBioverlauf(d.biolandbau) },
   pestizide: { titel: "Pestizidabsatz", dateien: ["pestizide"], bau: (B, d) => B.bauePestizide(d.pestizide) },

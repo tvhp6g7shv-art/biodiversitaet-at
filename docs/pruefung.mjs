@@ -129,8 +129,11 @@ const HOEHEN = {
   "c-baumarten": 340,
   "c-waldarten": 340,
   "c-natura2000": 340,
-  /* KEINE Einträge für `totholz` und `fichte`, solange beide ausgeklinkt
-     sind: Die Prüfung verlangt zu jedem Schlüssel ein Feld im Markup und
+  /* Seit 30.09.2026 wieder eingehängt (BFW-Zustimmung). */
+  "c-fichte": 340,
+  /* ÜBERHOLT 30.09.2026 — beide sind wieder eingehängt, c-fichte steht oben.
+     Der alte Vermerk bleibt als Begründung der Höhen: KEINE Einträge für
+     `totholz` und `fichte`, solange beide ausgeklinkt sind: Die Prüfung verlangt zu jedem Schlüssel ein Feld im Markup und
      meldet sonst „Feld c-fichte fehlt im Markup" — am 31.08.2026 beim
      ersten Anlauf genau so erlebt. Die Höhen sind trotzdem schon geprüft,
      damit das Wiedereinhängen nicht daran hängenbleibt:
@@ -167,6 +170,7 @@ const MODULE = ["kern.js", "charts/kpi.js", "charts/schutzgebiete.js",
                 "charts/wald.js",
                 "charts/baumarten.js", "charts/waldarten.js",
                 "charts/natura2000.js",
+                "charts/totholz.js", "charts/fichte.js",
                 "charts/biolandbau.js", "charts/pestizide.js",
                 "charts/stickstoff.js",
                 "charts/gruenland.js",
@@ -180,7 +184,9 @@ const DATEN = ["meta", "kpi", "schutzgebiete", "schutzherkunft", "schutzstufen",
                "vogel", "boden", "rotelisten",
                "erhaltung", "lebensraeume", "biotoptypen",
                "fliessgewaesser", "querbauwerke", "wald",
-               "baumarten", "waldarten", "natura2000", "biolandbau", "pestizide",
+               "baumarten", "waldarten", "natura2000",
+               "totholz", "totholz_geo", "fichte",
+               "biolandbau", "pestizide",
                "stickstoff",
                "gruenland", "bauland",
                "falter", "rueckkehrer", "vogelarten",
@@ -191,6 +197,7 @@ const ABSCHNITTE = ["schutzgebiete", "schutzherkunft", "schutzstufen",
                     "erhaltung", "lebensraeume", "biotoptypen",
                     "fliessgewaesser", "querbauwerke", "wald",
                     "baumarten", "waldarten", "natura2000",
+                    "totholz", "fichte",
                     "biolandbau", "pestizide", "stickstoff", "gruenland",
                     "bauland", "bioverlauf", "flaeche", "verkehr",
                     "falter", "rueckkehrer", "vogelarten"];
