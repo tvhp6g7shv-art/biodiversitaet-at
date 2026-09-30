@@ -38,9 +38,9 @@ let DATEN_BASIS = "./data";   // In Oxygen: "https://DEIN-GITHUB-NAME.github.io/
    dafür ist die `?v=NN`-Cacheziffer in index.html zuständig, die eine
    andere Zählung führt. */
 const VERSION = {
-  nummer:     "18",                   // 16 Baulandbilanz, 17 Bio im Verlauf, 18 Gemeindekarte und Verkehrsflächen
-  datum:      "2026-09-12",           // maschinenlesbar, für <time datetime>
-  datum_text: "12. September 2026",   // sichtbar
+  nummer:     "19",                   // 16 Baulandbilanz, 17 Bio im Verlauf, 18 Gemeindekarte und Verkehrsflächen, 19 Totholz und Fichte
+  datum:      "2026-09-30",           // maschinenlesbar, für <time datetime>
+  datum_text: "30. September 2026",   // sichtbar
   changelog:  "https://biodiversitaet-monitor.at/changelog/",
 };
 

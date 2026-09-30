@@ -1,10 +1,37 @@
 {
   "hinweis": "Maschinenlesbare Quelle des Changelogs fuer biodiversitaet-monitor.at. Wird NICHT von etl/build.py erzeugt und nicht von ihr angefasst — build.py schreibt ausschliesslich die Datendateien in docs/data/ und laesst diese hier in Ruhe. Beim Hochzaehlen einer Ausgabe hier oben einen neuen Eintrag ergaenzen; Nummer, Datum und Datumstext muessen zu const VERSION in docs/js/kern.js passen (social/pruefe_version.py haelt beides gegeneinander). Der Bluesky-Bot liest diese Datei — Zielkonto ist @biodiversitaet-monitor.at, ein anderes als beim Arbeitsmarkt. Gepostet wird nur, wenn `charts` mindestens einen Namen enthaelt, der in keiner frueheren Ausgabe stand; Seite und Fusszeile aendern sich weiterhin bei jeder Ausgabe.",
-  "aktuell": "18",
+  "aktuell": "19",
   "basis_url": "https://biodiversitaet-monitor.at",
   "changelog_url": "https://biodiversitaet-monitor.at/changelog/",
   "pages_url": "https://tvhp6g7shv-art.github.io/biodiversitaet-at",
   "ausgaben": [
+    {
+      "nummer": "19",
+      "datum": "2026-09-30",
+      "datum_text": "30. September 2026",
+      "titel": "Doppelt so viel totes Holz wie vor 30 Jahren — und die Fichte weicht langsam",
+      "veroeffentlicht": true,
+      "cacheziffer": 29,
+      "charts": [
+        "totholz",
+        "fichte"
+      ],
+      "social": "Im Ertragswald stehen 10,5 Vorratsfestmeter totes Holz je Hektar, mehr als doppelt so viel wie 1992/96 — zwischen Burgenland (6,3) und Vorarlberg (13,6) Faktor 2,2.\n\nFichte wächst auf 47,6 % davon, 3,1 Punkte weniger als 2007/09.\nhttps://biodiversitaet-monitor.at/#s-totholz",
+      "abschnitte": [
+        {
+          "chart": "totholz",
+          "alt": "Eine Karte Österreichs, die Bundesländer eingefärbt nach dem stehenden Totholz im Ertragswald in Vorratsfestmetern je Hektar, Waldinventur 2018/23. Die Skala reicht von 6,0 (hell) bis 14,0 (dunkel). Am dunkelsten sind Vorarlberg mit 13,6, Salzburg mit 13,0 und Tirol mit 12,9, am hellsten das Burgenland mit 6,3. Kärnten liegt bei 9,1, Oberösterreich bei 9,9, Niederösterreich und die Steiermark bei je 10,4. Wien ist nicht eingefärbt, weil sein Wert zu unsicher ist. Der Bundeswert beträgt 10,5 Vorratsfestmeter je Hektar."
+        },
+        {
+          "chart": "fichte",
+          "alt": "Ein liegendes Balkendiagramm in einer Farbe: der Anteil der Fichte an der Ertragswaldfläche je Bundesland, Waldinventur 2018/23. Kärnten 56,9 Prozent, Steiermark 55,2, Salzburg 55,0, Tirol 54,5, Oberösterreich 48,4, Vorarlberg 46,8, Niederösterreich 33,1, Burgenland 12,3. Wien hat keine Fichte im Ertragswald. Eine senkrechte Linie markiert den Österreichwert von 47,6 Prozent."
+        }
+      ],
+      "seite": [
+        "Zwei neue Abschnitte zum Wald, beide aus der Österreichischen Waldinventur 2018/23 des Bundesforschungszentrums für Wald (BFW). Der erste zeigt, wie viel stehendes Totholz je Hektar Ertragswald in den Bundesländern steht. Im Bundesschnitt sind es 10,5 Vorratsfestmeter, gut doppelt so viel wie 1992/96 mit 4,5. Zwischen dem Burgenland mit 6,3 und Vorarlberg mit 13,6 liegt Faktor 2,2; der Wiener Wert ist zu unsicher für einen Vergleich. Viel totes Holz ist dabei nicht automatisch ein gutes Zeichen: Wo viel Fichte steht, bleiben oft käferbefallene Bäume stehen.",
+        "Der zweite Abschnitt zeigt den Anteil der Fichte am bewirtschafteten Wald. Sie steht auf 47,6 Prozent der Fläche, 3,1 Prozentpunkte weniger als 2007/09, und in jedem Bundesland mit Fichtenbestand ist ihr Anteil gesunken, am stärksten in Oberösterreich um 5,0 Punkte. Standörtlich hingehört sie auf rund 1,3 Millionen Hektar, etwa ein Drittel der Waldfläche — Kärnten, die Steiermark, Salzburg und Tirol liegen noch über 54 Prozent."
+      ]
+    },
     {
       "nummer": "18",
       "datum": "2026-09-12",
