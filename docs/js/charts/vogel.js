@@ -109,7 +109,10 @@ function baueVogel(daten) {
       markLine: {
         silent: true, symbol: "none",
         lineStyle: { color: stil("--viz-muted"), width: 1, type: "dashed" },
-        label: { position: "insideStartTop", color: stil("--viz-muted"),
+        /* Im schmalen Feld sitzt das Etikett in der Mitte, sonst liegt es
+           über den Achsenwerten 110/100 (A110). */
+        label: { position: istSchmal(feld) ? "insideMiddleTop" : "insideStartTop",
+                 color: stil("--viz-muted"),
                  fontSize: S.achse, formatter: `Stand ${daten.beginn}` },
         data: [{ yAxis: 100 }],
       },

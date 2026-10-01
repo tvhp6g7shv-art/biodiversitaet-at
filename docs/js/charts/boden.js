@@ -6,7 +6,7 @@
 (function (BIO) {
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml,
-        diagramme, schrift, hoverDunkler } = BIO;
+        diagramme, schrift, hoverDunkler, istSchmal } = BIO;
 
 /* --- 03 — Bodenverbrauch ---------------------------------------------
    Vier stehende Balken, einer je Messperiode.
@@ -77,8 +77,14 @@ function baueBoden(daten) {
           `rund ${zahl(gesamt)} ha in ${jahre} Jahren</span>`;
       },
     },
+    /* Vier Perioden, vier Etiketten — auch im schmalen Feld (A109: bei
+       390 px fielen zwei von vier aus). `interval: 0` erzwingt alle,
+       die kleinere Schrift macht Platz dafür. */
     xAxis: { ...achse(), type: "category", data: werte.map((w) => w.periode),
-             splitLine: { show: false } },
+             splitLine: { show: false },
+             axisLabel: { interval: 0, hideOverlap: false,
+                          color: stil("--viz-muted"),
+                          fontSize: istSchmal(feld) ? S.eng : S.achse } },
     yAxis: { ...achse(), type: "value", min: 0, max: obergrenze, interval: schritt,
              axisLine: { show: false },
              axisLabel: { hideOverlap: true, color: stil("--viz-muted"),

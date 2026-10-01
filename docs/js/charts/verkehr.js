@@ -7,7 +7,7 @@
 "use strict";
 const { stil, zahl, pz, basis, achse, tabelle, setzeText, setzeHtml, diagramme,
         schrift, balkenGitter, kategorieLabel, balkenBreite, balkenHoehe,
-        hoverDunkler } = BIO;
+        hoverDunkler, istSchmal } = BIO;
 
 /* --- Verkehrsflächen nach Art ------------------------------------------
 
@@ -127,7 +127,11 @@ function baueVerkehr(daten) {
           `in der Quelle „${z.quelle}"</span>`;
       },
     },
+    /* Im schmalen Feld (390 px) stießen die Achsenwerte aneinander
+       („1 0001 2001 400", A109) — hideOverlap allein reicht bei einer
+       Werteachse nicht. Drei Teilstriche statt fünf. */
     xAxis: { ...achse(), type: "value", axisLine: { show: false },
+      splitNumber: istSchmal(feld) ? 3 : 5,
       axisLabel: { hideOverlap: true, color: stil("--viz-muted"),
                    fontSize: S.achse, formatter: (v) => zahl(v) } },
     yAxis: { ...achse(), type: "category", inverse: true,

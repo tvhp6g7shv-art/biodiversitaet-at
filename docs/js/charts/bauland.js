@@ -145,7 +145,11 @@ function baueBauland(daten) {
           `${zahl(z.anteil_frueher)} %)</span>`;
       },
     },
+    /* Im schmalen Feld (390 px) stießen die Achsenwerte aneinander
+       („1 0001 2001 400", A109) — hideOverlap allein reicht bei einer
+       Werteachse nicht. Drei Teilstriche statt fünf. */
     xAxis: { ...achse(), type: "value", axisLine: { show: false },
+      splitNumber: istSchmal(feld) ? 3 : 5,
       axisLabel: { hideOverlap: true, color: stil("--viz-muted"),
                    fontSize: S.achse, formatter: (v) => zahl(v) } },
     yAxis: { ...achse(), type: "category", inverse: true,

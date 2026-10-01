@@ -78,7 +78,11 @@ function baueFichte(daten) {
 
   d.setOption({
     ...basis(),
-    grid: balkenGitter(feld, 130),
+    /* A115 (01.10.2026): `balkenGitter` nimmt ein Objekt, kein Mass —
+       die 130 wurden still verworfen, das Gitter stand auf 120 und
+       „Niederösterreich" brach um. 150 px reichen fuer den laengsten
+       Landesnamen; 44 px unten geben der Bezugsmarke Platz. */
+    grid: balkenGitter(feld, { left: 150, bottom: 44 }),
     tooltip: {
       ...basis().tooltip, trigger: "item",
       formatter: (p) => {
@@ -101,7 +105,7 @@ function baueFichte(daten) {
     yAxis: {
       ...achse(), type: "category", inverse: true,
       data: eintraege.map((e) => e.name),
-      axisLabel: kategorieLabel(feld, 130, eintraege.length),
+      axisLabel: kategorieLabel(feld, 150, eintraege.length),
     },
     series: [{
       type: "bar",
@@ -128,6 +132,9 @@ function baueFichte(daten) {
         label: {
           formatter: `Österreich ${pz(daten.bund_anteil)} %`,
           color: stil("--viz-muted"), fontSize: S.achse, position: "end",
+          /* Unter die Achsenwerte, nicht darauf (A115: „Österreich 47,6 %"
+             deckte 40 % / 50 % am Fuss). 22 px = Achsenzeile + Luft. */
+          distance: 22,
         },
         data: [{ xAxis: daten.bund_anteil }],
       },
