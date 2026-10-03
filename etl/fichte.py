@@ -138,11 +138,22 @@ def baue_fichte() -> dict | None:
         })
     eintraege.sort(key=lambda e: -e["anteil"])
 
-    bund_jetzt = _anteil(aktuell, "Österreich")
-    bund_damals = _anteil(frueher, "Österreich")
+    # Entscheid User 03.10.2026 (A129 F6): Für den BUND gilt der veröffentlichte
+    # Wert, wo es einen gibt — 2007/09 steht im Waldbiodiversitätsbericht 2026,
+    # Tab. 2, mit 50,7 %, die eigene Rechnung aus den gerundeten Flächen ergibt
+    # 1709/3367 = 50,76 → 50,8. Drei Waldseiten nennen 50,7; die Seiten sollen
+    # nicht zwei Werte zeigen. Die Gegenprobe oben bleibt, die Länder bleiben
+    # selbst gerechnet (die Quelle druckt keine Länderwerte für 2007/09).
+    # Die Veränderung wird aus den gerundeten Bundeswerten gebildet, damit
+    # 50,7 − 47,6 auf der Seite genau die genannten 3,1 Punkte ergibt.
+    def _bund(periode: str) -> float:
+        return KONTROLLE_VEROEFFENTLICHT.get(periode, round(_anteil(periode, "Österreich"), 1))
+
+    bund_jetzt = _bund(aktuell)
+    bund_damals = _bund(frueher)
 
     reihe_bund = [
-        {"periode": p, "anteil": round(_anteil(p, "Österreich"), 1),
+        {"periode": p, "anteil": _bund(p),
          "flaeche_tsd_ha": FICHTE_TSD_HA[p]["Österreich"]}
         for p in PERIODEN
     ]

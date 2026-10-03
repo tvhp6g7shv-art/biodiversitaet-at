@@ -52,7 +52,11 @@ function baueFichte(daten) {
   if (!diagramme.includes(d)) diagramme.push(d);
 
   const eintraege = daten.eintraege;
-  const ton = stil("--viz-series-1");
+  /* A115 (03.10.2026, Entscheid User): Gruen aus der Rampe der
+     Nachbarkarte Totholz statt Oliv (`--viz-series-1`). Auf dem dunklen
+     Glas der Unterseiten wird `--viz-series-1` zur Schriftfarbe (weiss);
+     `--viz-seq-5` bleibt dort und im Dashboard derselbe Gruenton. */
+  const ton = stil("--viz-seq-5");
   const gedaempft = stil("--viz-series-3");
 
   setzeText("u-fichte",
